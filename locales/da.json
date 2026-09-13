@@ -194,6 +194,7 @@
         "legend": "Indtast din bekræftelseskode",
         "explanation": "Vi har sendt dig en bekræftelseskode. Indtast den nedenfor, eller brug en af dine gendannelseskoder for at afslutte login.",
         "explanationEmailFailed": "Vi kunne ikke sende din bekræftelseskode via e-mail lige nu. Indtast en af ​​dine gendannelseskoder for at afslutte login.",
+        "explanationEmailLimited": "Der er sendt for mange bekræftelsesmails. Brug en kode, der ikke er udløbet, eller en gendannelseskode, eller vent 15 minutter og start login igen.",
         "code": "Bekræftelseskode",
         "submit": "Bekræft"
     },

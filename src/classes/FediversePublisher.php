@@ -105,7 +105,7 @@ class FediversePublisher
 
         $uri = ActivityPubActor::uriFor($author);
 
-        FediverseDelivery::fanOut($author, [
+        DeletedActor::enqueue($author, [
             '@context' => 'https://www.w3.org/ns/activitystreams',
             'id' => $uri . '#delete',
             'type' => 'Delete',

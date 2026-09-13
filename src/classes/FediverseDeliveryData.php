@@ -7,6 +7,7 @@ class FediverseDeliveryData
 {
     public ?int $deliveryId = null;
     public ?int $actorUserId = null;
+    public ?int $deletedActorId = null;
     public ?string $inboxURL = null;
     public ?string $activity = null;
     public ?int $attempts = null;

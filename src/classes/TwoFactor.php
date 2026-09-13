@@ -7,8 +7,9 @@ declare(strict_types=1);
  * password login no longer completes on the password alone: a short-lived
  * numeric code is emailed to their (already verified) address, and login
  * only finishes once that code is entered (api/login.php ->
- * api/verify-2fa.php). Codes are stored only as a SHA-256 hash, one active
- * code per user (the UNIQUE key on userId replaces any prior one), expire
+ * api/verify-2fa.php). Codes have a SHA-256 verifier and a random seed whose
+ * code can only be derived with the server secret. One active code per user,
+ * reused without resetting its expiry or attempt count. Codes expire
  * quickly, and are attempt-capped so the short numeric space can't be
  * brute-forced within a code's lifetime.
  *
@@ -145,42 +146,82 @@ DELETE
 ', 'i', $user_id);
     }
 
-    /**
-     * Generates a fresh code, stores its hash (replacing any prior pending
-     * code for this user), and emails it. Returns whether the email actually
-     * went out - the caller (api/login.php) uses false to fall back to a
-     * normal login rather than locking the user out when the mailer itself
-     * is broken.
-     */
-    public static function sendCode(User $user): bool
+    /** Returns sent, ready (already emailed), limited, or failed; never authenticates. */
+    public static function sendCode(User $user): string
     {
-        $code = self::generateCode();
-        $code_hash = hash('sha256', $code);
-        $ttl_minutes = self::CODE_TTL_MINUTES;
         $user_id = (int) $user -> userId;
-        $initial_attempts = 0;
-        $reset_attempts = 0;
+        $reservation = DB::transaction(static function () use ($user, $user_id): array|string {
+            // Serialize issuance across browsers, and against code consumption.
+            $current = DB::row('SELECT * FROM `Users` WHERE `userId` = ? FOR UPDATE', 'User', 'i', $user_id);
+            if ($current === null || $current -> banned || !$current -> twoFactorEnabled
+                || $current -> sessionVersion !== $user -> sessionVersion) {
+                return 'failed';
+            }
 
-        // One active code per user: ON DUPLICATE KEY UPDATE overwrites the
-        // previous code, resets its attempt counter, and restarts the clock.
-        DB::run('
-INSERT INTO `TwoFactorCodes` (`userId`, `codeHash`, `expiresAt`, `attempts`)
-    VALUES (?, ?, NOW() + INTERVAL ? MINUTE, ?)
-    ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `expiresAt` = VALUES(`expiresAt`), `attempts` = ?, `createdAt` = NOW()
-', 'isiii', $user_id, $code_hash, $ttl_minutes, $initial_attempts, $reset_attempts);
+            DB::run('DELETE FROM `TwoFactorEmails` WHERE `userId` = ? AND `createdAt` <= NOW() - INTERVAL 15 MINUTE', 'i', $user_id);
+            $recent = DB::row('
+SELECT COUNT(*) AS `total`, COALESCE(MAX(`createdAt`) > NOW() - INTERVAL 1 MINUTE, 0) AS `cooldown`
+    FROM `TwoFactorEmails` WHERE `userId` = ?
+', 'stdClass', 'i', $user_id);
+            $stored = DB::row('SELECT * FROM `TwoFactorCodes` WHERE `userId` = ? AND `expiresAt` > NOW()', 'stdClass', 'i', $user_id);
+            $ready = $stored !== null && (bool) $stored -> emailed && (int) $stored -> attempts < self::MAX_ATTEMPTS;
+            if ((int) $recent -> total >= 3 || (bool) $recent -> cooldown) {
+                return $ready ? 'ready' : 'limited';
+            }
+            if ($stored !== null) {
+                // A burned or legacy code remains in place until expiry. An
+                // upgrade or secret rotation must not invalidate an emailed code.
+                $code = self::codeFor($user_id, (string) ($stored -> codeSeed ?? ''));
+                if ((int) $stored -> attempts >= self::MAX_ATTEMPTS || $code === null
+                    || !hash_equals($stored -> codeHash, hash('sha256', $code))) {
+                    return $ready ? 'ready' : 'limited';
+                }
+            } else {
+                $seed = bin2hex(random_bytes(32));
+                $code = self::codeFor($user_id, $seed);
+                if ($code === null) {
+                    return 'failed';
+                }
+                DB::run('
+INSERT INTO `TwoFactorCodes` (`userId`, `codeHash`, `codeSeed`, `expiresAt`)
+    VALUES (?, ?, ?, NOW() + INTERVAL ? MINUTE)
+    ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `codeSeed` = VALUES(`codeSeed`),
+        `expiresAt` = VALUES(`expiresAt`), `attempts` = 0, `emailed` = 0, `createdAt` = NOW()
+', 'issi', $user_id, hash('sha256', $code), $seed, self::CODE_TTL_MINUTES);
+            }
+            // Reserve before SMTP, including failures. Mail runs outside the
+            // transaction; a hung mailer cannot hold an account's database lock.
+            DB::run('INSERT INTO `TwoFactorEmails` (`userId`) VALUES (?)', 'i', $user_id);
+            return [$code];
+        });
 
+        if (is_string($reservation)) {
+            return $reservation;
+        }
+        [$code] = $reservation;
+        $sent = static::deliverCode($user, $code);
+        if ($sent) {
+            // A code consumed while mail was in flight must stay consumed.
+            DB::run('UPDATE `TwoFactorCodes` SET `emailed` = 1 WHERE `userId` = ? AND `codeHash` = ?',
+                'is', $user_id, hash('sha256', $code));
+        }
+        return $sent ? 'sent' : 'failed';
+    }
+
+    protected static function deliverCode(User $user, string $code): bool
+    {
         $name = $user -> title ?: $user -> slug;
 
         $text_body = 'Hi ' . $name . ',
 
 Your login verification code is: ' . $code . '
 
-It expires in ' . self::CODE_TTL_MINUTES . ' minutes. If you didn\'t just try to log in, someone may have your password - change it as soon as you can.';
+It expires ' . self::CODE_TTL_MINUTES . ' minutes after it was first issued. Requesting it again does not extend that time. If you didn\'t just try to log in, someone may have your password - change it as soon as you can.';
 
         $html_body = '<p>Hi ' . htmlspecialchars($name) . ',</p>'
             . '<p>Your login verification code is:</p>'
             . '<p style="font-size: 1.5em; font-weight: bold; letter-spacing: 0.2em;">' . htmlspecialchars($code) . '</p>'
-            . '<p>It expires in ' . self::CODE_TTL_MINUTES . ' minutes. If you didn\'t just try to log in, someone may have your password - change it as soon as you can.</p>';
+            . '<p>It expires ' . self::CODE_TTL_MINUTES . ' minutes after it was first issued. Requesting it again does not extend that time. If you didn\'t just try to log in, someone may have your password - change it as soon as you can.</p>';
 
         return Mailer::send($user -> email, $name, 'Your login verification code', $text_body, $html_body);
     }
@@ -189,10 +230,18 @@ It expires in ' . self::CODE_TTL_MINUTES . ' minutes. If you didn\'t just try to
      * Checks a submitted code for the user. Returns true only on an exact,
      * unexpired, under-the-attempt-cap match - and consumes the code (deletes
      * the row) on success so it can't be replayed. A wrong guess increments
-     * the attempt counter; once it hits MAX_ATTEMPTS the code is burned
-     * (deleted) so the whole login must restart with a freshly emailed code.
+     * the attempt counter; once it hits MAX_ATTEMPTS the code stays burned until
+     * expiry, so restarting login cannot reset its guessing budget.
      */
     public static function verifyCode(int $user_id, string $code): bool
+    {
+        return DB::transaction(static function () use ($user_id, $code): bool {
+            DB::row('SELECT `userId` FROM `Users` WHERE `userId` = ? FOR UPDATE', 'stdClass', 'i', $user_id);
+            return self::consumeCode($user_id, $code);
+        });
+    }
+
+    private static function consumeCode(int $user_id, string $code): bool
     {
         $stored_code = DB::row('
 SELECT `codeId`, `codeHash`, `attempts`
@@ -205,8 +254,6 @@ SELECT `codeId`, `codeHash`, `attempts`
         }
 
         if ($stored_code -> attempts >= self::MAX_ATTEMPTS) {
-            self::clear($user_id);
-
             return false;
         }
 
@@ -234,12 +281,20 @@ DELETE
 ', 'i', $user_id);
     }
 
-    /**
-     * A zero-padded 6-digit code (000000-999999), drawn from a CSPRNG - not
-     * mt_rand, since this is a security credential.
-     */
-    private static function generateCode(): string
+    /** A random seed alone cannot reveal the code in a database-only leak. */
+    private static function codeFor(int $user_id, string $seed): ?string
     {
-        return str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $secret = (string) Config::get('WSSecret');
+        if ($secret === '' || preg_match('/\A[a-f0-9]{64}\z/', $seed) !== 1) {
+            return null;
+        }
+        // Rejection sampling keeps all six-digit values equally likely.
+        for ($counter = 0; ; $counter++) {
+            $hash = hash_hmac('sha256', 'glommer.2fa.email.v1.' . $user_id . '.' . $seed . '.' . $counter, $secret);
+            $number = hexdec(substr($hash, 0, 8));
+            if ($number < 4294000000) {
+                return str_pad((string) ($number % 1000000), 6, '0', STR_PAD_LEFT);
+            }
+        }
     }
 }

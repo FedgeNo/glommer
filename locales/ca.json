@@ -195,6 +195,7 @@
         "legend": "Introduïu el codi de verificació",
         "explanation": "Us hem enviat un codi de verificació per correu. Introduïu-lo a continuació o utilitzeu un dels codis de recuperació per acabar d'iniciar la sessió.",
         "explanationEmailFailed": "Ara mateix no hem pogut enviar el codi de verificació per correu. Introduïu un dels codis de recuperació per acabar d'iniciar la sessió.",
+        "explanationEmailLimited": "S'han enviat massa correus de verificació. Feu servir un codi que no hagi caducat o un codi de recuperació, o espereu 15 minuts i torneu a iniciar la sessió.",
         "code": "Codi de verificació",
         "submit": "Verifica"
     },

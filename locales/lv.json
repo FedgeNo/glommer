@@ -195,6 +195,7 @@
         "legend": "Ievadiet apstiprinājuma kodu",
         "explanation": "Apstiprinājuma kodu nosūtījām jums e-pastā. Lai pabeigtu pieteikšanos, ievadiet to zemāk vai izmantojiet kādu no atkopšanas kodiem.",
         "explanationEmailFailed": "Pašlaik nevarējām nosūtīt apstiprinājuma kodu e-pastā. Lai pabeigtu pieteikšanos, ievadiet kādu no atkopšanas kodiem.",
+        "explanationEmailLimited": "Nosūtīts pārāk daudz apstiprinājuma e-pastu. Izmantojiet vēl derīgu kodu vai atkopšanas kodu, vai uzgaidiet 15 minūtes un sāciet pieteikšanos no jauna.",
         "code": "Apstiprinājuma kods",
         "submit": "Apstiprināt"
     },

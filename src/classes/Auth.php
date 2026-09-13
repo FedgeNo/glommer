@@ -92,12 +92,13 @@ SELECT `userId`
         }
     }
 
-    public static function beginTwoFactor(User $user, bool $remember_me, bool $email_failed): void
+    public static function beginTwoFactor(User $user, bool $remember_me, bool $email_failed, bool $email_limited = false): void
     {
         $_SESSION['pending2FAUserId'] = (int) $user -> userId;
         $_SESSION['pending2FASessionVersion'] = $user -> sessionVersion;
         $_SESSION['pending2FARememberMe'] = $remember_me;
         $_SESSION['pending2FAEmailFailed'] = $email_failed;
+        $_SESSION['pending2FAEmailLimited'] = $email_limited;
     }
 
     /** The first factor belongs to the credential generation that proved it. */
@@ -118,7 +119,7 @@ SELECT `userId`
     public static function clearPendingTwoFactor(): void
     {
         unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FASessionVersion'],
-            $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
+            $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed'], $_SESSION['pending2FAEmailLimited']);
     }
 
     public static function login(User $user): void

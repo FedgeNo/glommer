@@ -194,6 +194,7 @@
         "legend": "Anna vahvistuskoodi",
         "explanation": "Lähetimme sinulle vahvistuskoodin sähköpostitse. Viimeistele kirjautuminen antamalla se alle tai käyttämällä palautuskoodia.",
         "explanationEmailFailed": "Vahvistuskoodia ei voitu lähettää sähköpostitse juuri nyt. Viimeistele kirjautuminen antamalla jokin palautuskoodeistasi.",
+        "explanationEmailLimited": "Vahvistussähköposteja on lähetetty liian monta. Käytä vielä voimassa olevaa koodia tai palautuskoodia tai odota 15 minuuttia ja aloita kirjautuminen uudelleen.",
         "code": "Vahvistuskoodi",
         "submit": "Vahvista"
     },

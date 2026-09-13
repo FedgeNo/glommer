@@ -195,6 +195,7 @@
         "legend": "Introdu codul de verificare",
         "explanation": "Ți-am trimis prin e-mail un cod de verificare. Introdu-l mai jos sau folosește unul dintre codurile de recuperare pentru a încheia autentificarea.",
         "explanationEmailFailed": "Nu am putut trimite acum codul de verificare prin e-mail. Introdu unul dintre codurile de recuperare pentru a încheia autentificarea.",
+        "explanationEmailLimited": "Au fost trimise prea multe e-mailuri de verificare. Folosește un cod care nu a expirat sau un cod de recuperare, ori așteaptă 15 minute și începe din nou autentificarea.",
         "code": "Cod de verificare",
         "submit": "Verifică"
     },

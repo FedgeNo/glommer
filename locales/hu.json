@@ -194,6 +194,7 @@
         "legend": "Add meg az ellenőrző kódot",
         "explanation": "E-mailben küldtünk egy ellenőrző kódot. A bejelentkezés befejezéséhez add meg alább, vagy használd valamelyik helyreállítási kódodat.",
         "explanationEmailFailed": "Jelenleg nem tudtuk e-mailben elküldeni az ellenőrző kódot. A bejelentkezés befejezéséhez add meg valamelyik helyreállítási kódodat.",
+        "explanationEmailLimited": "Túl sok ellenőrző e-mailt küldtünk. Használj egy még érvényes kódot vagy helyreállítási kódot, vagy várj 15 percet, és kezdd újra a bejelentkezést.",
         "code": "Ellenőrző kód",
         "submit": "Ellenőrzés"
     },

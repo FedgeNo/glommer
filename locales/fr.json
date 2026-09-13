@@ -537,6 +537,7 @@
         "legend": "Saisissez votre code de vérification",
         "explanation": "Nous vous avons envoyé un code de vérification par e-mail. Saisissez-le ci-dessous, ou utilisez l'un de vos codes de récupération, pour terminer la connexion.",
         "explanationEmailFailed": "Nous n'avons pas pu vous envoyer votre code de vérification par e-mail pour le moment. Saisissez l'un de vos codes de récupération pour terminer la connexion.",
+        "explanationEmailLimited": "Trop d'e-mails de vérification ont été envoyés. Utilisez un code encore valide ou un code de récupération, ou attendez 15 minutes et recommencez la connexion.",
         "code": "Code de vérification",
         "submit": "Vérifier"
     },

@@ -194,6 +194,7 @@
         "legend": "Gib deinen Bestätigungscode ein",
         "explanation": "Wir haben dir einen Bestätigungscode per E-Mail geschickt. Gib ihn unten ein oder verwende einen deiner Wiederherstellungscodes, um die Anmeldung abzuschließen.",
         "explanationEmailFailed": "Wir konnten dir deinen Bestätigungscode gerade nicht per E-Mail schicken. Gib einen deiner Wiederherstellungscodes ein, um die Anmeldung abzuschließen.",
+        "explanationEmailLimited": "Zu viele Bestätigungs-E-Mails. Verwende einen noch gültigen Code oder einen Wiederherstellungscode, oder warte 15 Minuten und beginne die Anmeldung erneut.",
         "code": "Bestätigungscode",
         "submit": "Bestätigen"
     },

@@ -591,6 +591,7 @@
         "legend": "Skriv inn bekreftelseskoden",
         "explanation": "Vi sendte deg en bekreftelseskode på e-post. Skriv den inn nedenfor, eller bruk en av gjenopprettingskodene dine, for å fullføre innloggingen.",
         "explanationEmailFailed": "Vi kunne ikke sende bekreftelseskoden på e-post akkurat nå. Skriv inn en av gjenopprettingskodene dine for å fullføre innloggingen.",
+        "explanationEmailLimited": "Det er sendt for mange bekreftelsesmeldinger på e-post. Bruk en kode som fortsatt er gyldig eller en gjenopprettingskode, eller vent 15 minutter og start innloggingen på nytt.",
         "code": "Bekreftelseskode",
         "submit": "Bekreft"
     },

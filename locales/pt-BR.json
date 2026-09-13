@@ -762,6 +762,7 @@
         "legend": "Digite seu código de confirmação",
         "explanation": "Enviamos um código de confirmação por e-mail. Digite-o abaixo ou use um dos códigos de recuperação para concluir a entrada.",
         "explanationEmailFailed": "Não foi possível enviar o código de confirmação por e-mail agora. Digite um dos códigos de recuperação para concluir a entrada.",
+        "explanationEmailLimited": "Foram enviados muitos e-mails de confirmação. Use um código que ainda não expirou ou um código de recuperação, ou aguarde 15 minutos e tente entrar novamente.",
         "code": "Código de confirmação",
         "submit": "Confirmar"
     },

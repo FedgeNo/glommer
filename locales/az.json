@@ -194,6 +194,7 @@
         "legend": "Doğrulama kodunuzu daxil edin",
         "explanation": "Sizə doğrulama kodunu e-poçt göndərdik. Onu aşağıya daxil edin və ya daxil olmağı başa çatdırmaq üçün bərpa kodlarınızdan birini istifadə edin.",
         "explanationEmailFailed": "Doğrulama kodunuzu hazırda e-poçtla göndərə bilmədik. Daxil olmağı başa çatdırmaq üçün bərpa kodlarınızdan birini daxil edin.",
+        "explanationEmailLimited": "Həddindən çox doğrulama e-poçtu göndərilib. Müddəti bitməmiş koddan və ya bərpa kodundan istifadə edin, yaxud 15 dəqiqə gözləyib yenidən daxil olmağa başlayın.",
         "code": "Doğrulama kodu",
         "submit": "Doğrulayın"
     },

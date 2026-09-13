@@ -148,6 +148,10 @@ band).
 - **Two-factor authentication** - opt-in, email-based: when enabled, login
   emails a short-lived code that must be entered to finish signing in. Enabling
   it revokes remembered-device credentials issued before the second factor.
+  Repeated logins reuse the current code without extending its ten-minute
+  lifetime or resetting its five-guess budget. Emails are limited per account
+  to one per minute and three per rolling 15 minutes, including failed sends.
+  Recovery codes remain available when mail is unavailable or limited.
 - **Google Sign-In** - optional OAuth, admin-configured.
 - **Geotagged posts** - optionally attach your location to a post; a site map
   clusters every located post, each card links to the spot, and a **Nearby**
@@ -448,6 +452,27 @@ installs **user-level** units and enables lingering so they survive logout.
 | Upload worker | transcodes queued media (§3) | `glommer-upload-worker.service` |
 | Federation worker | delivers queued ActivityPub activities, with backoff and retry (§3) | `glommer-federation-worker.service` |
 | Trending recompute | rescores trending every ~15 min | `glommer-trending.timer` |
+
+Upload publication has a durable batch receipt. Completed transcodes remain
+available until the post, media rows, timeline, notification rows, and federation
+queue commit together. A worker crash resumes unfinished publication or completes
+cleanup for an already published post; it cannot recreate a post subsequently
+deleted by its author. Final media files use hard links to the retained output
+where possible, so recovery does not require another full media copy. Temporary
+database failures retry after a minute without consuming the fatal-crash budget.
+Three fatal finalization failures produce one upload-failure notification after
+the worker has checked that publication did not commit.
+
+Account deletion removes the local account immediately and queues its ActivityPub
+Delete in the same transaction, for both password and Google confirmation. A
+separate record retains only the actor identity, public key, encrypted signing
+key, and expiry; delivery rows retain the Delete and its destinations. The worker
+removes this material when delivery finishes or after seven days. While delivery
+is pending, ActivityPub requests can retrieve a minimal inactive actor and public
+key so remote servers can verify the signature; the human profile is gone. This
+uses the [Mastodon suspended-actor extension](https://docs.joinmastodon.org/spec/activitypub/#suspended-flag).
+Expiry is checked before signing or serving that identity; physical pruning runs
+when the federation worker runs, including after an outage.
 
 The installer offers to create, enable, and health-check each one, and keeps
 every unit in sync with its current template on each run. If it reports **"no

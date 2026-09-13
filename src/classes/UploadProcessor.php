@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 class UploadProcessor
 {
-    private const UPLOAD_DIR = __DIR__ . '/../../uploads';
-    private const ORIGINALS_DIR = __DIR__ . '/../../uploads/private/originals';
+    private static string $uploadDirectory = __DIR__ . '/../../uploads';
+    private static string $originalsDirectory = __DIR__ . '/../../uploads/private/originals';
     private const UPLOAD_URL_PREFIX = '/uploads/';
 
     private const VIDEO_MAX_WIDTH = 1280;
@@ -110,8 +110,8 @@ class UploadProcessor
      */
     public static function hasFreeDiskSpace(int $incoming_bytes = 0): bool
     {
-        $free = disk_free_space(self::UPLOAD_DIR);
-        $total = disk_total_space(self::UPLOAD_DIR);
+        $free = disk_free_space(self::$uploadDirectory);
+        $total = disk_total_space(self::$uploadDirectory);
 
         if ($free === false || $total === false) {
             // Can't measure - don't turn a stat failure into a site-wide
@@ -190,8 +190,8 @@ class UploadProcessor
      */
     public static function process(string $tmp_path, int|string $id, ?string $original_filename = null): ?array
     {
-        self::ensureDir(self::UPLOAD_DIR . '/' . self::shard($id));
-        self::ensureDir(self::ORIGINALS_DIR . '/' . self::shard($id));
+        self::ensureDir(self::$uploadDirectory . '/' . self::shard($id));
+        self::ensureDir(self::$originalsDirectory . '/' . self::shard($id));
 
         $image = ImageProcessor::load($tmp_path);
 
@@ -231,8 +231,8 @@ class UploadProcessor
         $new_paths = self::outputPaths($new_id, $item_type, $original_extension);
 
         // The new id shards into its own bucket, which may not exist yet.
-        self::ensureDir(self::UPLOAD_DIR . '/' . self::shard($new_id));
-        self::ensureDir(self::ORIGINALS_DIR . '/' . self::shard($new_id));
+        self::ensureDir(self::$uploadDirectory . '/' . self::shard($new_id));
+        self::ensureDir(self::$originalsDirectory . '/' . self::shard($new_id));
 
         foreach (['display', 'thumbnail'] as $key) {
             if ($old_paths[$key] !== null && is_file($old_paths[$key])) {
@@ -246,6 +246,34 @@ class UploadProcessor
 
         if ($old_original !== null && $new_paths['original'] !== null) {
             rename($old_original, $new_paths['original']);
+        }
+    }
+
+    /**
+     * Publish complete output while retaining the seed until the DB commits.
+     * Hard links take no extra media space. Copy is the cross-filesystem fallback;
+     * a partial copy is removed on recovery using the durable batch manifest.
+     */
+    public static function publishStaged(string $seed, int $item_id, string $type, ?string $extension): void
+    {
+        $sources = self::outputPaths($seed, $type, $extension);
+        $targets = self::outputPaths($item_id, $type, $extension);
+        if ($sources['original'] !== null) {
+            $sources['original'] = self::originalMatches($seed)[0] ?? $sources['original'];
+        }
+        self::ensureDir(self::$uploadDirectory . '/' . self::shard($item_id));
+        self::ensureDir(self::$originalsDirectory . '/' . self::shard($item_id));
+        foreach ($sources as $kind => $source) {
+            if ($source === null) {
+                continue;
+            }
+            $target = $targets[$kind];
+            if (!is_file($source) || file_exists($target)) {
+                throw new \RuntimeException('Upload publication source missing or destination already exists.');
+            }
+            if (!@link($source, $target) && (!@copy($source, $target) || filesize($source) !== filesize($target))) {
+                throw new \RuntimeException('Could not publish the complete upload output.');
+            }
         }
     }
 
@@ -293,12 +321,12 @@ class UploadProcessor
         $shard = self::shard($seed);
 
         $globs = [
-            self::UPLOAD_DIR . '/' . $shard . '/' . $seed . '.*',
-            self::UPLOAD_DIR . '/' . $shard . '/' . $seed . '-thumb.*',
+            self::$uploadDirectory . '/' . $shard . '/' . $seed . '.*',
+            self::$uploadDirectory . '/' . $shard . '/' . $seed . '-thumb.*',
             // The video poster-frame temp (processVideo), in case a crash between
             // writing and unlinking it leaves it behind.
-            self::UPLOAD_DIR . '/' . $shard . '/' . $seed . '-raw-frame.*',
-            self::ORIGINALS_DIR . '/' . $shard . '/' . $seed . '-original.*',
+            self::$uploadDirectory . '/' . $shard . '/' . $seed . '-raw-frame.*',
+            self::$originalsDirectory . '/' . $shard . '/' . $seed . '-original.*',
         ];
 
         foreach ($globs as $pattern) {
@@ -320,7 +348,7 @@ class UploadProcessor
     {
         $cutoff = time() - 86400;
 
-        foreach (glob(self::UPLOAD_DIR . '/[0-9a-f][0-9a-f]/lp-*') ?: [] as $path) {
+        foreach (glob(self::$uploadDirectory . '/[0-9a-f][0-9a-f]/lp-*') ?: [] as $path) {
             $modified_at = filemtime($path);
 
             if ($modified_at !== false && $modified_at < $cutoff) {
@@ -394,19 +422,19 @@ class UploadProcessor
     /** @return string[] */
     private static function originalMatches(int|string $id): array
     {
-        return glob(self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-original.*') ?: [];
+        return glob(self::$originalsDirectory . '/' . self::shard($id) . '/' . $id . '-original.*') ?: [];
     }
 
     private static function outputPaths(int|string $id, string $item_type, ?string $original_extension): array
     {
-        $display_dir = self::UPLOAD_DIR . '/' . self::shard($id);
+        $display_dir = self::$uploadDirectory . '/' . self::shard($id);
 
         // MIME is detected from bytes when a moderator requests the original;
         // its attacker-supplied extension has no operational value. A fixed
         // inert suffix keeps a web-server configuration mistake from turning a
         // preserved upload into executable source.
         $original = $original_extension !== null
-            ? self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-original.bin'
+            ? self::$originalsDirectory . '/' . self::shard($id) . '/' . $id . '-original.bin'
             : null;
 
         return match ($item_type) {
@@ -693,7 +721,7 @@ class UploadProcessor
             return null;
         }
 
-        $raw_frame_path = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-raw-frame.jpg';
+        $raw_frame_path = self::$uploadDirectory . '/' . self::shard($id) . '/' . $id . '-raw-frame.jpg';
 
         // Cap resolution/framerate - we're not streaming ultra HD, and bandwidth matters.
         // scale filter only ever downscales (never upscales smaller sources).
@@ -721,7 +749,7 @@ class UploadProcessor
         if ($exit_code !== 0 || !is_file($paths['display'])) {
             // Under the non-web-served private tree: ffmpeg's output names
             // absolute server paths, which a publicly fetchable log would leak.
-            $failure_log = self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
+            $failure_log = self::$originalsDirectory . '/' . self::shard($id) . '/' . $id . '-failure.log';
             file_put_contents($failure_log, implode("\n", $output_lines));
             // A timed-out / killed run can leave a partial display file; clear it
             // so failures don't accumulate on disk.
@@ -820,7 +848,7 @@ class UploadProcessor
         if ($exit_code !== 0 || !is_file($paths['display'])) {
             // Under the non-web-served private tree: ffmpeg's output names
             // absolute server paths, which a publicly fetchable log would leak.
-            $failure_log = self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
+            $failure_log = self::$originalsDirectory . '/' . self::shard($id) . '/' . $id . '-failure.log';
             file_put_contents($failure_log, implode("\n", $output_lines));
             // A timed-out / killed run can leave a partial display file; clear it
             // so failures don't accumulate on disk.

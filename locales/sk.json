@@ -805,6 +805,7 @@
         "legend": "Zadajte overovací kód",
         "explanation": "Overovací kód sme vám poslali e-mailom. Zadajte ho nižšie alebo použite jeden zo svojich obnovovacích kódov a dokončite prihlásenie.",
         "explanationEmailFailed": "Overovací kód sa momentálne nepodarilo odoslať e-mailom. Zadajte jeden zo svojich obnovovacích kódov a dokončite prihlásenie.",
+        "explanationEmailLimited": "Bolo odoslaných príliš veľa overovacích e-mailov. Použite ešte platný kód alebo obnovovací kód, prípadne počkajte 15 minút a začnite prihlasovanie znova.",
         "code": "Overovací kód",
         "submit": "Overiť"
     },

@@ -196,6 +196,7 @@
         "legend": "Wpisz kod weryfikacyjny",
         "explanation": "Wysłaliśmy ci e-mailem kod weryfikacyjny. Wpisz go poniżej lub użyj jednego ze swoich kodów odzyskiwania, aby dokończyć logowanie.",
         "explanationEmailFailed": "Nie udało nam się teraz wysłać ci kodu weryfikacyjnego e-mailem. Wpisz jeden ze swoich kodów odzyskiwania, aby dokończyć logowanie.",
+        "explanationEmailLimited": "Wysłano zbyt wiele e-maili weryfikacyjnych. Użyj nadal ważnego kodu lub kodu odzyskiwania albo poczekaj 15 minut i rozpocznij logowanie ponownie.",
         "code": "Kod weryfikacyjny",
         "submit": "Zweryfikuj"
     },

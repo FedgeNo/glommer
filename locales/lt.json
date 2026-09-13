@@ -764,6 +764,7 @@
         "legend": "Įveskite patvirtinimo kodą",
         "explanation": "Patvirtinimo kodą išsiuntėme el. paštu. Norėdami užbaigti prisijungimą, įveskite jį žemiau arba naudokite vieną iš atkūrimo kodų.",
         "explanationEmailFailed": "Šiuo metu nepavyko išsiųsti patvirtinimo kodo el. paštu. Norėdami užbaigti prisijungimą, įveskite vieną iš atkūrimo kodų.",
+        "explanationEmailLimited": "Išsiųsta per daug patvirtinimo el. laiškų. Naudokite dar galiojantį kodą arba atkūrimo kodą, arba palaukite 15 minučių ir pradėkite prisijungimą iš naujo.",
         "code": "Patvirtinimo kodas",
         "submit": "Patvirtinti"
     },

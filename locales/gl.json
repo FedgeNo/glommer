@@ -194,6 +194,7 @@
         "legend": "Introduce o teu código de verificación",
         "explanation": "Enviámosche un código de verificación por correo. Introdúceo abaixo, ou usa un dos teus códigos de recuperación, para rematar de iniciar sesión.",
         "explanationEmailFailed": "Agora mesmo non puidemos enviarche o código de verificación por correo. Introduce un dos teus códigos de recuperación para rematar de iniciar sesión.",
+        "explanationEmailLimited": "Enviáronse demasiados correos de verificación. Usa un código que non caducase ou un código de recuperación, ou agarda 15 minutos e volve iniciar sesión.",
         "code": "Código de verificación",
         "submit": "Verificar"
     },

@@ -196,6 +196,7 @@
         "legend": "Zadejte ověřovací kód",
         "explanation": "Ověřovací kód jsme vám poslali e-mailem. Přihlášení dokončíte jeho zadáním níže nebo použitím jednoho ze záložních kódů.",
         "explanationEmailFailed": "Ověřovací kód se nyní nepodařilo odeslat e-mailem. Přihlášení dokončíte zadáním jednoho ze záložních kódů.",
+        "explanationEmailLimited": "Bylo odesláno příliš mnoho ověřovacích e-mailů. Použijte dosud platný kód nebo záložní kód, případně počkejte 15 minut a začněte přihlášení znovu.",
         "code": "Ověřovací kód",
         "submit": "Ověřit"
     },

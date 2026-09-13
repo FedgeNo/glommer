@@ -803,6 +803,7 @@
         "legend": "Introduce tu código de verificación",
         "explanation": "Te hemos enviado un código de verificación por correo. Introdúcelo abajo, o usa uno de tus códigos de recuperación, para terminar de iniciar sesión.",
         "explanationEmailFailed": "No hemos podido enviarte el código de verificación por correo en este momento. Introduce uno de tus códigos de recuperación para terminar de iniciar sesión.",
+        "explanationEmailLimited": "Se han enviado demasiados correos de verificación. Usa un código que no haya caducado o un código de recuperación, o espera 15 minutos y vuelve a iniciar sesión.",
         "code": "Código de verificación",
         "submit": "Verificar"
     },

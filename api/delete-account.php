@@ -42,11 +42,6 @@ if (!$current_user -> verifyPassword($current_password)) {
     JSONResponse::localizedError('currentPasswordIsIncorrect', 422) -> send();
 }
 
-// Queued before the row goes: the delivery rows hang off this member and are
-// about to cascade away with them, and the followers to address are read from
-// a table that is about to be emptied.
-FediversePublisher::accountDeleted($current_user);
-
 User::delete((int) $current_user -> userId);
 
 Auth::logout();

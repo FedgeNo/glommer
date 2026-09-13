@@ -14,7 +14,7 @@ if (Auth::check()) {
 // state is harmless - worst case it just forces a fresh login - so a plain
 // GET is fine here; there's no logged-in state to protect.
 if (isset($_GET['restart'])) {
-    unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
+    Auth::clearPendingTwoFactor();
 
     header('Location: ' . ServerURL::absolute('/login'));
     exit;
@@ -25,7 +25,10 @@ if (isset($_GET['restart'])) {
 // the user back to re-entering their password.
 if (isset($_SESSION['pending2FAUserId'])) {
     $page = new Page(['title' => (string) (Strings::for('PageTitle')['loginVerificationCode'] ?? '')]);
-    $page -> addContent(new TwoFactorForm(($_SESSION['pending2FAEmailFailed'] ?? false) === true));
+    $page -> addContent(new TwoFactorForm(
+        ($_SESSION['pending2FAEmailFailed'] ?? false) === true,
+        ($_SESSION['pending2FAEmailLimited'] ?? false) === true
+    ));
     $page -> addContent(new Anchor(ServerURL::absolute('/login?restart=1'), (string) (Strings::for('LoginPage')['startOver'] ?? '')));
     $page -> send();
     exit;

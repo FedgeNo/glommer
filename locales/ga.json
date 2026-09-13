@@ -197,6 +197,7 @@
         "legend": "Cuir isteach do chód fíoraithe",
         "explanation": "Sheolamar cód fíoraithe chugat trí ríomhphost. Cuir isteach thíos é, nó úsáid ceann de do chóid athshlánaithe, chun an logáil isteach a chríochnú.",
         "explanationEmailFailed": "Níorbh fhéidir linn do chód fíoraithe a sheoladh trí ríomhphost anois. Cuir isteach ceann de do chóid athshlánaithe chun an logáil isteach a chríochnú.",
+        "explanationEmailLimited": "Seoladh an iomarca ríomhphost fíoraithe. Úsáid cód nach bhfuil imithe in éag nó cód athshlánaithe, nó fan 15 nóiméad agus tosaigh an logáil isteach arís.",
         "code": "Cód fíoraithe",
         "submit": "Fíoraigh"
     },

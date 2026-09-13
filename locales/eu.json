@@ -606,6 +606,7 @@
         "legend": "Sartu egiaztapen-kodea",
         "explanation": "Egiaztapen-kode bat bidali dizugu posta elektronikoz. Sartu behean edo erabili berreskuratze-kodeetako bat saioa amaitzeko.",
         "explanationEmailFailed": "Ezin izan dugu egiaztapen-kodea posta elektronikoz bidali. Sartu berreskuratze-kodeetako bat saioa amaitzeko.",
+        "explanationEmailLimited": "Egiaztapen-mezu gehiegi bidali dira. Erabili iraungi gabeko kode bat edo berreskuratze-kode bat, edo itxaron 15 minutu eta hasi berriro saioa hasteko prozesua.",
         "code": "Egiaztapen-kodea",
         "submit": "Egiaztatu"
     },

@@ -667,6 +667,9 @@ CREATE TABLE `TwoFactorCodes` (
   `codeId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,
   `codeHash` varchar(64) NOT NULL,
+  -- Random seed; deriving the emailed code also requires the server secret.
+  `codeSeed` char(64) DEFAULT NULL,
+  `emailed` tinyint(1) NOT NULL DEFAULT 0,
   `expiresAt` datetime NOT NULL,
   `attempts` int(10) unsigned NOT NULL DEFAULT 0,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
@@ -674,6 +677,16 @@ CREATE TABLE `TwoFactorCodes` (
   UNIQUE KEY `userId` (`userId`),
   KEY `expiresAt` (`expiresAt`),
   CONSTRAINT `TwoFactorCodes_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Separate from the active code, so consumption/expiry cannot reset mail limits.
+CREATE TABLE `TwoFactorEmails` (
+  `emailId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`emailId`),
+  KEY `userId_createdAt` (`userId`,`createdAt`),
+  CONSTRAINT `TwoFactorEmails_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Single-use 2FA recovery codes, issued in a batch when a user turns 2FA on
@@ -875,6 +888,33 @@ CREATE TABLE `FediverseFollowers` (
   CONSTRAINT `FediverseFollowers_ibfk_1` FOREIGN KEY (`localUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- A publication receipt outlives its post until upload cleanup completes.
+CREATE TABLE `UploadPublications` (
+  `batchId` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `postId` int(10) unsigned DEFAULT NULL,
+  -- A finished receipt survives deletion of the post until batch cleanup.
+  `finished` tinyint(1) NOT NULL DEFAULT 0,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`batchId`),
+  KEY `finished_createdAt` (`finished`,`createdAt`),
+  CONSTRAINT `UploadPublications_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- A deleted account's delivery identity, independent of its former Users row.
+-- Removed with its pending deliveries after seven days, or when none remain.
+CREATE TABLE `DeletedActors` (
+  `deletedActorId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `slug` varchar(255) NOT NULL,
+  `actorURI` varchar(255) NOT NULL,
+  `publicKeyPem` text NOT NULL,
+  `encryptedPrivateKey` text NOT NULL,
+  `expiresAt` datetime NOT NULL,
+  PRIMARY KEY (`deletedActorId`),
+  UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `actorURI` (`actorURI`),
+  KEY `expiresAt` (`expiresAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Outbound activities waiting to reach a remote inbox. Delivery cannot happen
 -- inside the request that caused it: a post by someone with a thousand
 -- followers is a thousand HTTPS round trips to servers that may be slow, down,
@@ -883,13 +923,12 @@ CREATE TABLE `FediverseFollowers` (
 --
 -- One row per destination inbox, holding the exact bytes to send. attempts and
 -- nextAttemptAt carry the backoff; a row that exhausts its attempts is dropped
--- rather than retried forever, because a server that has refused a dozen times
--- over several days is not coming back for this one activity.
+-- rather than retried forever.
 CREATE TABLE `FediverseDeliveries` (
   `deliveryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  -- Null means the instance itself signs this one, which is how a Flag goes
-  -- out: naming the member who reported would hand a harasser their identity.
+  -- Both actor references null means the instance signs this one (e.g. a Flag).
   `actorUserId` int(10) unsigned DEFAULT NULL,
+  `deletedActorId` int(10) unsigned DEFAULT NULL,
   `inboxURL` varchar(255) NOT NULL,
   `activity` mediumtext NOT NULL,
   `attempts` int(10) unsigned NOT NULL DEFAULT 0,
@@ -904,7 +943,8 @@ CREATE TABLE `FediverseDeliveries` (
   KEY `nextAttemptAt_deliveryId` (`nextAttemptAt`,`deliveryId`),
   -- The admin's retry count must stay cheap when the delivery queue backs up.
   KEY `attempts` (`attempts`),
-  CONSTRAINT `FediverseDeliveries_ibfk_1` FOREIGN KEY (`actorUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+  CONSTRAINT `FediverseDeliveries_ibfk_1` FOREIGN KEY (`actorUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `FediverseDeliveries_deletedActor` FOREIGN KEY (`deletedActorId`) REFERENCES `DeletedActors` (`deletedActorId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- What a remote server said when it refused an activity.
@@ -1320,6 +1360,15 @@ ALTER TABLE `FediverseDeliveries` MODIFY COLUMN `actorUserId` int(10) unsigned D
 -- Timeline rows from before sortAt existed take the moment they stood for:
 -- the repost's time where the row is a repost, the post's own time otherwise.
 -- Idempotent - only ever rows the column predates.
+-- Preserve the currently outstanding legacy code and count its known issuance.
+-- Older replaced emails cannot be reconstructed, but an upgrade must not give
+-- the current code an immediate resend or replace it before expiry.
+INSERT INTO `TwoFactorEmails` (`userId`, `createdAt`)
+    SELECT `c`.`userId`, `c`.`createdAt` FROM `TwoFactorCodes` `c`
+        WHERE `c`.`codeSeed` IS NULL AND `c`.`createdAt` > NOW() - INTERVAL 15 MINUTE
+            AND NOT EXISTS (SELECT 1 FROM `TwoFactorEmails` `e` WHERE `e`.`userId` = `c`.`userId` AND `e`.`createdAt` = `c`.`createdAt`);
+UPDATE `TwoFactorCodes` SET `emailed` = 1 WHERE `codeSeed` IS NULL AND `emailed` = 0;
+
 UPDATE `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
     LEFT JOIN `Announces` ON `Announces`.`postId` = `Timelines`.`postId` AND `Announces`.`userId` = `Timelines`.`reposterId`

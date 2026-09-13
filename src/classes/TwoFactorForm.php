@@ -16,12 +16,14 @@ class TwoFactorForm extends FormForm
 {
 
     public bool $emailFailed;
+    public bool $emailLimited;
 
-    public function __construct(bool $email_failed = false)
+    public function __construct(bool $email_failed = false, bool $email_limited = false)
     {
         parent::__construct();
 
         $this -> emailFailed = $email_failed;
+        $this -> emailLimited = $email_limited;
     }
 
     public function toDOM(): \DOMElement
@@ -29,6 +31,9 @@ class TwoFactorForm extends FormForm
         $words = Strings::for(self::class);
         $code_words = (string) ($words['code'] ?? '');
         $explanation_key = $this -> emailFailed ? 'explanationEmailFailed' : 'explanation';
+        if ($this -> emailLimited) {
+            $explanation_key = 'explanationEmailLimited';
+        }
 
         $fields = new Fieldset((string) ($words['legend'] ?? ''));
         $fields -> addContent(new Paragraph((string) ($words[$explanation_key] ?? '')));

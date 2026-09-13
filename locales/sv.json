@@ -194,6 +194,7 @@
         "legend": "Ange din verifieringskod",
         "explanation": "Vi skickade en verifieringskod till dig via e-post. Ange den nedan eller använd en av dina återställningskoder för att slutföra inloggningen.",
         "explanationEmailFailed": "Vi kunde inte skicka verifieringskoden via e-post just nu. Ange en av dina återställningskoder för att slutföra inloggningen.",
+        "explanationEmailLimited": "För många verifieringsmejl har skickats. Använd en kod som fortfarande är giltig eller en återställningskod, eller vänta 15 minuter och börja om med inloggningen.",
         "code": "Verifieringskod",
         "submit": "Verifiera"
     },

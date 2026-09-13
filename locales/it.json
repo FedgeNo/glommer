@@ -195,6 +195,7 @@
         "legend": "Inserisci il tuo codice di verifica",
         "explanation": "Ti abbiamo inviato via email un codice di verifica. Inseriscilo qui sotto, oppure usa uno dei tuoi codici di recupero, per completare l'accesso.",
         "explanationEmailFailed": "Al momento non siamo riusciti a inviarti il codice di verifica via email. Inserisci uno dei tuoi codici di recupero per completare l'accesso.",
+        "explanationEmailLimited": "Sono state inviate troppe email di verifica. Usa un codice non ancora scaduto o un codice di recupero, oppure attendi 15 minuti e ricomincia l'accesso.",
         "code": "Codice di verifica",
         "submit": "Verifica"
     },

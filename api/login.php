@@ -120,14 +120,14 @@ $remember_me = ($payload['rememberMe'] ?? false) === true;
 // recovery codes issued when 2FA was turned on, and the admin is warned
 // their mail is broken (throttled inside the notification).
 if (TwoFactor::isEnabled($user)) {
-    $code_sent = TwoFactor::sendCode($user);
-    $email_failed = !$code_sent && !Mailer::recipientWasRejected();
+    $code_status = TwoFactor::sendCode($user);
+    $email_failed = $code_status === 'failed' && !Mailer::recipientWasRejected();
 
     if ($email_failed) {
         Notification::warnAdminMailerFailed((int) $user -> userId);
     }
 
-    Auth::beginTwoFactor($user, $remember_me, $email_failed);
+    Auth::beginTwoFactor($user, $remember_me, $email_failed, $code_status === 'limited');
 
     JSONResponse::success(['twoFactorRequired' => true]) -> send();
 }

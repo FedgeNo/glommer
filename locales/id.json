@@ -193,6 +193,7 @@
         "legend": "Masukkan kode verifikasi Anda",
         "explanation": "Kami mengirim kode verifikasi melalui surel. Masukkan di bawah ini atau gunakan salah satu kode pemulihan untuk menyelesaikan proses masuk.",
         "explanationEmailFailed": "Kami tidak dapat mengirim kode verifikasi melalui surel saat ini. Masukkan salah satu kode pemulihan untuk menyelesaikan proses masuk.",
+        "explanationEmailLimited": "Terlalu banyak surel verifikasi telah dikirim. Gunakan kode yang belum kedaluwarsa atau kode pemulihan, atau tunggu 15 menit lalu mulai proses masuk lagi.",
         "code": "Kode verifikasi",
         "submit": "Verifikasi"
     },

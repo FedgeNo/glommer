@@ -200,7 +200,7 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
         $notification_id = (int) mysqli_insert_id(DB::connection());
         $actor = User::load($actor_id);
 
-        WebSocketPusher::push($user_id, [
+        DB::afterCommit(static fn () => WebSocketPusher::push($user_id, [
             'event' => 'notification',
             'notification' => [
                 'notificationId' => $notification_id,
@@ -215,7 +215,7 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
                     'image' => $actor !== null && $actor -> hasAvatar ? ServerURL::absolute(User::avatarPath($actor_id)) : null,
                 ],
             ],
-        ]);
+        ]));
 
         // The phone in a pocket: queued for the push worker, never sent from
         // this request. A message opens its thread; everything else opens the

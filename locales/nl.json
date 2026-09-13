@@ -801,6 +801,7 @@
         "legend": "Voer je verificatiecode in",
         "explanation": "We hebben je een verificatiecode gemaild. Voer deze hieronder in, of gebruik een van je herstelcodes, om het inloggen te voltooien.",
         "explanationEmailFailed": "We konden je verificatiecode nu niet per e-mail versturen. Voer een van je herstelcodes in om het inloggen te voltooien.",
+        "explanationEmailLimited": "Er zijn te veel verificatie-e-mails verstuurd. Gebruik een code die nog geldig is of een herstelcode, of wacht 15 minuten en begin opnieuw met inloggen.",
         "code": "Verificatiecode",
         "submit": "Verifiëren"
     },

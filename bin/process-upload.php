@@ -32,4 +32,14 @@ if (!preg_match('/^[a-f0-9]{32}$/', $batch_id)) {
     exit(1);
 }
 
-UploadBatch::process($batch_id);
+try {
+    UploadBatch::process($batch_id);
+} catch (\mysqli_sql_exception $exception) {
+    // Connection loss, server shutdown, saturation, lock timeout, or deadlock:
+    // the parent backs off without treating these as fatal media failures.
+    if (in_array($exception -> getCode(), [1040, 1053, 1205, 1213, 2002, 2003, 2006, 2013], true)) {
+        error_log('Upload postponed after a temporary database failure.');
+        exit(75);
+    }
+    throw $exception;
+}

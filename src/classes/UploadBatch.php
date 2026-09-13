@@ -24,9 +24,9 @@ class UploadBatch
 {
     // A batch is assembled here first, then atomically renamed into pending/ as
     // its last step - so the worker can never claim a half-copied batch.
-    private const STAGING_DIR = __DIR__ . '/../../uploads/private/staging';
-    private const PENDING_DIR = __DIR__ . '/../../uploads/private/pending';
-    private const PROCESSING_DIR = __DIR__ . '/../../uploads/private/processing';
+    private static string $stagingDirectory = __DIR__ . '/../../uploads/private/staging';
+    private static string $pendingDirectory = __DIR__ . '/../../uploads/private/pending';
+    private static string $processingDirectory = __DIR__ . '/../../uploads/private/processing';
 
     // How many times a single file may kill its worker process before it's
     // abandoned and dropped from the post (see the class docblock).
@@ -42,15 +42,15 @@ class UploadBatch
             self::sweepOrphanedBatches();
         }
 
-        self::ensureDir(self::STAGING_DIR);
-        self::ensureDir(self::PENDING_DIR);
+        self::ensureDir(self::$stagingDirectory);
+        self::ensureDir(self::$pendingDirectory);
 
         // Build the whole batch under staging/ (copying a large upload takes real
         // time), then publish it into pending/ with one atomic rename. The worker
         // only ever scans pending/, so it can never claim a batch mid-copy and
         // find it vanish out from under the still-writing web request.
         $batch_id = bin2hex(random_bytes(16));
-        $staging_dir = self::STAGING_DIR . '/' . $batch_id;
+        $staging_dir = self::$stagingDirectory . '/' . $batch_id;
         mkdir($staging_dir, 0755, true);
 
         $staged_files = [];
@@ -77,7 +77,7 @@ class UploadBatch
             'files' => $staged_files,
         ]));
 
-        rename($staging_dir, self::PENDING_DIR . '/' . $batch_id);
+        rename($staging_dir, self::$pendingDirectory . '/' . $batch_id);
 
         return $batch_id;
     }
@@ -91,20 +91,24 @@ class UploadBatch
      */
     public static function claimNext(): ?string
     {
-        if (!is_dir(self::PENDING_DIR)) {
+        if (!is_dir(self::$pendingDirectory)) {
             return null;
         }
 
-        self::ensureDir(self::PROCESSING_DIR);
+        self::ensureDir(self::$processingDirectory);
 
-        $dirs = glob(self::PENDING_DIR . '/*', GLOB_ONLYDIR) ?: [];
+        $dirs = glob(self::$pendingDirectory . '/*', GLOB_ONLYDIR) ?: [];
 
         // Oldest first, so the queue drains FIFO.
         usort($dirs, fn ($a, $b) => (filemtime($a) ?: 0) <=> (filemtime($b) ?: 0));
 
         foreach ($dirs as $dir) {
+            $progress = json_decode((string) @file_get_contents($dir . '/progress.json'), true);
+            if (is_array($progress) && ($progress['retryAt'] ?? 0) > time()) {
+                continue;
+            }
             $batch_id = basename($dir);
-            $target = self::PROCESSING_DIR . '/' . $batch_id;
+            $target = self::$processingDirectory . '/' . $batch_id;
 
             if (@rename($dir, $target)) {
                 // Freshen the mtime so the orphan sweep ages a batch from when it
@@ -128,10 +132,10 @@ class UploadBatch
      */
     public static function requeue(string $batch_id): void
     {
-        self::ensureDir(self::PENDING_DIR);
-        $target = self::PENDING_DIR . '/' . $batch_id;
+        self::ensureDir(self::$pendingDirectory);
+        $target = self::$pendingDirectory . '/' . $batch_id;
 
-        if (@rename(self::PROCESSING_DIR . '/' . $batch_id, $target)) {
+        if (@rename(self::$processingDirectory . '/' . $batch_id, $target)) {
             @touch($target);
         }
     }
@@ -140,26 +144,34 @@ class UploadBatch
      * Releases a claimed batch back to pending WITHOUT counting a file death -
      * used when the worker service is shutting down and terminates an in-flight
      * child itself, so a graceful stop (or the daily restart) mid-transcode
-     * doesn't penalise the file that happened to be in flight. A batch already
-     * in the DB-assembly phase is left in processing/ (like recoverDied) rather
-     * than risk a duplicate post.
+     * doesn't penalise the file that happened to be in flight. Finalization is
+     * also resumable: its durable receipt identifies a committed publication.
      */
     public static function releaseClaim(string $batch_id): void
     {
-        $batch_dir = self::PROCESSING_DIR . '/' . $batch_id;
+        $batch_dir = self::$processingDirectory . '/' . $batch_id;
         $metadata_path = $batch_dir . '/metadata.json';
 
         if (is_file($metadata_path)) {
             $progress = self::loadProgress($batch_dir, json_decode((string) file_get_contents($metadata_path), true));
 
-            if (!empty($progress['finalizing'])) {
-                return;
-            }
-
             $progress['started'] = null;
             self::saveProgress($batch_dir, $progress);
         }
 
+        self::requeue($batch_id);
+    }
+
+    /** A temporary database outage must not consume a good upload's crash budget. */
+    public static function deferClaim(string $batch_id): void
+    {
+        $directory = self::$processingDirectory . '/' . $batch_id;
+        $metadata = json_decode((string) @file_get_contents($directory . '/metadata.json'), true);
+        if (is_array($metadata)) {
+            $progress = self::loadProgress($directory, $metadata);
+            $progress['retryAt'] = time() + 60;
+            self::saveProgress($directory, $progress);
+        }
         self::requeue($batch_id);
     }
 
@@ -171,8 +183,37 @@ class UploadBatch
      */
     public static function process(string $batch_id): void
     {
-        $batch_dir = self::PROCESSING_DIR . '/' . $batch_id;
+        if (preg_match('/\A[a-f0-9]{32}\z/', $batch_id) !== 1) {
+            throw new \InvalidArgumentException('Invalid upload batch identity.');
+        }
+        $batch_dir = self::$processingDirectory . '/' . $batch_id;
+        if (!is_dir($batch_dir)) {
+            return;
+        }
+        $lock = fopen($batch_dir . '/worker.lock', 'c');
+        if ($lock === false) {
+            throw new \RuntimeException('Cannot lock the upload batch.');
+        }
+        try {
+            if (flock($lock, LOCK_EX | LOCK_NB)) {
+                self::processClaimed($batch_id);
+            }
+        } finally {
+            fclose($lock);
+        }
+    }
+
+    private static function processClaimed(string $batch_id): void
+    {
+        $batch_dir = self::$processingDirectory . '/' . $batch_id;
         $metadata_path = $batch_dir . '/metadata.json';
+
+        $receipt = self::receipt($batch_id);
+        if ($receipt !== null && $receipt -> finished) {
+            $progress = json_decode((string) @file_get_contents($batch_dir . '/progress.json'), true);
+            self::cleanupBatch($batch_dir, is_array($progress) ? $progress : ['files' => []]);
+            return;
+        }
 
         if (!is_file($metadata_path)) {
             return;
@@ -180,6 +221,20 @@ class UploadBatch
 
         $metadata = json_decode((string) file_get_contents($metadata_path), true);
         $progress = self::loadProgress($batch_dir, $metadata);
+
+        // Old workers moved seeds before committing without recording item IDs
+        // and ignored rename failures. Even surviving seeds cannot prove that
+        // no post committed. Preserve these batches for explicit reconciliation.
+        if (!empty($progress['finalizing']) && empty($progress['publicationVersion'])) {
+            error_log('Legacy upload finalization requires reconciliation: ' . $batch_id);
+            return;
+        }
+        $progress['publicationVersion'] = 1;
+        self::saveProgress($batch_dir, $progress);
+        DB::run('INSERT IGNORE INTO `UploadPublications` (`batchId`) VALUES (?)', 's', $batch_id);
+        self::cleanupUncommittedItems($progress);
+        $progress['publishingItems'] = [];
+        self::saveProgress($batch_dir, $progress);
 
         foreach ($progress['files'] as $index => $file) {
             if ($file['status'] !== 'pending') {
@@ -207,14 +262,29 @@ class UploadBatch
             self::saveProgress($batch_dir, $progress);
         }
 
-        // Every file is now terminal (done or failed). Mark finalizing so a
-        // crash during the DB-only assembly below is NOT retried - assembly is
-        // near-instant and a duplicate post is worse than the rare lost one
-        // (which the orphan sweep cleans up, exactly as before this queue).
+        // Every file is now terminal. The receipt and all database publication
+        // effects commit together; retained seed files survive any rollback.
         $progress['finalizing'] = true;
         self::saveProgress($batch_dir, $progress);
 
         self::finalize($batch_dir, $metadata, $progress);
+        self::cleanupBatch($batch_dir, $progress);
+    }
+
+    private static function receipt(string $batch_id): ?object
+    {
+        return DB::row('SELECT `postId`, `finished` FROM `UploadPublications` WHERE `batchId` = ?', 'stdClass', 's', $batch_id);
+    }
+
+    /** Only remove destinations whose row demonstrably rolled back. */
+    private static function cleanupUncommittedItems(array $progress): void
+    {
+        foreach ($progress['publishingItems'] ?? [] as $item) {
+            if (DB::row('SELECT `itemId` FROM `FeedItems` WHERE `itemId` = ?', 'stdClass', 'i', $item['itemId']) !== null) {
+                throw new \RuntimeException('Upload output belongs to a committed item; refusing cleanup.');
+            }
+            UploadProcessor::deleteForItem((int) $item['itemId'], $item['type']);
+        }
     }
 
     /**
@@ -227,15 +297,6 @@ class UploadBatch
         $survivors = array_filter($progress['files'], fn ($file) => $file['status'] === 'done');
         $any_failed = array_filter($progress['files'], fn ($file) => $file['status'] === 'failed') !== [];
         $user_id = (int) $metadata['userId'];
-
-        if ($survivors === []) {
-            // Whole upload failed - no post, just tell the author.
-            Notification::create($user_id, $user_id, 'uploadFailed', null, true);
-            self::cleanupBatch($batch_dir, $progress);
-
-            return;
-        }
-
 
         $title_value = $metadata['title'] !== null && $metadata['title'] !== '' ? $metadata['title'] : null;
         $description_value = $metadata['description'] !== null && $metadata['description'] !== '' ? $metadata['description'] : null;
@@ -268,108 +329,117 @@ class UploadBatch
             }
         }
 
-        $detected_language = LanguageDetector::of((string) $description_value);
+        $detected_language = ($progress['finalizationDeaths'] ?? 0) >= self::MAX_FILE_DEATHS
+            ? null : LanguageDetector::of((string) $description_value);
 
-        // The post, its timeline fan-out, and its FeedItem rows go in as one
-        // transaction: a crash during this DB-only assembly (see the finalizing
-        // note in process()) then rolls back cleanly rather than leaving a
-        // fanned-out post with no media rows. The seed->itemId file renames run
-        // inside the commit; a rollback leaves them as invisible orphan files
-        // rather than a visibly broken post. Notifications fire only AFTER the
-        // commit, so a rolled-back assembly signals nothing.
-        mysqli_begin_transaction(DB::connection());
+        DB::transaction(static function () use ($batch_dir, $metadata, $progress, $survivors, $any_failed,
+            $user_id, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value,
+            $sensitive_value, $content_warning_value, $detected_language, $latitude_value, $longitude_value): void {
+            $author = DB::row('SELECT * FROM `Users` WHERE `userId` = ? FOR UPDATE', 'User', 'i', $user_id);
+            $batch_id = basename($batch_dir);
+            $receipt = DB::row('SELECT `finished` FROM `UploadPublications` WHERE `batchId` = ? FOR UPDATE', 'stdClass', 's', $batch_id);
+            if ($receipt === null) {
+                throw new \RuntimeException('Upload publication receipt missing.');
+            }
+            if ($receipt -> finished) {
+                return;
+            }
+            $parent = $parent_id === null ? null : DB::row('SELECT `userId` FROM `Posts` WHERE `postId` = ? FOR UPDATE', 'stdClass', 'i', $parent_id);
+            if ($survivors === [] || ($progress['finalizationDeaths'] ?? 0) >= self::MAX_FILE_DEATHS
+                || $author === null || $author -> banned || ($parent_id !== null && $parent === null)) {
+                if ($author !== null) {
+                    Notification::create($user_id, $user_id, 'uploadFailed', null, true);
+                }
+                DB::run('UPDATE `UploadPublications` SET `finished` = 1 WHERE `batchId` = ?', 's', $batch_id);
+                return;
+            }
 
-        if ($parent_id !== null) {
-            Post::adjustCounts($parent_id, replies: 1);
-        }
+            if ($parent_id !== null) {
+                Post::adjustCounts($parent_id, replies: 1);
+            }
 
-        DB::run('
+            DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `detectedLanguage`)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 ', 'iissssiss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value, $content_warning_value, $detected_language);
-        $post_id = (int) mysqli_insert_id(DB::connection());
+            $post_id = (int) mysqli_insert_id(DB::connection());
 
-        if ($latitude_value !== null && $longitude_value !== null) {
-            PostLocation::save($post_id, $latitude_value, $longitude_value);
-        }
+            if ($latitude_value !== null && $longitude_value !== null) {
+                PostLocation::save($post_id, $latitude_value, $longitude_value);
+            }
 
-        $mentioned_user_ids = [];
+            $mentioned_user_ids = [];
 
-        if ($description_delta_value !== null) {
-            $description_ops = Delta::decode($description_delta_value);
-            Hashtag::indexPost($post_id, $description_ops);
-            $mentioned_user_ids = Mention::indexPost($post_id, $description_ops);
-        }
+            if ($description_delta_value !== null) {
+                $description_ops = Delta::decode($description_delta_value);
+                Hashtag::indexPost($post_id, $description_ops);
+                $mentioned_user_ids = Mention::indexPost($post_id, $description_ops);
+            }
 
-        $parent_user_id = null;
+            $parent_user_id = $parent !== null ? (int) $parent -> userId : null;
 
-        if ($parent_id !== null) {
-            $parent_post = DB::row('
-SELECT `userId`
-    FROM `Posts`
-    WHERE `postId` = ?
-', 'Post', 'i', $parent_id);
-            $parent_user_id = $parent_post !== null ? (int) $parent_post -> userId : null;
-        }
+            // Replies included, the same as the request path does it.
+            Timeline::fanOutPost($user_id, $post_id);
 
-        // Replies included, the same as the request path does it.
-        Timeline::fanOutPost($user_id, $post_id);
+            // array_filter kept the original indexes, which is what ties each
+            // survivor back to its own staged metadata - and so its alt text.
+            foreach ($survivors as $index => $file) {
+                $item_type = $file['itemType'];
 
-        // array_filter kept the original indexes, which is what ties each
-        // survivor back to its own staged metadata - and so its alt text.
-        foreach ($survivors as $index => $file) {
-            $item_type = $file['itemType'];
+                // A batch staged before alt text existed carries no key; and only
+                // an image row has anything for one to say.
+                $alt_text = $item_type === 'ImageItem'
+                    ? ($metadata['files'][$index]['altText'] ?? null)
+                    : null;
 
-            // A batch staged before alt text existed carries no key; and only
-            // an image row has anything for one to say.
-            $alt_text = $item_type === 'ImageItem'
-                ? ($metadata['files'][$index]['altText'] ?? null)
-                : null;
-
-            DB::run('
+                DB::run('
 INSERT INTO `FeedItems` (`postId`, `type`, `altText`)
     VALUES (?, ?, ?)
 ', 'iss', $post_id, $item_type, $alt_text);
-            $item_id = (int) mysqli_insert_id(DB::connection());
+                $item_id = (int) mysqli_insert_id(DB::connection());
 
-            UploadProcessor::rename($file['seed'], $item_id, $file['itemType'], $file['ext']);
-        }
+                // Persist the destination before touching it. A dead transaction
+                // consumes AUTO_INCREMENT IDs, so recovery must know what to remove.
+                $progress['publishingItems'][] = ['itemId' => $item_id, 'type' => $item_type];
+                self::saveProgress($batch_dir, $progress);
+                UploadProcessor::publishStaged($file['seed'], $item_id, $file['itemType'], $file['ext']);
+            }
 
-        mysqli_commit(DB::connection());
+            // A reply notifies the parent's author; postReady always tells the
+            // uploader their post is live; uploadPartlyFailed warns them if some of
+            // their files were dropped along the way. Rows and push queue entries
+            // commit with the post; the live WebSocket signal waits for commit.
+            if ($parent_user_id !== null) {
+                Notification::create($parent_user_id, $user_id, 'reply', $parent_id);
+            }
 
-        // A reply notifies the parent's author; postReady always tells the
-        // uploader their post is live; uploadPartlyFailed warns them if some of
-        // their files were dropped along the way.
-        if ($parent_user_id !== null) {
-            Notification::create($parent_user_id, $user_id, 'reply', $parent_id);
-        }
+            Mention::notify($mentioned_user_ids, $user_id, $post_id);
 
-        Mention::notify($mentioned_user_ids, $user_id, $post_id);
+            Notification::create($user_id, $user_id, 'postReady', $post_id, true);
 
-        Notification::create($user_id, $user_id, 'postReady', $post_id, true);
+            if ($any_failed) {
+                Notification::create($user_id, $user_id, 'uploadPartlyFailed', $post_id, true);
+            }
 
-        if ($any_failed) {
-            Notification::create($user_id, $user_id, 'uploadPartlyFailed', $post_id, true);
-        }
-
-        // The same announcement api/create-post.php queues for a synchronous
-        // post - without it a video/audio post exists here but the author's
-        // Fediverse followers are never told about it. Re-fetched so the
-        // activity is built from the committed row and its FeedItems.
-        $author = User::load($user_id);
-        $published_post = DB::row('
+            // The same announcement api/create-post.php queues for a synchronous
+            // post - without it a video/audio post exists here but the author's
+            // Fediverse followers are never told about it. Re-fetched so the
+            // activity is built from the new row and its FeedItems, and queued in
+            // the same transaction as their publication.
+            $published_post = DB::row('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
 ', 'Post', 'i', $post_id);
 
-        if ($author !== null && $published_post !== null) {
-            $post = Post::fromRowWithItems($published_post);
-            $post -> author = $author;
-            FediversePublisher::published($post, $author);
-        }
+            if ($author !== null && $published_post !== null) {
+                $post = Post::fromRowWithItems($published_post);
+                $post -> author = $author;
+                FediversePublisher::published($post, $author);
+            }
 
-        self::cleanupBatch($batch_dir, $progress);
+            DB::run('UPDATE `UploadPublications` SET `postId` = ?, `finished` = 1 WHERE `batchId` = ?', 'is', $post_id, $batch_id);
+        });
     }
 
     /**
@@ -380,7 +450,7 @@ SELECT *
      */
     public static function recoverDied(string $batch_id): void
     {
-        $batch_dir = self::PROCESSING_DIR . '/' . $batch_id;
+        $batch_dir = self::$processingDirectory . '/' . $batch_id;
 
         if (!is_dir($batch_dir)) {
             return;
@@ -389,17 +459,25 @@ SELECT *
         $metadata_path = $batch_dir . '/metadata.json';
 
         if (!is_file($metadata_path)) {
-            self::cleanupDir($batch_dir);
+            $receipt = self::receipt($batch_id);
+            if ($receipt !== null && $receipt -> finished) {
+                $progress = json_decode((string) @file_get_contents($batch_dir . '/progress.json'), true);
+                self::cleanupBatch($batch_dir, is_array($progress) ? $progress : ['files' => []]);
+            } else {
+                self::cleanupDir($batch_dir);
+            }
 
             return;
         }
 
         $progress = self::loadProgress($batch_dir, json_decode((string) file_get_contents($metadata_path), true));
 
-        // Died during the DB-only assembly phase: not retried (would risk a
-        // duplicate post). Left in processing/ for the orphan sweep, matching
-        // the pre-queue behaviour where an assembly crash just lost the post.
+        // Publication retries consult the receipt before doing any work. A
+        // repeated fatal failure is reported once after reconciling the outcome.
         if (!empty($progress['finalizing'])) {
+            $progress['finalizationDeaths'] = ($progress['finalizationDeaths'] ?? 0) + 1;
+            self::saveProgress($batch_dir, $progress);
+            self::requeue($batch_id);
             return;
         }
 
@@ -432,11 +510,19 @@ SELECT *
      */
     public static function recoverOrphanedProcessing(): void
     {
-        if (!is_dir(self::PROCESSING_DIR)) {
+        // A crash after directory removal but before receipt removal leaves only
+        // a small completed receipt. Never remove one while its batch exists.
+        foreach (DB::rows('SELECT `batchId` FROM `UploadPublications` WHERE `finished` = 1 AND `createdAt` < NOW() - INTERVAL 1 DAY LIMIT 100', 'stdClass') as $row) {
+            if (!is_dir(self::$pendingDirectory . '/' . $row -> batchId)
+                && !is_dir(self::$processingDirectory . '/' . $row -> batchId)) {
+                DB::run('DELETE FROM `UploadPublications` WHERE `batchId` = ? AND `finished` = 1', 's', $row -> batchId);
+            }
+        }
+        if (!is_dir(self::$processingDirectory)) {
             return;
         }
 
-        foreach (glob(self::PROCESSING_DIR . '/*', GLOB_ONLYDIR) ?: [] as $dir) {
+        foreach (glob(self::$processingDirectory . '/*', GLOB_ONLYDIR) ?: [] as $dir) {
             self::recoverDied(basename($dir));
         }
     }
@@ -482,14 +568,15 @@ SELECT *
         // corrupt progress.json would make loadProgress re-initialise the batch
         // (deaths reset, new seeds orphaning already-transcoded output).
         $tmp = $batch_dir . '/progress.json.tmp';
-        file_put_contents($tmp, json_encode($progress));
-        rename($tmp, $batch_dir . '/progress.json');
+        $json = json_encode($progress, JSON_THROW_ON_ERROR);
+        if (file_put_contents($tmp, $json) !== strlen($json) || !rename($tmp, $batch_dir . '/progress.json')) {
+            throw new \RuntimeException('Could not persist upload progress.');
+        }
     }
 
     /**
-     * Removes a finished batch: purges any staging output still named by a seed
-     * (a survivor's was already renamed onto its itemId, so this only catches a
-     * dropped file's partial), then deletes the batch directory.
+     * Removes a finished batch's retained seeds and any dropped file's partial
+     * output, then its input directory, and finally its completed receipt.
      */
     private static function cleanupBatch(string $batch_dir, array $progress): void
     {
@@ -500,6 +587,7 @@ SELECT *
         }
 
         self::cleanupDir($batch_dir);
+        DB::run('DELETE FROM `UploadPublications` WHERE `batchId` = ? AND `finished` = 1', 's', basename($batch_dir));
     }
 
     /**
@@ -513,9 +601,9 @@ SELECT *
     public static function queueDepth(): array
     {
         return [
-            'staging' => count(glob(self::STAGING_DIR . '/*', GLOB_ONLYDIR) ?: []),
-            'pending' => count(glob(self::PENDING_DIR . '/*', GLOB_ONLYDIR) ?: []),
-            'processing' => count(glob(self::PROCESSING_DIR . '/*', GLOB_ONLYDIR) ?: []),
+            'staging' => count(glob(self::$stagingDirectory . '/*', GLOB_ONLYDIR) ?: []),
+            'pending' => count(glob(self::$pendingDirectory . '/*', GLOB_ONLYDIR) ?: []),
+            'processing' => count(glob(self::$processingDirectory . '/*', GLOB_ONLYDIR) ?: []),
         ];
     }
 
@@ -583,7 +671,9 @@ SELECT *
     {
         $cutoff = time() - 86400;
 
-        foreach ([self::STAGING_DIR, self::PENDING_DIR, self::PROCESSING_DIR] as $base) {
+        // Claimed and pending work belongs to worker recovery. Age alone says
+        // nothing about whether a publication committed; never sweep its source.
+        foreach ([self::$stagingDirectory] as $base) {
             foreach (glob($base . '/*', GLOB_ONLYDIR) ?: [] as $batch_dir) {
                 $modified_at = filemtime($batch_dir);
 
@@ -597,7 +687,7 @@ SELECT *
                 // so it's just cleaned up.
                 $metadata = json_decode((string) @file_get_contents($batch_dir . '/metadata.json'), true);
 
-                if (is_array($metadata) && isset($metadata['userId'])) {
+                if (is_array($metadata) && isset($metadata['userId']) && User::load((int) $metadata['userId']) !== null) {
                     Notification::create((int) $metadata['userId'], (int) $metadata['userId'], 'uploadFailed', null, true);
                 }
 

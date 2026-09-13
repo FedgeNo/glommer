@@ -14,6 +14,13 @@ $username = (string) ($_GET['username'] ?? '');
 $profile_user = User::byUsername($username);
 
 if ($profile_user === null) {
+    if (ActivityPubActor::wantsActivityJSON((string) ($_SERVER['HTTP_ACCEPT'] ?? ''))) {
+        $deleted_actor = DeletedActor::document($username);
+        if ($deleted_actor !== null) {
+            header('Cache-Control: no-store');
+            ActivityPubResponse::send($deleted_actor);
+        }
+    }
     require __DIR__ . '/404.php';
     exit;
 }

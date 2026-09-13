@@ -193,6 +193,7 @@
         "legend": "Nhập mã xác minh của bạn",
         "explanation": "Chúng tôi đã gửi email chứa mã xác minh cho bạn. Nhập mã đó bên dưới, hoặc dùng một trong các mã khôi phục của bạn, để hoàn tất đăng nhập.",
         "explanationEmailFailed": "Hiện chúng tôi không thể gửi email chứa mã xác minh cho bạn. Hãy nhập một trong các mã khôi phục của bạn để hoàn tất đăng nhập.",
+        "explanationEmailLimited": "Đã gửi quá nhiều email xác minh. Hãy dùng mã chưa hết hạn hoặc mã khôi phục, hoặc đợi 15 phút rồi bắt đầu đăng nhập lại.",
         "code": "Mã xác minh",
         "submit": "Xác minh"
     },

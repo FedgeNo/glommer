@@ -194,6 +194,7 @@
         "legend": "Ilagay ang verification code mo",
         "explanation": "Nag-email kami sa iyo ng verification code. Ilagay ito sa ibaba o gumamit ng isa sa mga recovery code mo para tapusin ang pag-log in.",
         "explanationEmailFailed": "Hindi namin ma-email ang verification code mo ngayon. Ilagay ang isa sa mga recovery code mo para tapusin ang pag-log in.",
+        "explanationEmailLimited": "Masyadong maraming verification email. Gumamit ng code na hindi pa expired o ng recovery code, o maghintay ng 15 minuto at simulan ulit ang pag-log in.",
         "code": "Verification code",
         "submit": "Beripikahin"
     },

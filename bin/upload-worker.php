@@ -161,6 +161,9 @@ while (true) {
                 // (or the systemd restart) doesn't count a spurious file death and
                 // eventually drop a good file.
                 UploadBatch::releaseClaim($batch_id);
+            } elseif (!$status['signaled'] && $status['exitcode'] === 75) {
+                log_line('Worker for batch ' . $batch_id . ' lost database access - retrying later');
+                UploadBatch::deferClaim($batch_id);
             } else {
                 // The worker process itself was killed / crashed (a clean
                 // transcode failure returns normally and exits 0); retry the

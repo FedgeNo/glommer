@@ -760,6 +760,7 @@
         "legend": "Enter Your Verification Code",
         "explanation": "We emailed you a verification code. Enter it below, or use one of your recovery codes, to finish logging in.",
         "explanationEmailFailed": "We couldn't send your verification code by email right now. Enter one of your recovery codes to finish logging in.",
+        "explanationEmailLimited": "Too many verification emails. Use an unexpired code or a recovery code, or wait 15 minutes and start login again.",
         "code": "Verification Code",
         "submit": "Verify"
     },

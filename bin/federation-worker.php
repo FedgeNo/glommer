@@ -190,7 +190,11 @@ while ($running) {
 
         // No member named means the instance signs it - a Flag, which must not
         // name whoever reported.
-        if ($delivery -> actorUserId === null) {
+        if ($delivery -> deletedActorId !== null) {
+            $signing = DeletedActor::signingKey($delivery);
+            $key_id = $signing['keyId'] ?? '';
+            $private_key = $signing['privateKey'] ?? null;
+        } elseif ($delivery -> actorUserId === null) {
             $instance_actor = ServerURL::absolute('/activitypub/actor');
             $key_id = $instance_actor . '#main-key';
             $private_key = ActivityPubKeys::privateKeyPem();
@@ -213,6 +217,10 @@ SELECT *
         // Nobody left to sign as, or no key to sign with. Neither resolves by
         // waiting, so the row is dropped rather than retried until it ages out.
         if ($private_key === null) {
+            if ($delivery -> deletedActorId !== null) {
+                FediverseDelivery::failed($delivery_id, (int) $delivery -> attempts, 'Account deletion signing identity unavailable');
+                continue;
+            }
             FediverseDelivery::succeeded($delivery_id);
 
             continue;

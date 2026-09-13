@@ -194,6 +194,7 @@
         "legend": "Enigu vian kontrolkodon",
         "explanation": "Ni retpoŝtis al vi kontrolkodon. Enigu ĝin sube aŭ uzu unu el viaj reakiraj kodoj por fini la ensaluton.",
         "explanationEmailFailed": "Ni ne povis nun retpoŝti vian kontrolkodon. Enigu unu el viaj reakiraj kodoj por fini la ensaluton.",
+        "explanationEmailLimited": "Tro multaj kontrolaj retpoŝtoj. Uzu ankoraŭ validan kodon aŭ reakiran kodon, aŭ atendu 15 minutojn kaj rekomencu la ensaluton.",
         "code": "Kontrolkodo",
         "submit": "Kontroli"
     },

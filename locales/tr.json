@@ -194,6 +194,7 @@
         "legend": "Doğrulama Kodunu Gir",
         "explanation": "Sana e-postayla bir doğrulama kodu gönderdik. Girişi tamamlamak için kodu aşağıya gir veya kurtarma kodlarından birini kullan.",
         "explanationEmailFailed": "Doğrulama kodunu şu anda e-postayla gönderemedik. Girişi tamamlamak için kurtarma kodlarından birini gir.",
+        "explanationEmailLimited": "Çok fazla doğrulama e-postası gönderildi. Süresi dolmamış bir kod veya kurtarma kodu kullan ya da 15 dakika bekleyip giriş işlemini yeniden başlat.",
         "code": "Doğrulama Kodu",
         "submit": "Doğrula"
     },

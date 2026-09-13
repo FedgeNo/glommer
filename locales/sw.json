@@ -194,6 +194,7 @@
         "legend": "Weka Msimbo Wako wa Uthibitishaji",
         "explanation": "Tumekutumia msimbo wa uthibitishaji kwa barua pepe. Uweke hapa chini, au tumia mmoja wa misimbo yako ya urejeshaji, ili kukamilisha kuingia.",
         "explanationEmailFailed": "Hatukuweza kutuma msimbo wako wa uthibitishaji kwa barua pepe sasa. Weka mmoja wa misimbo yako ya urejeshaji ili kukamilisha kuingia.",
+        "explanationEmailLimited": "Barua pepe nyingi sana za uthibitishaji zimetumwa. Tumia msimbo ambao haujaisha muda wake au msimbo wa urejeshaji, au subiri dakika 15 kisha uanze kuingia tena.",
         "code": "Msimbo wa Uthibitishaji",
         "submit": "Thibitisha"
     },

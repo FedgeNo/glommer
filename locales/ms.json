@@ -193,6 +193,7 @@
         "legend": "Masukkan kod pengesahan anda",
         "explanation": "Kami menghantar kod pengesahan kepada anda melalui e-mel. Masukkannya di bawah atau gunakan salah satu kod pemulihan untuk menyelesaikan log masuk.",
         "explanationEmailFailed": "Kami tidak dapat menghantar kod pengesahan melalui e-mel sekarang. Masukkan salah satu kod pemulihan untuk menyelesaikan log masuk.",
+        "explanationEmailLimited": "Terlalu banyak e-mel pengesahan telah dihantar. Gunakan kod yang belum tamat tempoh atau kod pemulihan, atau tunggu 15 minit dan mulakan log masuk semula.",
         "code": "Kod pengesahan",
         "submit": "Sahkan"
     },

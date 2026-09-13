@@ -691,13 +691,14 @@ UPDATE `Users`
         // member only: a shadow row's slug is a remote handle this server does
         // not own and has no business reserving.
         $account = DB::row('
-SELECT `slug`, `remoteActorURI`
+SELECT *
     FROM `Users`
     WHERE `userId` = ?
     FOR UPDATE
 ', 'User', 'i', $user_id);
 
         if ($account !== null && $account -> remoteActorURI === null) {
+            FediversePublisher::accountDeleted($account);
             RetiredUsername::retire((string) $account -> slug);
             self::bumpSessionVersion($user_id);
         }

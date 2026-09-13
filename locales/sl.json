@@ -839,6 +839,7 @@
         "legend": "Vnesite potrditveno kodo",
         "explanation": "Potrditveno kodo smo vam poslali po e-pošti. Vnesite jo spodaj ali uporabite eno od obnovitvenih kod, da dokončate prijavo.",
         "explanationEmailFailed": "Potrditvene kode trenutno ni bilo mogoče poslati po e-pošti. Za dokončanje prijave vnesite eno od obnovitvenih kod.",
+        "explanationEmailLimited": "Poslanih je bilo preveč potrditvenih e-poštnih sporočil. Uporabite še veljavno kodo ali obnovitveno kodo ali počakajte 15 minut in začnite prijavo znova.",
         "code": "Potrditvena koda",
         "submit": "Potrdi"
     },

@@ -194,6 +194,7 @@
         "legend": "Vendosni kodin e verifikimit",
         "explanation": "Ju dërguam me email një kod verifikimi. Vendoseni më poshtë ose përdorni një nga kodet e rikuperimit për të përfunduar hyrjen.",
         "explanationEmailFailed": "Nuk mundëm ta dërgonim tani kodin e verifikimit me email. Vendosni një nga kodet e rikuperimit për të përfunduar hyrjen.",
+        "explanationEmailLimited": "Janë dërguar tepër emaile verifikimi. Përdorni një kod që nuk ka skaduar ose një kod rikuperimi, ose prisni 15 minuta dhe filloni hyrjen nga e para.",
         "code": "Kodi i verifikimit",
         "submit": "Verifiko"
     },

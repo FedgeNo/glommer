@@ -20,6 +20,7 @@ class FediverseDelivery
 {
     public ?int $deliveryId = null;
     public ?int $actorUserId = null;
+    public ?int $deletedActorId = null;
     public ?string $inboxURL = null;
     public ?string $activity = null;
     public ?int $attempts = null;
@@ -95,6 +96,7 @@ INSERT INTO `FediverseDeliveries` (`actorUserId`, `inboxURL`, `activity`)
      */
     public static function due(): array
     {
+        DeletedActor::prune();
         $limit = self::BATCH_SIZE;
         $lease_seconds = self::CLAIM_SECONDS;
 
@@ -122,10 +124,14 @@ UPDATE `FediverseDeliveries`
 
     public static function succeeded(int $delivery_id): void
     {
+        $row = DB::row('SELECT `deletedActorId` FROM `FediverseDeliveries` WHERE `deliveryId` = ?', 'stdClass', 'i', $delivery_id);
         DB::run('
 DELETE FROM `FediverseDeliveries`
     WHERE `deliveryId` = ?
 ', 'i', $delivery_id);
+        if ($row !== null && $row -> deletedActorId !== null) {
+            DeletedActor::removeIfFinished((int) $row -> deletedActorId);
+        }
     }
 
     /**

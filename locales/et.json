@@ -385,6 +385,7 @@
         "legend": "Sisesta kinnituskood",
         "explanation": "Saatsime sulle e-postiga kinnituskoodi. Sisselogimise lõpetamiseks sisesta see allpool või kasuta üht taastekoodidest.",
         "explanationEmailFailed": "Kinnituskoodi ei õnnestunud praegu e-postiga saata. Sisselogimise lõpetamiseks sisesta üks taastekoodidest.",
+        "explanationEmailLimited": "Saadetud on liiga palju kinnituskirju. Kasuta veel kehtivat koodi või taastekoodi või oota 15 minutit ja alusta sisselogimist uuesti.",
         "code": "Kinnituskood",
         "submit": "Kinnita"
     },

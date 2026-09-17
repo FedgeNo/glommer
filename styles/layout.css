@@ -119,7 +119,7 @@ body:has(.MainNavigation) {
 .NavDropdown:hover .NavDropdownTrigger,
 .NotificationsNavLink:hover > a {
     color: var(--ink);
-    background-color: var(--surface);
+    background-color: var(--theme-stop-0);
     border-color: var(--hairline);
 }
 

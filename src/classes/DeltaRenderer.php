@@ -106,6 +106,7 @@ class DeltaRenderer extends Div
 
         $root = $doc -> createElement('div');
         $root -> setAttribute('class', 'PostBody');
+        $root -> setAttribute('dir', 'auto');
 
         // Pass 1: neutralise deceptive anchors before rendering.
         $ops = self::stripDeceptiveLinks($this -> ops);

@@ -18,4 +18,11 @@ declare(strict_types=1);
 class MessageBody extends Preformatted
 {
     public ?string $class = 'MessageBody';
+
+    public function toDOM(): \DOMElement
+    {
+        $this -> attributes['dir'] = 'auto';
+
+        return parent::toDOM();
+    }
 }

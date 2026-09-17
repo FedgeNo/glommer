@@ -9,6 +9,8 @@ class Textarea extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
+        $this -> attributes['dir'] = 'auto';
+
         if ($this -> name !== null) {
             $this -> attributes['name'] = $this -> name;
         }

@@ -10,6 +10,7 @@ class PageTitle extends Heading1
     {
         parent::__construct();
 
+        $this -> attributes['dir'] = 'auto';
         $this -> contents[] = $title;
     }
 }

@@ -3,6 +3,39 @@
    Element selectors only: resets, typography, forms.
    ============================================================ */
 
+:root {
+    --radius-card: 1.125rem;
+    --radius-ctl: 0.5rem;
+    --radius-pill: 999px;
+    --glom-corner: 0.25rem;
+    --display-font: 'Inter', system-ui, sans-serif;
+    --nav-height: calc(3.25rem + 1px);
+    --content-padding-inline: max(1rem, calc((100% - 40rem) / 2));
+    --paper: var(--theme-stop-0);
+    --surface: var(--theme-stop-1);
+    --surface-2: var(--theme-stop-2);
+    --ink: var(--theme-stop-5);
+    --muted: var(--theme-stop-4);
+    --hairline: var(--theme-stop-2);
+    --accent: var(--theme-stop-4);
+    --accent-strong: var(--theme-stop-5);
+    --accent-soft: var(--theme-stop-2);
+    --accent-ink: var(--theme-stop-0);
+    --link: var(--theme-stop-4);
+    --shadow-color: var(--theme-stop-0);
+    --shadow-card: 0 1px 2px color-mix(in srgb, var(--shadow-color) 28%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--shadow-color) 42%, transparent);
+    --shadow-pop: 0 4px 10px color-mix(in srgb, var(--shadow-color) 34%, transparent), 0 16px 40px -12px color-mix(in srgb, var(--shadow-color) 56%, transparent);
+    --glass: color-mix(in srgb, var(--theme-stop-1) 88%, transparent);
+    --paper-image: linear-gradient(180deg, var(--theme-stop-0), var(--theme-stop-1));
+    --surface-image: linear-gradient(160deg, var(--theme-stop-0), var(--theme-stop-1));
+    --button-image: linear-gradient(160deg, var(--theme-stop-1), var(--theme-stop-2));
+    --button-image-hover: linear-gradient(160deg, var(--theme-stop-0), var(--theme-stop-1));
+    --accent-image: linear-gradient(135deg, var(--theme-stop-4), var(--theme-stop-5));
+    --nav-sweep: linear-gradient(90deg, var(--theme-stop-0), var(--theme-stop-1), var(--theme-stop-2), var(--theme-stop-3), var(--theme-stop-4), var(--theme-stop-5));
+    --danger: #8b1025;
+    --danger-soft: #fff0f2;
+}
+
 * {
     box-sizing: border-box;
 }

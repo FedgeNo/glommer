@@ -1351,7 +1351,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 
 .VideoCallLocal {
     position: absolute;
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
     bottom: 0.5rem;
     width: 8rem;
     max-width: 30%;
@@ -1856,17 +1856,17 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 }
 
 .CarouselPrevButton {
-    left: 0.5rem;
+    inset-inline-start: 0.5rem;
 }
 
 .CarouselNextButton {
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
 }
 
 .CarouselCounter {
     position: absolute;
     bottom: 0.5rem;
-    left: 0.5rem;
+    inset-inline-start: 0.5rem;
     background-color: rgb(15 18 16 / 0.55);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -1879,7 +1879,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 .CarouselAutoplayButton {
     position: absolute;
     bottom: 0.5rem;
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
     background-color: rgb(15 18 16 / 0.55);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -1899,7 +1899,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 .MediaFullscreenButton {
     position: absolute;
     top: 0.5rem;
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
     background-color: rgb(15 18 16 / 0.55);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -2189,7 +2189,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 .CodeCopyButton {
     position: absolute;
     top: 0.5rem;
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
     background: var(--color-bg-secondary, #f0f0f0);
     border: 1px solid var(--color-border, #ccc);
     border-radius: 4px;

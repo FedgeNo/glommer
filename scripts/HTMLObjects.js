@@ -1542,7 +1542,8 @@ class DeltaRenderer {
      */
     static render(ops, customEmoji = {}, mentionsAreLocal = true) {
         const root = document.createElement('div');
-        root.className = 'PostBody';
+        root.setAttribute('class', 'PostBody');
+        root.setAttribute('dir', 'auto');
 
         if (!Array.isArray(ops)) {
             return root;
@@ -2272,7 +2273,8 @@ class UserBio {
 
     toElement() {
         const bio = document.createElement('div');
-        bio.className = 'UserBio';
+        bio.setAttribute('class', 'UserBio');
+        bio.setAttribute('dir', 'auto');
 
         for (const segment of Linkifier.tokenize(this.description)) {
             const inner = document.createTextNode(segment.text);
@@ -4571,7 +4573,8 @@ class Message {
         line.className = 'MessageLine';
 
         const body = document.createElement('pre');
-        body.className = 'MessageBody';
+        body.setAttribute('class', 'MessageBody');
+        body.setAttribute('dir', 'auto');
 
         if (this.bodyCiphertext !== null) {
             div.className += ' Encrypted Locked';

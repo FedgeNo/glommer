@@ -32,6 +32,8 @@ class LanguageSelector extends Div
         foreach (LanguageName::all() as $locale => $name) {
             $option = new SelectOption();
             $option -> value = $locale;
+            $option -> attributes['lang'] = $locale;
+            $option -> attributes['dir'] = Strings::directionFor($locale);
             $option -> contents[] = $name;
 
             if ($locale === $chosen) {

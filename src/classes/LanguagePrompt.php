@@ -48,6 +48,8 @@ class LanguagePrompt extends Div
         $words = Strings::forLocale(self::class, $offered);
 
         $this -> attributes['data-locale'] = $offered;
+        $this -> attributes['lang'] = $offered;
+        $this -> attributes['dir'] = Strings::directionFor($offered);
 
         // Each language names itself in its own question rather than having its
         // name substituted in: "in het Nederlands" and "w języku polskim"
@@ -63,10 +65,14 @@ class LanguagePrompt extends Div
         // guaranteed to understand.
         $accept = new ButtonButton();
         $accept -> class .= ' LanguagePromptAccept';
+        $accept -> attributes['lang'] = $offered;
+        $accept -> attributes['dir'] = Strings::directionFor($offered);
         $accept -> contents[] = (string) ($words['accept'] ?? '');
 
         $decline = new ButtonButton();
         $decline -> class .= ' LanguagePromptDecline';
+        $decline -> attributes['lang'] = Strings::locale();
+        $decline -> attributes['dir'] = Strings::direction();
         $decline -> contents[] = (string) (Strings::for(self::class)['decline'] ?? '');
 
         $this -> addContent($question);

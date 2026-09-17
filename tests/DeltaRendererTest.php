@@ -18,6 +18,7 @@ class DeltaRendererTest extends TestCase
         $el = (new DeltaRenderer([])) -> toDOM();
         $this -> assertSame('div', $el -> tagName);
         $this -> assertSame('PostBody', $el -> getAttribute('class'));
+        $this -> assertSame('auto', $el -> getAttribute('dir'));
         $elements = [];
         foreach ($el -> childNodes as $node) {
             if ($node -> nodeType === XML_ELEMENT_NODE) {

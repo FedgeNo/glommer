@@ -33,7 +33,7 @@
     width: 1.35rem;
     height: 2px;
     border-radius: var(--radius-pill);
-    background-color: var(--ink);
+    background-color: var(--theme-stop-0);
     transition:
         transform 0.2s ease,
         opacity 0.2s ease;
@@ -117,6 +117,14 @@
         text-align: start;
     }
 
+    [dir='rtl'] .MainNavigation :is(a, button) {
+        color: var(--theme-stop-0) !important;
+    }
+
+    [dir='rtl'] .NavHamburgerBar {
+        background-color: var(--theme-stop-5);
+    }
+
     .MainNavigation a:hover,
     .MainNavigation .LogoutButton:hover {
         background-color: var(--surface-2) !important;
@@ -160,7 +168,8 @@
     .MainNavigation .NotificationDot,
     .MainNavigation .MessageDot {
         position: static;
-        margin: 0 0 0 0.4rem;
+        margin: 0;
+        margin-inline-start: 0.4rem;
         vertical-align: 0.08rem;
         align-self: center;
         flex: 0 0 auto;

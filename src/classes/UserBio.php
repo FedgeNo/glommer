@@ -16,6 +16,7 @@ class UserBio extends Div
 
     public function toDOM(): \DOMElement
     {
+        $this -> attributes['dir'] = 'auto';
         $element = parent::toDOM();
 
         foreach (DeltaRenderer::linkifyPlainText(self::currentDocument(), (string) $this -> description) as $node) {

@@ -8,5 +8,6 @@ class TextInput extends ValueInput
     {
         parent::__construct($properties);
         $this -> attributes['type'] = 'text';
+        $this -> attributes['dir'] = 'auto';
     }
 }

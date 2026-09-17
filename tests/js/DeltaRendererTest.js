@@ -31,6 +31,11 @@ export default {
             TestCase.assertEquals(1, blocks.length);
             TestCase.assertEquals('function greet() {\n    return 1;\n}', blocks[0].textContent);
         },
+        'the body follows its own text direction'() {
+            const body = DeltaRenderer.render([{ insert: 'مرحبا\n' }]);
+
+            TestCase.assertEquals('auto', body.getAttribute('dir'));
+        },
         'a blank line inside the block survives'() {
             const body = DeltaRenderer.render([
                 ...codeLine('one'),

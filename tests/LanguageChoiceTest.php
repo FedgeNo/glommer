@@ -107,6 +107,12 @@ class LanguageChoiceTest extends TestCase
         }
     }
 
+    public function testDirectionCanBeResolvedForContentOutsideThePageLocale(): void
+    {
+        $this -> assertSame('rtl', Strings::directionFor('ar'));
+        $this -> assertSame('ltr', Strings::directionFor('en'));
+    }
+
     /** Nothing to offer somebody whose language this installation does not have. */
     public function testALanguageThisSiteDoesNotHaveIsNotOffered(): void
     {

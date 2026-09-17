@@ -21,14 +21,15 @@ body:has(.MainNavigation) {
 /* ---------- Fixed header: nav bar + page title ---------- */
 
 .MainNavigation {
+    --nav-brand-color: var(--theme-stop-5);
+    --nav-control-color: var(--theme-stop-0);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: var(--nav-height);
-    background-color: var(--glass);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
+    background-image: var(--nav-sweep);
+    isolation: isolate;
     border-bottom: 1px solid var(--hairline);
     padding: 0.5rem 1rem;
     padding-inline: var(--content-padding-inline);
@@ -36,12 +37,17 @@ body:has(.MainNavigation) {
     align-items: center;
 }
 
+[dir='rtl'] .MainNavigation {
+    --nav-brand-color: var(--theme-stop-0);
+    --nav-control-color: var(--theme-stop-5);
+}
+
 .NavBrand {
     font-family: var(--display-font);
     font-weight: 700;
     font-size: 1.2rem;
     letter-spacing: -0.02em;
-    color: var(--ink);
+    color: var(--nav-brand-color);
     line-height: 1.3;
     align-self: center;
 }
@@ -97,7 +103,7 @@ body:has(.MainNavigation) {
 .NotificationsNavLink > a {
     position: relative;
     z-index: 21;
-    color: var(--muted);
+    color: var(--nav-control-color);
     padding: 0.5rem;
     border: 1px solid transparent;
     border-bottom: none;
@@ -361,4 +367,3 @@ body:has(.MainNavigation) {
 .ReceivedFriendRequestSection.Searching,
 .FriendSection.Searching,
 .SentFriendRequestSection.Searching { display: none; }
-

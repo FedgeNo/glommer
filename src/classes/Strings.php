@@ -246,9 +246,13 @@ UPDATE `Users`
      */
     public static function direction(): string
     {
-        static $directions = [];
+        return self::directionFor(self::locale());
+    }
 
-        $locale = self::locale();
+    /** Which way a named locale's script runs. */
+    public static function directionFor(string $locale): string
+    {
+        static $directions = [];
 
         if (isset($directions[$locale])) {
             return $directions[$locale];

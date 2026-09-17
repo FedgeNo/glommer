@@ -127,11 +127,10 @@ band).
   case applies, whichever it is.
   A received message (never one of your own, and never automatic) can be
   translated with one click - the same button that's on posts. Nothing is
-  cached, but a one-time notice says the words are read by the server to do
-  it; in an end-to-end encrypted thread specifically, that means the one
-  message translated stops being end-to-end encrypted the way the rest of the
-  conversation is, since it's the plaintext already open in the browser that
-  gets sent.
+  cached, but a one-time notice explains that readable text is sent to this
+  server and to Google or another translation provider. This includes the
+  plaintext of an end-to-end encrypted message already open in the browser.
+  The original message remains unchanged.
 - **Video calls** - one-to-one, peer-to-peer WebRTC from an open message
   thread. Media never touches the server: STUN only, no TURN relay - if the
   two browsers can't reach each other directly the call simply isn't offered.
@@ -421,10 +420,18 @@ assert it in a non-interactive run).
 
 **Skipping the translation environment.** The installer builds a Python venv
 with PyTorch and a model for every language pair Argos publishes - around a
-hundred packages, ten gigabytes, and a long download. An installation that will
-never offer the translate button can set `SKIP_TRANSLATE=1` and the installer
-leaves it alone, saying so in its output; translation stays unavailable there
-until it is run again without the flag. Everything else installs as normal.
+hundred packages, ten gigabytes, and a long download. Set `SKIP_TRANSLATE=1`
+to leave that environment alone. Everything else, including spaCy, installs
+as normal.
+
+**Post and message translation.** Google Translate's web component is tried
+first; it needs PHP cURL but no API key or local language model. SMaLL-100,
+Argos Translate, and the configured OpenRouter provider remain fallbacks in
+that order. Google's web interface can change or refuse requests; failures
+trigger a five-minute cooldown while the fallback path remains available.
+Requests have bounded timeouts and response sizes. Post translations are
+cached; message translations are not saved by Glommer. The message notice
+discloses external processing before sending readable text.
 
 **Translating the interface.** English lives in `locales/en.json` and every
 other locale is made from it, by hand - written and committed like any other

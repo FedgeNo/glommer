@@ -541,7 +541,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Maidir le teachtaireachtaí a aistriú",
-        "body": "Chun teachtaireacht a aistriú, seoltar a téacs chuig an bhfreastalaí seo agus aistrítear anseo é. Ní choinnítear rud ar bith: ní scríobhtar an t-aistriúchán sa bhunachar sonraí agus ní athraítear an teachtaireacht. Ach tá teachtaireacht a aistrítear ar an mbealach seo léite ag an bhfreastalaí, mar sin níl sí criptithe ó cheann ceann mar atá teachtaireacht gan aistriú. Ní féidir ach teachtaireachtaí a fhaigheann tú a aistriú, agus sin nuair a iarrann tú é amháin.",
+        "body": "Nuair a iarrann tú aistriúchán ar theachtaireacht a fuair tú, seoltar a téacs inléite chuig an bhfreastalaí seo agus chuig Google nó soláthraí aistriúcháin eile, fiú má tá an teachtaireacht criptithe. Ní shábhálann Glommer aistriúcháin teachtaireachtaí agus ní athraíonn sé an teachtaireacht bhunaidh.",
         "confirm": "Aistrigh í",
         "cancel": "Ní anois"
     },

@@ -83,7 +83,7 @@
             "title": "Postituse või sõnumi tõlkimine",
             "category": "posting",
             "summary": "Loe teises keeles kirjutatut tõlke abil.",
-            "body": "\n<p>Tekstiga postituse või sõnumi tõlkenupp asendab sisu tõlkega ning lubab algteksti taastada. Tõlkimine toimub selles serveris.</p>\n<p>Vormindus ja lingid säilivad, kuid tõlge võib eksida. Väga pikka või juba arusaadavat teksti ei tõlgita.</p>\n"
+            "body": "\n<p>Tekstiga postituse või saadud sõnumi tõlkenupp asendab sisu tõlkega ning lubab algteksti taastada.</p>\n<p>Esmalt proovitakse Google'it, ebaõnnestumisel sisseehitatud tõlkijaid. Postituste tõlked salvestatakse taaskasutamiseks.</p>\n<p>Kui palud saadud sõnumit tõlkida, saadetakse selle loetav tekst sellesse serverisse ja Google'ile või mõnele teisele tõlketeenusele, isegi kui sõnum on krüpteeritud. Glommer ei salvesta sõnumite tõlkeid ega muuda algset sõnumit.</p>\n"
         },
         "finding-people": {
             "title": "Inimeste leidmine",

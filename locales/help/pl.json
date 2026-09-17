@@ -83,7 +83,7 @@
             "title": "Tłumaczenie posta lub wiadomości",
             "category": "posting",
             "summary": "Czytaj tekst w innym języku i dowiedz się, co dzieje się z nim podczas tłumaczenia.",
-            "body": "\n<p>Użyj przycisku <strong>Przetłumacz</strong> przy poście lub wiadomości napisanej w innym języku. Tłumaczenie zastępuje tekst tylko w Twoim widoku i można wrócić do oryginału.</p>\n<p>Treść jest wysyłana do usługi tłumaczeniowej skonfigurowanej przez administratora. Szyfrowaną wiadomość trzeba najpierw odblokować; dostępność i jakość zależą od używanej usługi.</p>\n"
+            "body": "\n<p>Użyj przycisku <strong>Przetłumacz</strong> przy poście lub otrzymanej wiadomości. Tłumaczenie zastępuje tekst tylko w Twoim widoku i można wrócić do oryginału.</p>\n<p>Najpierw korzystamy z Google, a w razie niepowodzenia z wbudowanych translatorów. Tłumaczenia wpisów są zapisywane do ponownego użycia.</p>\n<p>Gdy prosisz o przetłumaczenie otrzymanej wiadomości, jej czytelna treść jest wysyłana na ten serwer oraz do Google lub innego dostawcy tłumaczeń, nawet jeśli wiadomość jest zaszyfrowana. Glommer nie zapisuje tłumaczeń wiadomości ani nie zmienia oryginału.</p>\n"
         },
         "finding-people": {
             "title": "Znajdowanie osób",

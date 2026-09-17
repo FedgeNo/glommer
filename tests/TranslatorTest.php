@@ -28,7 +28,16 @@ class TranslatorTest extends TestCase
     /** German to English, since that pairing is installed wherever any is. */
     private function intoEnglish(string $text): ?string
     {
-        return Translator::translate($text, 'en', 'de');
+        // These integration cases exercise the installed programs, even when
+        // the normal reader-facing path would succeed through Google first.
+        $translator = new class extends Translator {
+            protected static function byGoogle(string $text, string $source, string $target): ?string
+            {
+                return null;
+            }
+        };
+
+        return $translator::translate($text, 'en', 'de');
     }
 
     // ---- What counts as a language, which needs no environment at all ----
@@ -108,7 +117,7 @@ class TranslatorTest extends TestCase
     public function testAnUnknownSourceIsRefused(): void
     {
         $this -> assertNull(Translator::translate('Das Wetter ist schoen.', 'en', null));
-        $this -> assertNull(Translator::translate('Das Wetter ist schoen.', 'en', 'not-a-language'));
+        $this -> assertNull(Translator::translate('Das Wetter ist schoen.', 'en', 'invalid'));
     }
 
     /**
@@ -205,7 +214,7 @@ class TranslatorTest extends TestCase
         $this -> requireTranslator();
 
         foreach (['--help', '--from-lang zz', '-h'] as $text) {
-            $translated = Translator::translate($text, 'en', 'de');
+            $translated = $this -> intoEnglish($text);
 
             // Whatever it makes of these, it must not have acted on them: the
             // command printing its usage or dying would come back as nothing.
@@ -290,7 +299,7 @@ class TranslatorTest extends TestCase
 
         // Whatever comes back, it must be an answer rather than an exception -
         // null is a fine answer here.
-        Translator::translate('... --- ... !!! ???', 'en', 'de');
+        $this -> intoEnglish('... --- ... !!! ???');
 
         $this -> assertTrue(true, 'punctuation alone is handled rather than fatal');
     }

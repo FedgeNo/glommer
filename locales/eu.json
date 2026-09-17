@@ -950,7 +950,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Mezuak itzultzeari buruz",
-        "body": "Mezu bat itzultzeko, haren testua zerbitzari honetara bidaltzen da eta hemen itzultzen da. Ez da ezer gordetzen: itzulpena ez da datu-basean idazten eta mezua ez da aldatzen. Baina horrela itzulitako mezua zerbitzariak irakurri du; beraz, ez dago itzuli gabeko mezua bezala muturretik muturrera zifratuta. Jasotako mezuak soilik itzul daitezke, eta zuk eskatzen duzunean bakarrik.",
+        "body": "Jasotako mezu bat itzultzeko eskatzen duzunean, haren testu irakurgarria zerbitzari honetara eta Google-ra edo beste itzulpen-hornitzaile batera bidaltzen da, mezua zifratuta egon arren. Glommer-ek ez ditu mezuen itzulpenak gordetzen, eta ez du jatorrizko mezua aldatzen.",
         "confirm": "Itzuli",
         "cancel": "Orain ez"
     },

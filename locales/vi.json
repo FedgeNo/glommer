@@ -537,7 +537,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Về việc dịch tin nhắn",
-        "body": "Để dịch một tin nhắn, văn bản của nó được gửi đến máy chủ này và được dịch tại đây. Không có gì được lưu lại: bản dịch không được ghi vào cơ sở dữ liệu và tin nhắn gốc không thay đổi. Nhưng một tin nhắn được dịch theo cách này đã bị máy chủ đọc, nên nó không còn được mã hóa đầu cuối như một tin nhắn không dịch. Chỉ những tin nhắn bạn nhận được mới có thể được dịch, và chỉ khi bạn yêu cầu.",
+        "body": "Khi bạn yêu cầu dịch một tin nhắn đã nhận, nội dung có thể đọc được của tin nhắn sẽ được gửi đến máy chủ này và Google hoặc một nhà cung cấp dịch thuật khác, ngay cả khi tin nhắn được mã hóa. Glommer không lưu bản dịch tin nhắn hay thay đổi tin nhắn gốc.",
         "confirm": "Dịch",
         "cancel": "Để sau"
     },

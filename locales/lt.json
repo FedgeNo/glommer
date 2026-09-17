@@ -1108,7 +1108,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Apie žinučių vertimą",
-        "body": "Norint išversti žinutę, jos tekstas siunčiamas į šį serverį ir čia išverčiamas. Niekas neišsaugoma: vertimas neįrašomas į duomenų bazę, o pati žinutė nepakeičiama. Tačiau taip verčiamą žinutę serveris perskaito, todėl ji nebėra visiškai užšifruota taip, kaip neversta žinutė. Galima versti tik gautas žinutes ir tik jums paprašius.",
+        "body": "Kai prašote išversti gautą žinutę, jos skaitomas tekstas siunčiamas į šį serverį ir „Google“ ar kitam vertimo paslaugų teikėjui, net jei žinutė užšifruota. „Glommer“ neišsaugo žinučių vertimų ir nekeičia originalios žinutės.",
         "confirm": "Išversti",
         "cancel": "Ne dabar"
     },

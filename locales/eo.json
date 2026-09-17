@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Pri tradukado de mesaĝoj",
-        "body": "Por traduki mesaĝon, ĝia teksto estas sendata al ĉi tiu servilo kaj tradukata ĉi tie. Nenio estas konservata: la traduko ne estas skribata en la datumbazon kaj la mesaĝo mem restas senŝanĝa. Sed mesaĝo tiel tradukita estis legita de la servilo, do ĝi ne estas tutvojo ĉifrita kiel netradukita mesaĝo. Nur mesaĝoj kiujn vi ricevas povas esti tradukataj, kaj nur kiam vi petas.",
+        "body": "Kiam vi petas tradukon de ricevita mesaĝo, ĝia legebla teksto estas sendata al ĉi tiu servilo kaj al Google aŭ alia tradukservo, eĉ se la mesaĝo estas ĉifrita. Glommer ne konservas mesaĝtradukojn kaj ne ŝanĝas la originalan mesaĝon.",
         "confirm": "Traduki ĝin",
         "cancel": "Ne nun"
     },

@@ -537,7 +537,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Tentang penerjemahan pesan",
-        "body": "Untuk menerjemahkan pesan, teksnya dikirim ke server ini dan diterjemahkan di sini. Tidak ada yang disimpan: terjemahan tidak ditulis ke basis data dan pesan asli tidak berubah. Namun, pesan yang diterjemahkan dengan cara ini telah dibaca server sehingga tidak lagi terenkripsi ujung ke ujung seperti pesan yang tidak diterjemahkan. Hanya pesan yang Anda terima yang dapat diterjemahkan, dan hanya ketika Anda memintanya.",
+        "body": "Saat Anda meminta terjemahan pesan yang diterima, teks yang dapat dibaca dikirim ke server ini dan ke Google atau penyedia terjemahan lain, meskipun pesan tersebut dienkripsi. Glommer tidak menyimpan terjemahan pesan atau mengubah pesan asli.",
         "confirm": "Terjemahkan",
         "cancel": "Jangan sekarang"
     },

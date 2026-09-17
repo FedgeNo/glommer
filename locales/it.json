@@ -539,7 +539,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Informazioni sulla traduzione dei messaggi",
-        "body": "Per tradurre un messaggio, il suo testo viene inviato a questo server e tradotto qui. Non viene conservato nulla: la traduzione non viene scritta nel database e il messaggio originale resta invariato. Ma un messaggio tradotto in questo modo è stato letto dal server, quindi non è cifrato end-to-end come lo è un messaggio non tradotto. Possono essere tradotti solo i messaggi che ricevi, e solo quando lo chiedi tu.",
+        "body": "Quando chiedi di tradurre un messaggio ricevuto, il testo leggibile viene inviato a questo server e a Google o a un altro servizio di traduzione, anche se il messaggio è cifrato. Glommer non salva le traduzioni dei messaggi e non modifica il messaggio originale.",
         "confirm": "Traducilo",
         "cancel": "Non ora"
     },

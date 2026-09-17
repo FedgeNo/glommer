@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Kuhusu Kutafsiri Ujumbe",
-        "body": "Ili kutafsiri ujumbe, maandishi yake hutumwa kwenye seva hii na kutafsiriwa hapa. Hakuna kinachohifadhiwa: tafsiri haiandikwi kwenye hifadhidata na ujumbe wenyewe haubadiliki. Lakini ujumbe uliotafsiriwa hivi umesomwa na seva, kwa hiyo haujasimbwa kutoka mwisho hadi mwisho kama ujumbe usiotafsiriwa. Ujumbe unaopokea pekee unaweza kutafsiriwa, na ni unapouliza tu.",
+        "body": "Unapoomba kutafsiri ujumbe uliopokea, maandishi yake yanayosomeka hutumwa kwa seva hii na kwa Google au mtoa huduma mwingine wa tafsiri, hata kama ujumbe umesimbwa kwa njia fiche. Glommer haihifadhi tafsiri za ujumbe wala kubadilisha ujumbe wa asili.",
         "confirm": "Tafsiri",
         "cancel": "Si Sasa"
     },

@@ -729,7 +729,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Sõnumite tõlkimisest",
-        "body": "Sõnumi tõlkimiseks saadetakse selle tekst sellesse serverisse ja tõlgitakse siin. Midagi ei säilitata: tõlget ei kirjutata andmebaasi ja sõnum ise ei muutu. Selliselt tõlgitud sõnumit on server siiski lugenud, seega pole see läbivalt krüptitud nagu tõlkimata sõnum. Tõlkida saab ainult saadud sõnumeid ja ainult sinu soovil.",
+        "body": "Kui palud saadud sõnumit tõlkida, saadetakse selle loetav tekst sellesse serverisse ja Google'ile või mõnele teisele tõlketeenusele, isegi kui sõnum on krüpteeritud. Glommer ei salvesta sõnumite tõlkeid ega muuda algset sõnumit.",
         "confirm": "Tõlgi",
         "cancel": "Mitte praegu"
     },

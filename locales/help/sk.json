@@ -83,7 +83,7 @@
             "title": "Preklad príspevku alebo správy",
             "category": "posting",
             "summary": "Prečítajte si obsah v inom jazyku a zistite, čo sa pri preklade deje s textom.",
-            "body": "\n<p>Tlačidlo prekladu nahradí text príspevku prekladom a umožní vrátiť originál. Preklad prebieha na tomto serveri.</p>\n<p>Preložiť možno aj prijaté správy. Pri šifrovanej správe tým vedome sprístupníte jej text serveru; preklad správy sa neukladá. Tlačidlo sa zobrazuje iba na serveroch s nainštalovaným prekladačom.</p>\n"
+            "body": "\n<p>Tlačidlo prekladu nahradí text príspevku prekladom a umožní vrátiť originál. Na požiadanie možno preložiť aj prijaté správy.</p>\n<p>Najprv sa skúsi Google, pri neúspechu vstavané prekladače. Preklady príspevkov sa ukladajú na opätovné použitie.</p>\n<p>Keď požiadate o preklad prijatej správy, jej čitateľný text sa odošle na tento server a Googlu alebo inému poskytovateľovi prekladu, aj keď je správa šifrovaná. Glommer preklady správ neukladá ani nemení pôvodnú správu.</p>\n"
         },
         "finding-people": {
             "title": "Hľadanie ľudí",

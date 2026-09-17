@@ -83,7 +83,7 @@
             "title": "Tradurre un post o un messaggio",
             "category": "posting",
             "summary": "Leggi contenuti in un'altra lingua e comprendi cosa comporta tradurli.",
-            "body": "\n<p>Nei post con testo, premi <strong>Traduci</strong> per sostituire il corpo con la traduzione e torna poi all'originale. La traduzione avviene su questo server e quella dei post viene conservata.</p>\n<p>Anche i messaggi ricevuti hanno il pulsante; i tuoi no e nulla viene tradotto senza richiesta.</p>\n<p>Tradurre un <a href=\"/help/encrypted-messages\">messaggio cifrato</a> permette al server di leggerne il testo. La traduzione non viene salvata, ma in quel momento il messaggio non gode più della riservatezza end-to-end; vieni avvisato prima della prima volta.</p>\n<p>Il pulsante appare solo sui server dotati di traduttore.</p>\n"
+            "body": "\n<p>Nei post con testo, premi <strong>Traduci</strong> per sostituire il corpo con la traduzione e torna poi all'originale. Anche i messaggi ricevuti hanno il pulsante; i tuoi no e nulla viene tradotto senza richiesta.</p>\n<p>Viene provato prima Google, con i traduttori integrati come alternativa in caso di problemi. Le traduzioni dei post vengono salvate per essere riutilizzate.</p>\n<p>Quando chiedi di tradurre un messaggio ricevuto, il testo leggibile viene inviato a questo server e a Google o a un altro servizio di traduzione, anche se il messaggio è cifrato. Glommer non salva le traduzioni dei messaggi e non modifica il messaggio originale.</p>\n"
         },
         "finding-people": {
             "title": "Trovare persone",

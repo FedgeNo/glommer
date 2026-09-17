@@ -83,7 +83,7 @@
             "title": "Oversæt et opslag eller en besked",
             "category": "posting",
             "summary": "Læs noget på et andet sprog, og forstå hvad oversættelsen gør.",
-            "body": "\n<p>Tekstopslag har knappen <strong>Oversæt</strong>, som erstatter teksten med en oversættelse og derefter kan vise originalen igen.</p>\n<p>Oversættelsen sker på denne server, ikke en ekstern tjeneste, og opslagets resultat gemmes til næste læser.</p>\n<p>Modtagne beskeder har samme knap; egne har ikke, og intet oversættes uden dit valg.</p>\n<p>Ved oversættelse af en <a href=\"/help/encrypted-messages\">krypteret besked</a> giver du denne server lov til at læse netop teksten. Resultatet gemmes ikke, men den er ikke længere hemmelig for serveren. Du advares før første gang.</p>\n<p>Knappen findes kun på servere med en oversætter installeret.</p>\n"
+            "body": "\n<p>Tekstopslag har knappen <strong>Oversæt</strong>, som erstatter teksten med en oversættelse og derefter kan vise originalen igen.</p>\n<p>Google prøves først, med de indbyggede oversættere som reserve. Oversættelser af opslag gemmes til genbrug.</p>\n<p>Modtagne beskeder har samme knap; egne har ikke, og intet oversættes uden dit valg.</p>\n<p>Når du beder om at få oversat en modtaget besked, sendes dens læsbare tekst til denne server og til Google eller en anden oversættelsestjeneste, selv om beskeden er krypteret. Glommer gemmer ikke beskedoversættelser og ændrer ikke den oprindelige besked.</p>\n"
         },
         "finding-people": {
             "title": "Find personer",

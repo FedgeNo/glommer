@@ -540,7 +540,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "O překládání zpráv",
-        "body": "Při překladu se text zprávy odešle na tento server a zde se přeloží. Nic se neuchovává: překlad se nezapíše do databáze a samotná zpráva se nezmění. Takto přeloženou zprávu však server přečetl, a proto není šifrovaná mezi koncovými body jako nepřeložená zpráva. Přeložit lze pouze přijaté zprávy a jen na vaši žádost.",
+        "body": "Když požádáte o překlad přijaté zprávy, její čitelný text se odešle na tento server a Googlu nebo jinému poskytovateli překladu, i když je zpráva šifrovaná. Glommer překlady zpráv neukládá ani nemění původní zprávu.",
         "confirm": "Přeložit",
         "cancel": "Teď ne"
     },

@@ -83,7 +83,7 @@
             "title": "Traduïu una publicació o missatge",
             "category": "posting",
             "summary": "Llegiu contingut en un altre idioma i enteneu què implica traduir-lo.",
-            "body": "\n<p><strong>Tradueix</strong> substitueix el text per la traducció i després permet recuperar l'original.</p>\n<p>La traducció passa en aquest servidor i la d'una publicació es desa.</p>\n<p>Els missatges rebuts només es tradueixen quan ho demaneu; els propis no tenen botó.</p>\n<p>Traduir un <a href=\"/help/encrypted-messages\">missatge xifrat</a> revela aquell text al servidor. No es desa, però deixa de ser secret per al servidor; se us avisa abans.</p>\n<p>El botó només apareix si el servidor té traductor.</p>\n"
+            "body": "\n<p><strong>Tradueix</strong> substitueix el text per la traducció i després permet recuperar l'original.</p>\n<p>Primer es prova Google i, si falla, els traductors integrats. Les traduccions de publicacions es desen per reutilitzar-les.</p>\n<p>Els missatges rebuts només es tradueixen quan ho demaneu; els propis no tenen botó.</p>\n<p>Quan demanes traduir un missatge rebut, el text llegible s'envia a aquest servidor i a Google o a un altre proveïdor de traducció, encara que el missatge estigui xifrat. Glommer no desa les traduccions dels missatges ni modifica el missatge original.</p>\n"
         },
         "finding-people": {
             "title": "Trobeu persones",

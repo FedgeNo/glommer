@@ -2730,12 +2730,11 @@ function ensure_translate_environment(): void
     heading('Translation environment (running as root)');
 
     // A Python venv with PyTorch and a language model per pair in it - around
-    // ten gigabytes to fetch. An installation that will never serve the
-    // translate button (a development box, a mirror) can say so and skip the
-    // download rather than paying for it on every install.
+    // ten gigabytes to fetch. Sites using Google without local model fallbacks
+    // can skip this download. The flag does not skip spaCy.
     if (Env::get('SKIP_TRANSLATE', '') === '1') {
         ok('Skipped: SKIP_TRANSLATE=1. Nothing is installed at ' . TRANSLATE_VENV_DIR
-            . ', and translation stays unavailable on this installation until this runs without the flag.');
+            . '. Google translation remains available; local model fallbacks are not installed.');
 
         return;
     }

@@ -540,7 +540,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "O tłumaczeniu wiadomości",
-        "body": "Aby przetłumaczyć wiadomość, jej tekst jest wysyłany na ten serwer i tu tłumaczony. Nic nie jest zachowywane: tłumaczenie nie jest zapisywane w bazie danych, a sama wiadomość pozostaje niezmieniona. Wiadomość przetłumaczona w ten sposób została jednak odczytana przez serwer, więc nie jest szyfrowana od końca do końca tak, jak wiadomość nieprzetłumaczona. Tłumaczyć można tylko wiadomości, które otrzymujesz, i tylko wtedy, gdy o to poprosisz.",
+        "body": "Gdy prosisz o przetłumaczenie otrzymanej wiadomości, jej czytelna treść jest wysyłana na ten serwer oraz do Google lub innego dostawcy tłumaczeń, nawet jeśli wiadomość jest zaszyfrowana. Glommer nie zapisuje tłumaczeń wiadomości ani nie zmienia oryginału.",
         "confirm": "Przetłumacz",
         "cancel": "Nie teraz"
     },

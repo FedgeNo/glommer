@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Turning a post into another language, on this machine.
+ * Translating posts and messages, with Google first and installed models as fallbacks.
  *
- * SMaLL-100 (CTranslate2) is tried first: one model, 101 languages, run
+ * GoogleTranslation uses the Google web component without a local model.
+ * SMaLL-100 (CTranslate2) follows: one model, 101 languages, run
  * through bin/small100-translate.py - the one bridge script here, needed
  * because CTranslate2 has no CLI of its own the way argos-translate does.
  * Argos Translate covers what SMaLL-100 does not (Esperanto, Basque, Kyrgyz,
@@ -17,10 +18,8 @@ declare(strict_types=1);
  * when the process exits. A resident model wants a gigabyte or two on its
  * own, and this box has about that much spare in total.
  *
- * It replaced asking a free LLM router, which answered the same request in 1.5
- * seconds and then in 16.9 - the router picks a different model every call, so
- * a reader pressing Translate had no idea whether to wait. It also means what
- * somebody wrote no longer leaves the server to be translated.
+ * OpenRouter remains the final fallback. Requested text can leave this server;
+ * the message-translation notice explains that before a private message is sent.
  */
 class Translator
 {
@@ -178,15 +177,11 @@ class Translator
     /**
      * Whether this installation can translate anything at all.
      *
-     * Any of three does: SMaLL-100, Argos where its packages are installed,
-     * and the model provider for whatever neither covers - or for the whole
-     * job on a server with none of the others. All three are optional, so
-     * all being absent is a real state and the one case where there is
-     * nothing to offer a reader.
+     * Google needs only cURL. Local models and OpenRouter are optional fallbacks.
      */
     public static function canTranslate(): bool
     {
-        return self::isSmall100Available() || self::isAvailable() || OpenRouter::isEnabled();
+        return function_exists('curl_init') || self::isSmall100Available() || self::isAvailable() || OpenRouter::isEnabled();
     }
 
     /**
@@ -218,6 +213,10 @@ class Translator
             return self::ALREADY_READABLE;
         }
 
+        if (function_exists('curl_init')) {
+            return null;
+        }
+
         if (self::isSmall100Available() && self::isSmall100Supported($source) && self::isSmall100Supported($target)) {
             return null;
         }
@@ -240,7 +239,7 @@ class Translator
      * translation alone, and anything it says about itself would be printed at
      * a reader as though the post had said it.
      */
-    private static function byModel(string $text, string $source, string $target): ?string
+    protected static function byModel(string $text, string $source, string $target): ?string
     {
         $answer = OpenRouter::chat([
             [
@@ -301,21 +300,26 @@ class Translator
         $target = (string) self::baseLanguage($target);
         $text = self::readable($text);
 
-        // SMaLL-100 first where it covers the pair: one model for 101
-        // languages rather than a package per pairing, still on this
-        // machine and still free. Argos stands behind it for the six
-        // locales SMaLL-100 was never trained on, and the model behind
-        // both - every local way of coming back with nothing (unsupported
-        // pair, every slot busy, the command failing or answering with
-        // nothing at all) ends up there. A reader asked for the words in
-        // their language; which of those went wrong is not their problem.
-        return self::bySmall100($text, $source, $target)
-            ?? self::byArgos($text, $source, $target)
-            ?? self::byModel($text, $source, $target);
+        return static::byGoogle($text, $source, $target)
+            ?? static::bySmall100($text, $source, $target)
+            ?? static::byArgos($text, $source, $target)
+            ?? static::byModel($text, $source, $target);
+    }
+
+    protected static function byGoogle(string $text, string $source, string $target): ?string
+    {
+        if (!function_exists('curl_init') || mb_strlen($text, 'UTF-8') > GoogleTranslation::MAX_CHARACTERS) {
+            return null;
+        }
+
+        $translator = new GoogleTranslation($source, $target);
+        $translated = trim($translator -> translate([$text])[0]);
+
+        return $translated === '' ? null : $translated;
     }
 
     /** What SMaLL-100 makes of it, or null however it failed to. */
-    private static function bySmall100(string $text, string $source, string $target): ?string
+    protected static function bySmall100(string $text, string $source, string $target): ?string
     {
         if (!self::isSmall100Available() || !self::isSmall100Supported($source) || !self::isSmall100Supported($target)) {
             return null;
@@ -379,7 +383,7 @@ class Translator
     }
 
     /** What Argos makes of it, or null however it failed to. */
-    private static function byArgos(string $text, string $source, string $target): ?string
+    protected static function byArgos(string $text, string $source, string $target): ?string
     {
         if (!self::isAvailable() || !self::isSupported($source) || !self::isSupported($target)) {
             return null;

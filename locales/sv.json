@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Om att översätta meddelanden",
-        "body": "När ett meddelande översätts skickas texten till den här servern och översätts här. Ingenting sparas: översättningen skrivs inte till databasen och själva meddelandet ändras inte. Men ett meddelande som översätts på detta sätt har lästs av servern och är därför inte totalsträckskrypterat på samma sätt som ett oöversatt meddelande. Endast meddelanden du tar emot kan översättas, och bara när du ber om det.",
+        "body": "När du ber om att översätta ett mottaget meddelande skickas dess läsbara text till den här servern och till Google eller en annan översättningstjänst, även om meddelandet är krypterat. Glommer sparar inte meddelandeöversättningar och ändrar inte originalmeddelandet.",
         "confirm": "Översätt",
         "cancel": "Inte nu"
     },

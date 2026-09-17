@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Az üzenetek fordításáról",
-        "body": "Az üzenet lefordításához a szövege erre a kiszolgálóra kerül, és itt fordítjuk le. Semmit sem őrzünk meg: a fordítás nem kerül az adatbázisba, maga az üzenet pedig változatlan marad. Az így lefordított üzenetet azonban a kiszolgáló elolvasta, ezért nem ugyanúgy végpontok között titkosított, mint egy le nem fordított üzenet. Csak a kapott üzenetek fordíthatók le, és csak külön kérésre.",
+        "body": "Ha egy kapott üzenet fordítását kéred, annak olvasható szövege eljut erre a szerverre és a Google-höz vagy más fordítási szolgáltatóhoz, akkor is, ha az üzenet titkosított. A Glommer nem menti el az üzenetek fordítását, és nem módosítja az eredeti üzenetet.",
         "confirm": "Fordítás",
         "cancel": "Most nem"
     },

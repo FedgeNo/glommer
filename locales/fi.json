@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Tietoja viestien kääntämisestä",
-        "body": "Viestin kääntämistä varten sen teksti lähetetään tälle palvelimelle ja käännetään täällä. Mitään ei säilytetä: käännöstä ei kirjoiteta tietokantaan eikä itse viesti muutu. Tällä tavalla käännetyn viestin palvelin on kuitenkin lukenut, joten se ei ole päästä päähän salattu kuten kääntämätön viesti. Vain vastaanottamiasi viestejä voidaan kääntää ja vain pyynnöstäsi.",
+        "body": "Kun pyydät vastaanotetun viestin käännöstä, sen luettava teksti lähetetään tälle palvelimelle ja Googlelle tai muulle käännöspalvelulle, vaikka viesti olisi salattu. Glommer ei tallenna viestien käännöksiä eikä muuta alkuperäistä viestiä.",
         "confirm": "Käännä",
         "cancel": "Ei nyt"
     },

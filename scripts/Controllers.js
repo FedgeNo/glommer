@@ -4967,7 +4967,7 @@ const MessageTranslateButtonModule = (() => {
  */
 class MessageTranslateButton {
     /** Remembers that the notice has been read, so it is said once. */
-    static NOTICE_KEY = 'translation-notice-read';
+    static NOTICE_KEY = 'translation-notice-google-v1';
 
     /** Mirrors MessageTranslateButton.php's two glyphs. */
     static TRANSLATE = '🌐';
@@ -5015,9 +5015,8 @@ class MessageTranslateButton {
     }
 
     /**
-     * The one-time notice. Translating sends the words to the server, which is
-     * a real change in who has seen them - said before the first one, not
-     * discovered after it.
+     * The one-time notice explains that readable text goes to this server
+     * and an external translation provider, including for encrypted messages.
      */
     static async #agreed() {
         if (localStorage.getItem(MessageTranslateButton.NOTICE_KEY) === '1') return true;

@@ -539,7 +539,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Par ziņu tulkošanu",
-        "body": "Lai iztulkotu ziņu, tās teksts tiek nosūtīts šim serverim un tulkots šeit. Nekas netiek saglabāts: tulkojums netiek ierakstīts datubāzē, un pati ziņa netiek mainīta. Taču šādi tulkotu ziņu serveris ir izlasījis, tāpēc tā vairs nav pilnīgi šifrēta kā netulkota ziņa. Tulkot var tikai saņemtās ziņas un tikai pēc jūsu pieprasījuma.",
+        "body": "Kad lūdzat iztulkot saņemtu ziņu, tās lasāmais teksts tiek nosūtīts šim serverim un Google vai citam tulkošanas pakalpojumu sniedzējam, pat ja ziņa ir šifrēta. Glommer nesaglabā ziņu tulkojumus un nemaina sākotnējo ziņu.",
         "confirm": "Tulkot",
         "cancel": "Ne tagad"
     },

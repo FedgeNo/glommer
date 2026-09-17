@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Über das Übersetzen von Nachrichten",
-        "body": "Um eine Nachricht zu übersetzen, wird ihr Text an diesen Server gesendet und hier übersetzt. Es wird nichts gespeichert: Die Übersetzung wird nicht in die Datenbank geschrieben, und die Nachricht selbst bleibt unverändert. Aber eine so übersetzte Nachricht wurde vom Server gelesen und ist deshalb nicht so Ende-zu-Ende-verschlüsselt wie eine unübersetzte Nachricht. Nur Nachrichten, die du erhältst, können übersetzt werden, und nur wenn du danach fragst.",
+        "body": "Wenn du eine empfangene Nachricht übersetzen lässt, wird ihr lesbarer Text an diesen Server und an Google oder einen anderen Übersetzungsdienst gesendet, auch wenn die Nachricht verschlüsselt ist. Glommer speichert keine Nachrichtenübersetzungen und verändert die ursprüngliche Nachricht nicht.",
         "confirm": "Übersetzen",
         "cancel": "Nicht jetzt"
     },

@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Mesaj Çevirisi Hakkında",
-        "body": "Bir mesajı çevirmek için metni bu sunucuya gönderilir ve burada çevrilir. Hiçbir şey saklanmaz: çeviri veritabanına yazılmaz ve mesajın kendisi değişmez. Ancak bu şekilde çevrilen bir mesaj sunucu tarafından okunmuş olur, dolayısıyla çevrilmemiş bir mesaj gibi uçtan uca şifreli değildir. Yalnızca aldığın mesajlar ve yalnızca sen istediğinde çevrilebilir.",
+        "body": "Aldığınız bir mesajın çevrilmesini istediğinizde, mesaj şifreli olsa bile okunabilir metni bu sunucuya ve Google'a veya başka bir çeviri sağlayıcısına gönderilir. Glommer mesaj çevirilerini kaydetmez ve özgün mesajı değiştirmez.",
         "confirm": "Çevir",
         "cancel": "Şimdi Değil"
     },

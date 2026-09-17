@@ -539,7 +539,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Despre traducerea mesajelor",
-        "body": "Pentru a traduce un mesaj, textul său este trimis acestui server și tradus aici. Nu se păstrează nimic: traducerea nu este scrisă în baza de date, iar mesajul rămâne neschimbat. Însă un mesaj tradus astfel a fost citit de server, deci nu mai beneficiază de criptare integrală precum unul netradus. Pot fi traduse numai mesajele primite și numai când soliciți acest lucru.",
+        "body": "Când ceri traducerea unui mesaj primit, textul său lizibil este trimis acestui server și către Google sau alt furnizor de traduceri, chiar dacă mesajul este criptat. Glommer nu salvează traducerile mesajelor și nu modifică mesajul original.",
         "confirm": "Tradu-l",
         "cancel": "Nu acum"
     },

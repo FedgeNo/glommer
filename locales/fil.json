@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Tungkol sa pagsasalin ng mga mensahe",
-        "body": "Para isalin ang isang mensahe, ipinapadala ang teksto nito sa server na ito at isinasalin dito. Walang itinatago: hindi isinusulat ang salin sa database at hindi nagbabago ang mismong mensahe. Ngunit nabasa na ng server ang mensaheng isinalin sa ganitong paraan, kaya hindi ito end-to-end encrypted tulad ng hindi isinaling mensahe. Mga mensaheng natanggap mo lang ang maaaring isalin, at kapag hiniling mo lang.",
+        "body": "Kapag hiniling mong isalin ang isang natanggap na mensahe, ipinapadala ang nababasang teksto nito sa server na ito at sa Google o ibang tagapagbigay ng pagsasalin, kahit naka-encrypt ang mensahe. Hindi sine-save ng Glommer ang mga salin ng mensahe at hindi nito binabago ang orihinal na mensahe.",
         "confirm": "Isalin",
         "cancel": "Hindi muna"
     },

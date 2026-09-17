@@ -935,7 +935,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Om oversettelse av meldinger",
-        "body": "For å oversette en melding sendes teksten til denne serveren og oversettes her. Ingenting lagres: Oversettelsen skrives ikke til databasen, og selve meldingen forblir uendret. Men serveren har lest en melding som oversettes på denne måten, så den er ikke ende-til-ende-kryptert slik en uoversatt melding er. Bare meldinger du mottar, kan oversettes, og bare når du ber om det.",
+        "body": "Når du ber om å oversette en mottatt melding, sendes den lesbare teksten til denne serveren og til Google eller en annen oversettelsestjeneste, selv om meldingen er kryptert. Glommer lagrer ikke meldingsoversettelser og endrer ikke den opprinnelige meldingen.",
         "confirm": "Oversett",
         "cancel": "Ikke nå"
     },

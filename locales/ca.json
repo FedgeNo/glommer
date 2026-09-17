@@ -539,7 +539,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Quant a la traducció de missatges",
-        "body": "Per traduir un missatge, el text s'envia a aquest servidor i es tradueix aquí. No se'n conserva res: la traducció no s'escriu a la base de dades i el missatge no canvia. Però el servidor ha llegit un missatge traduït d'aquesta manera i, per tant, no està xifrat d'extrem a extrem com un missatge sense traduir. Només es poden traduir els missatges que rebeu i només quan ho demaneu.",
+        "body": "Quan demanes traduir un missatge rebut, el text llegible s'envia a aquest servidor i a Google o a un altre proveïdor de traducció, encara que el missatge estigui xifrat. Glommer no desa les traduccions dels missatges ni modifica el missatge original.",
         "confirm": "Tradueix-lo",
         "cancel": "Ara no"
     },

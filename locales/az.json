@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Mesajların Tərcümə Edilməsi Haqqında",
-        "body": "Mesajı tərcümə etmək üçün onun mətni bu serverə göndərilir və buraya tərcümə olunur. Heç bir şey saxlanılmır: tərcümə verilənlər bazasına yazılmır və mesajın özü dəyişməz qalır. Lakin bu şəkildə tərcümə edilmiş mesaj server tərəfindən oxunub, ona görə də o, tərcümə olunmamış mesaj kimi başdan-başa şifrələnmir. Yalnız aldığınız mesajlar və yalnız siz soruşduqda tərcümə oluna bilər.",
+        "body": "Qəbul etdiyiniz mesajın tərcüməsini istədikdə, mesaj şifrələnmiş olsa belə, onun oxuna bilən mətni bu serverə və Google-a və ya başqa tərcümə xidmətinə göndərilir. Glommer mesaj tərcümələrini saxlamır və orijinal mesajı dəyişmir.",
         "confirm": "Tərcümə et",
         "cancel": "İndi yox"
     },

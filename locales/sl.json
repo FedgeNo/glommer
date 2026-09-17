@@ -1183,7 +1183,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "O prevajanju sporočil",
-        "body": "Za prevod sporočila se njegovo besedilo pošlje temu strežniku in prevede tukaj. Nič se ne shrani: prevod se ne zapiše v podatkovno zbirko, sporočilo pa ostane nespremenjeno. Tako prevedeno sporočilo je strežnik prebral, zato ni šifrirano od konca do konca kot neprevedeno sporočilo. Prevesti je mogoče samo prejeta sporočila in samo na vašo zahtevo.",
+        "body": "Ko zahtevate prevod prejetega sporočila, se njegovo berljivo besedilo pošlje temu strežniku in Googlu ali drugemu ponudniku prevajanja, tudi če je sporočilo šifrirano. Glommer ne shranjuje prevodov sporočil in ne spreminja izvirnega sporočila.",
         "confirm": "Prevedi",
         "cancel": "Ne zdaj"
     },

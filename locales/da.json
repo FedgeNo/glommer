@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Om oversættelse af meddelelser",
-        "body": "Når du oversætter en besked, sendes teksten til denne server og oversættes her. Intet gemmes: Oversættelsen skrives ikke til databasen, og selve beskeden ændres ikke. Serveren har dog læst en besked, der oversættes på denne måde, så den har ikke længere samme ende-til-ende-beskyttelse som en uoversat besked. Kun beskeder, du modtager, kan oversættes, og kun når du selv beder om det.",
+        "body": "Når du beder om at få oversat en modtaget besked, sendes dens læsbare tekst til denne server og til Google eller en anden oversættelsestjeneste, selv om beskeden er krypteret. Glommer gemmer ikke beskedoversættelser og ændrer ikke den oprindelige besked.",
         "confirm": "Oversæt det",
         "cancel": "Ikke nu"
     },

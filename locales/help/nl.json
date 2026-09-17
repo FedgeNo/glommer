@@ -83,7 +83,7 @@
             "title": "Een bericht of privébericht vertalen",
             "category": "posting",
             "summary": "Lees tekst in een andere taal en begrijp wat vertalen met die tekst doet.",
-            "body": "\n<p>Bij geschreven berichten kan een knop <strong>Vertalen</strong> staan. Die vervangt de inhoud door een lokale vertaling; de knop kan daarna het origineel terugzetten. Vertalingen van openbare berichten worden op deze server bewaard.</p>\n<p>Ook ontvangen privéberichten kunnen worden vertaald. Bij <a href=\"/help/encrypted-messages\">versleutelde berichten</a> geeft u daarmee bewust de tekst aan deze server: de vertaling wordt niet opgeslagen, maar is tijdens het vertalen niet meer volledig end-to-end geheim. De knop verschijnt alleen als de server een vertaler heeft.</p>\n"
+            "body": "\n<p>Bij geschreven berichten kan een knop <strong>Vertalen</strong> staan. Die vervangt de inhoud door een vertaling; de knop kan daarna het origineel terugzetten. Ook ontvangen privéberichten kunnen op verzoek worden vertaald.</p>\n<p>Google wordt eerst geprobeerd, met de ingebouwde vertalers als terugvaloptie. Vertalingen van berichten op de tijdlijn worden opgeslagen voor hergebruik.</p>\n<p>Als je een ontvangen bericht laat vertalen, wordt de leesbare tekst naar deze server en naar Google of een andere vertaaldienst gestuurd, ook als het bericht versleuteld is. Glommer slaat berichtvertalingen niet op en verandert het oorspronkelijke bericht niet.</p>\n"
         },
         "finding-people": {
             "title": "Mensen vinden",

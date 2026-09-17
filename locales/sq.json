@@ -538,7 +538,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "Rreth përkthimit të mesazheve",
-        "body": "Për të përkthyer një mesazh, teksti i tij dërgohet te ky server dhe përkthehet këtu. Asgjë nuk ruhet: përkthimi nuk shkruhet në bazën e të dhënave dhe vetë mesazhi mbetet i pandryshuar. Por një mesazh i përkthyer kështu është lexuar nga serveri, ndaj nuk është i fshehtëzuar skaj më skaj si një mesazh i papërkthyer. Mund të përkthehen vetëm mesazhet që merrni dhe vetëm kur e kërkoni.",
+        "body": "Kur kërkon përkthimin e një mesazhi të marrë, teksti i tij i lexueshëm dërgohet te ky server dhe te Google ose një ofrues tjetër përkthimi, edhe nëse mesazhi është i enkriptuar. Glommer nuk i ruan përkthimet e mesazheve dhe nuk e ndryshon mesazhin origjinal.",
         "confirm": "Përktheje",
         "cancel": "Jo tani"
     },

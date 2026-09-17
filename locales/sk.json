@@ -1149,7 +1149,7 @@
     },
     "MessageTranslationNotice": {
         "heading": "O preklade správ",
-        "body": "Pri preklade správy sa jej text odošle na tento server a preloží sa tu. Nič sa neuchováva: preklad sa nezapíše do databázy a samotná správa zostane nezmenená. Takto preloženú správu však server prečítal, takže nie je šifrovaná medzi koncovými bodmi ako nepreložená správa. Preložiť možno iba prijaté správy a iba na vašu žiadosť.",
+        "body": "Keď požiadate o preklad prijatej správy, jej čitateľný text sa odošle na tento server a Googlu alebo inému poskytovateľovi prekladu, aj keď je správa šifrovaná. Glommer preklady správ neukladá ani nemení pôvodnú správu.",
         "confirm": "Preložiť",
         "cancel": "Teraz nie"
     },

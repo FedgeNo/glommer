@@ -83,7 +83,7 @@
             "title": "Traducerea unei postări sau a unui mesaj",
             "category": "posting",
             "summary": "Citește un text scris în altă limbă și află cum este folosit conținutul la traducere.",
-            "body": "\n<p>Butonul <strong>Tradu</strong> înlocuiește textul unei postări cu traducerea și îți permite apoi să revii la original. Traducerea se face pe acest server și este păstrată pentru cererile viitoare.</p>\n<p>Mesajele primite pot fi traduse numai la cerere. În cazul unui mesaj criptat, alegerea traducerii permite serverului să îi citească textul; traducerea nu este salvată, dar în acel moment mesajul nu mai rămâne secret față de server.</p>\n"
+            "body": "\n<p>Butonul <strong>Tradu</strong> înlocuiește textul unei postări cu traducerea și îți permite apoi să revii la original. Mesajele primite pot fi traduse numai la cerere.</p>\n<p>Se încearcă mai întâi Google, apoi traducătoarele încorporate ca soluție de rezervă. Traducerile postărilor sunt salvate pentru reutilizare.</p>\n<p>Când ceri traducerea unui mesaj primit, textul său lizibil este trimis acestui server și către Google sau alt furnizor de traduceri, chiar dacă mesajul este criptat. Glommer nu salvează traducerile mesajelor și nu modifică mesajul original.</p>\n"
         },
         "finding-people": {
             "title": "Găsirea persoanelor",

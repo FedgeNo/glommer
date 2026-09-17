@@ -21,7 +21,6 @@ body:has(.MainNavigation) {
 /* ---------- Fixed header: nav bar + page title ---------- */
 
 .MainNavigation {
-    --nav-brand-color: var(--theme-stop-5);
     --nav-control-color: var(--theme-stop-0);
     position: fixed;
     top: 0;
@@ -38,7 +37,6 @@ body:has(.MainNavigation) {
 }
 
 [dir='rtl'] .MainNavigation {
-    --nav-brand-color: var(--theme-stop-0);
     --nav-control-color: var(--theme-stop-5);
 }
 
@@ -47,7 +45,6 @@ body:has(.MainNavigation) {
     font-weight: 700;
     font-size: 1.2rem;
     letter-spacing: -0.02em;
-    color: var(--nav-brand-color);
     line-height: 1.3;
     align-self: center;
 }
@@ -109,6 +106,11 @@ body:has(.MainNavigation) {
     border-bottom: none;
     border-radius: var(--radius-ctl) var(--radius-ctl) 0 0;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.MainNavigation a.NavBrand,
+.NotificationsNavLink > a {
+    color: var(--theme-stop-5);
 }
 
 .MainNavigation > div > a:hover,

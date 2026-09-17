@@ -176,6 +176,7 @@
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteCond %{REQUEST_URI} !^/(scripts|styles|locales|fonts)/[A-Za-z0-9._-]+$
     RewriteCond %{REQUEST_URI} !^/uploads/
+    RewriteCond %{REQUEST_URI} !^/dc0aa6275753f00581a77e4b5bd5810a\.html$
     RewriteCond %{REQUEST_URI} !^/(favicon\.ico|robots\.txt|llms\.txt|sw\.js|emoji-shortcodes\.js)$
     RewriteRule !\.php$ 404.php [L]
 

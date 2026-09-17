@@ -22,6 +22,7 @@ body:has(.MainNavigation) {
 
 .MainNavigation {
     --nav-control-color: var(--theme-stop-0);
+    --nav-site-color: var(--theme-stop-5);
     position: fixed;
     top: 0;
     left: 0;
@@ -38,6 +39,7 @@ body:has(.MainNavigation) {
 
 [dir='rtl'] .MainNavigation {
     --nav-control-color: var(--theme-stop-5);
+    --nav-site-color: var(--theme-stop-0);
 }
 
 .NavBrand {
@@ -110,7 +112,7 @@ body:has(.MainNavigation) {
 
 .MainNavigation a.NavBrand,
 .NotificationsNavLink > a {
-    color: var(--theme-stop-5);
+    color: var(--nav-site-color);
 }
 
 .MainNavigation > div > a:hover,

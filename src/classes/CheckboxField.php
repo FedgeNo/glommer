@@ -14,6 +14,7 @@ class CheckboxField extends Div
     public string $name;
     public string $label;
     public bool $checked = false;
+    public string $value = '1';
 
     public function __construct(string $name, string $label)
     {
@@ -25,21 +26,12 @@ class CheckboxField extends Div
 
     public function toDOM(): \DOMElement
     {
-        $checkbox = new CheckboxInput();
-        $checkbox -> name = $this -> name;
+        $checkbox = new CheckboxInput($this);
         $checkbox -> id = $this -> name;
-        $checkbox -> value = '1';
-
-        if ($this -> checked) {
-            $checkbox -> attributes['checked'] = 'checked';
-        }
 
         $this -> contents[] = $checkbox;
 
-        $label = new Label();
-        $label -> for = $this -> name;
-        $label -> contents[] = $this -> label;
-        $this -> contents[] = $label;
+        $this -> contents[] = new FieldLabel($this);
 
         return parent::toDOM();
     }

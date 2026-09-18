@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 class TextInput extends ValueInput
 {
-    public function __construct(array|object|null $properties = null)
+    protected const INPUT_TYPE = 'text';
+
+    public function toDOM(): \DOMElement
     {
-        parent::__construct($properties);
-        $this -> attributes['type'] = 'text';
         $this -> attributes['dir'] = 'auto';
+
+        return parent::toDOM();
     }
 }

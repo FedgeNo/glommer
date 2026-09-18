@@ -41,7 +41,12 @@ return [
         $image -> itemId = 1;
         $image -> type = ImageItem::class;
 
-        return new LinkItem('https://example.social/', 'Example title', 'Example description', $image);
+        return new LinkItem([
+            'linkURL' => 'https://example.social/',
+            'title' => 'Example title',
+            'description' => 'Example description',
+            'items' => [$image],
+        ]);
     },
 
     PostBookmarkButton::class => static fn (): HTMLObject => new PostBookmarkButton(false),

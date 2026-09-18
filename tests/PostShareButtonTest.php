@@ -19,11 +19,11 @@ class PostShareButtonTest extends TestCase
 
         $bar = new PostActionBar();
         $bar -> postId = 7;
-        $bar -> postUserId = 2;
-        $bar -> postUsername = 'someone';
+        $bar -> userId = 2;
+        $bar -> author = new User(['slug' => 'someone']);
         $bar -> replyCount = 0;
         $bar -> likeCount = 0;
-        $bar -> remote = $remote;
+        $bar -> remoteObjectURI = $remote ? 'https://remote.example/posts/7' : null;
 
         $element = $bar -> toDOM();
         HTMLObject::currentDocument() -> appendChild($element);

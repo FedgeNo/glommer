@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 class Carousel extends Div
 {
+    protected const HYDRATION_EXCLUSIONS = ['id'];
+
     // How many items ahead of the current one keep their media loaded - so the
     // viewer always stays this many slides ahead of the loading. The first
     // slide plus this many load up front; the rest defer until the carousel

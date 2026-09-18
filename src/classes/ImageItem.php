@@ -15,22 +15,7 @@ class ImageItem extends FeedItem
             $this -> attributes['data-alt-text'] = $this -> altText;
         }
 
-        $image = new Image();
-        $image -> alt = $this -> altText ?? (string) (Strings::for(self::class)['alt'] ?? '');
-        $image -> attributes['loading'] = 'lazy';
-        $image -> attributes['decoding'] = 'async';
-
-        $fullURL = $this -> srcURL();
-        $thumbURL = $this -> imageURL() ?? $fullURL;
-
-        if ($this -> deferred) {
-            $image -> attributes['data-src'] = $thumbURL;
-        } else {
-            $image -> src = $thumbURL;
-        }
-        $image -> attributes['data-full-src'] = $fullURL;
-
-        $this -> contents[] = $image;
+        $this -> contents[] = new FeedImage($this);
 
         return parent::toDOM();
     }

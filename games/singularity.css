@@ -1,0 +1,57 @@
+.SingularityGame { --vlt-cyan: #82ffff; --vlt-pink: #ff9b4b; --vlt-gold: #fff3a1; --vlt-cell: clamp(38px, 7vh, 62px); }
+.SingularityGame .VLTWindow { max-width: calc(var(--vlt-cell) * 5 + 32px); gap: 2px; padding: 6px; }
+.SingularityGame .VLTReel { height: calc(var(--vlt-cell) * 5); }
+.SingularityGame .VLTMeters { max-width: 560px; }
+.SingularityGame .VLTReadout { min-height: 70px; padding-block: .4rem; }
+.SingularityGame .VLTWins { max-height: 110px; overflow-y: auto; }
+.SingularityCascadeReceipt { margin: 0; padding: .4rem .6rem; border: 1px solid #80ffff55; border-radius: .3rem; background: #071d25; color: #ddffff; font: .75rem/1.4 system-ui; }
+.SingularityGame .VLTSymbol.Winning { z-index: 3; background: radial-gradient(ellipse, #fff8, #ff952d44 50%, transparent); box-shadow: inset 0 0 0 2px #fff3ab, 0 0 22px var(--symbol-color); }
+.SingularityGame .VLTCabinet { max-width: 1100px; border-radius: .8rem; border: 2px solid #927d68; background: radial-gradient(ellipse at 50% 30%, #25100855, #070d13cc 80%), linear-gradient(135deg, #121c22, #090b10); box-shadow: 0 0 0 4px #070b11, 0 0 0 5px #a2835e66, 0 20px 70px #0009, inset 0 0 65px #f4692422; }
+.SingularityGame .VLTCabinet::before { inset: 9px; border-radius: .3rem; border: 1px solid #ecb17444; background: repeating-linear-gradient(135deg, #ffc25022 0 5px, transparent 5px 10px); mask-image: linear-gradient(#000 0 3px, transparent 3px calc(100% - 3px), #000 calc(100% - 3px)); }
+.SingularityGame .VLTScene { opacity: .95; }
+.SingularityGame .VLTEyebrow { color: #ffb761; letter-spacing: .3em; }
+.SingularityGame .VLTMarquee h1 { font-family: Impact, 'Arial Black', system-ui; font-size: clamp(2rem, 5vw, 3.3rem); font-style: italic; letter-spacing: .035em; color: #fff0cd; text-shadow: 0 2px #b7471b, 0 4px #5e2319, 0 0 24px #ff7e2077, 0 0 50px #ff841b22; }
+.SingularityGame .VLTTagline { color: #d4c4a9; }
+.SingularityGame .VLTMeters { border-radius: .25rem .25rem 0 0; background: linear-gradient(90deg, #1d1711e8, #192831e8); color: #e3be83; border: 1px solid #9e753d66; }
+.SingularityGame .VLTWindow { border: 3px solid #b9955e; border-radius: .3rem; background: #101319a8; box-shadow: 0 0 0 2px #372714, 0 0 0 6px #94735244, 0 0 25px #ff9c4333, inset 0 0 24px #000; }
+.SingularityGame .VLTReel { background: linear-gradient(#131716e0, #20261fcc 50%, #11181be0); border-radius: 0; }
+.SingularityGame .VLTReel::after { border-color: #e8bd7055; background: repeating-linear-gradient(to bottom, #e9b46d77 0 2px, transparent 2px var(--vlt-cell)), linear-gradient(#040b1088, transparent 20%, transparent 80%, #040b1088); }
+.SingularityGame .VLTSymbol.Symbol0 { --symbol-color: #ff9a51; }
+.SingularityGame .VLTSymbol.Symbol1 { --symbol-color: #9af6ff; }
+.SingularityGame .VLTSymbol.Symbol2 { --symbol-color: #c6ff7b; }
+.SingularityGame .VLTSymbol.Symbol3 { --symbol-color: #ffdd85; }
+.SingularityGame .VLTSymbol.Symbol4 { --symbol-color: #ff8873; }
+.SingularityGame .VLTSymbol.Symbol5 { --symbol-color: #ffffb1; }
+.SingularityGame .VLTSymbol svg { filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 8px var(--symbol-color)); }
+.SingularityGame .VLTForm .VLTSpin { background: linear-gradient(165deg, #fff0a5, #ffae56 48%, #ee6e36 50%, #ffbd67); box-shadow: 0 4px #803c24, 0 0 25px #ff871e66; border-radius: .3rem; }
+.SingularityGame .VLTForm select, .SingularityGame .VLTForm .VLTSound { background: #182126; border-color: #827359; }
+.SingularityGame .VLTReadout { position: relative; }
+.SingularityGame .VLTReadout::before, .SingularityGame .VLTReadout::after { content: ''; position: absolute; top: 25%; bottom: 25%; width: clamp(15px, 6vw, 70px); opacity: .65; background: repeating-linear-gradient(0deg, #6ceeff 0 3px, transparent 3px 7px); box-shadow: 0 0 20px #4dcfff55; transform: skewX(-15deg); }
+.SingularityGame .VLTReadout::before { left: 3%; }
+.SingularityGame .VLTReadout::after { right: 3%; }
+.SingularityGame .VLTCabinet.SuperWin .VLTWinTitle { color: #fff1a8; font: italic 900 clamp(1.3rem, 4vw, 2.1rem) Impact, system-ui; }
+.SingularityEruption { position: fixed; inset: 0; z-index: 20; pointer-events: none; overflow: hidden; }
+.SingularityShard { position: absolute; left: 50%; top: 45%; width: 13px; height: 25px; border: 2px solid #fff2b8; background: var(--color); box-shadow: 0 0 12px var(--color), inset 0 0 5px #fff; clip-path: polygon(50% 0, 100% 35%, 80% 100%, 15% 85%, 0 20%); animation: SingularityBurst 2.8s cubic-bezier(.1,.6,.2,1) both; }
+.SingularityScreenWave { position: absolute; left: 50%; top: 45%; width: 30vmin; height: 30vmin; margin: -15vmin; border: 5px solid #ffd488; box-shadow: 0 0 35px #ff8e4e, inset 0 0 35px #6bf6ff; border-radius: 50%; animation: SingularityWave 1.8s ease-out both; }
+@keyframes SingularityBurst { from { transform: translate(0, 0) rotate(0) scale(.2); opacity: 0; } 12% { opacity: 1; } 70% { opacity: .9; } to { transform: translate(var(--x), var(--y)) rotate(var(--rotation)) scale(.7); opacity: 0; } }
+@keyframes SingularityWave { from { transform: scale(.2); opacity: .6; } to { transform: scale(6); opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+    .SingularityGame .VLTSymbol.Winning::before { content: ''; position: absolute; inset: -15%; pointer-events: none; background: repeating-conic-gradient(from 15deg, transparent 0deg 25deg, #fff8cc 27deg 29deg, transparent 32deg 45deg); mix-blend-mode: plus-lighter; mask-image: radial-gradient(circle, transparent 18%, #000 22%, transparent 68%); animation: SingularityDetonation .75s ease-out both; }
+    @keyframes SingularityDetonation { from { transform: scale(.2) rotate(0); opacity: 0; } 40% { opacity: 1; } to { transform: scale(2.2) rotate(30deg); opacity: 0; } }
+    .SingularityGame .Igniting .VLTReadout::before, .SingularityGame .Igniting .VLTReadout::after { animation: SingularityCharge .8s ease-in-out 4; }
+    .SingularityGame .SuperWin .VLTReadout { animation: SingularityRecoil .6s ease-out 1; }
+    @keyframes SingularityCharge { 50% { opacity: 1; transform: skewX(-15deg) scaleY(1.25); } }
+    @keyframes SingularityRecoil { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
+}
+@media (max-width: 600px) {
+    .SingularityGame .VLTEyebrow { font-size: .5rem; letter-spacing: .1em; }
+    .SingularityGame .VLTMarquee h1 { font-size: clamp(2rem, 9vw, 3.5rem); }
+    .SingularityGame .VLTReadout::before, .SingularityGame .VLTReadout::after { width: 12px; }
+    .SingularityGame .VLTResult { padding-inline: 1.25rem; }
+}
+@media (min-width: 601px) and (max-height: 760px) {
+    .SingularityGame .VLTMarquee h1 { font-size: 2.7rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .SingularityEruption { display: none; }
+}

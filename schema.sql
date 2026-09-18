@@ -120,6 +120,78 @@ CREATE TABLE `Users` (
   FULLTEXT KEY `slug_title` (`slug`,`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Play-only currency. Guest tokens are hashed; merged wallets remain tombstones
+-- so an old anonymous cookie can never spend an account's balance.
+CREATE TABLE `GameWallets` (
+  `walletId` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned DEFAULT NULL,
+  `guestHash` char(64) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
+  `balance` bigint unsigned NOT NULL DEFAULT 0,
+  `lastGrantAt` bigint unsigned DEFAULT NULL,
+  `mergedAt` datetime DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`walletId`),
+  UNIQUE KEY `userId` (`userId`),
+  UNIQUE KEY `guestHash` (`guestHash`),
+  CONSTRAINT `fk_gamewallet_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Committed play receipts make retries safe, including after a guest signs up.
+CREATE TABLE `GamePlays` (
+  `requestKey` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `walletId` bigint unsigned NOT NULL,
+  `game` varchar(50) NOT NULL,
+  `requestHash` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `wager` int unsigned NOT NULL,
+  `payout` bigint unsigned NOT NULL,
+  `result` text NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`requestKey`),
+  KEY `walletId_createdAt` (`walletId`, `createdAt`),
+  CONSTRAINT `fk_gameplay_wallet` FOREIGN KEY (`walletId`) REFERENCES `GameWallets` (`walletId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- A shared lobby lock serializes seating, table transitions, and chip receipts.
+CREATE TABLE `PokerLobby` (
+  `lobbyId` tinyint unsigned NOT NULL,
+  PRIMARY KEY (`lobbyId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PokerTables` (
+  `tableId` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `state` mediumtext NOT NULL,
+  `deadline` bigint unsigned NOT NULL,
+  `finishedAt` bigint unsigned DEFAULT NULL,
+  PRIMARY KEY (`tableId`),
+  KEY `finishedAt_deadline` (`finishedAt`, `deadline`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PokerPlayers` (
+  `userId` int(10) unsigned NOT NULL,
+  `tableId` bigint unsigned DEFAULT NULL,
+  `queued` tinyint unsigned NOT NULL DEFAULT 0,
+  `readyAt` bigint unsigned NOT NULL DEFAULT 0,
+  `lastSeen` bigint unsigned NOT NULL,
+  PRIMARY KEY (`userId`),
+  KEY `queue` (`queued`, `readyAt`, `lastSeen`),
+  CONSTRAINT `fk_pokerplayer_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pokerplayer_table` FOREIGN KEY (`tableId`) REFERENCES `PokerTables` (`tableId`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PokerChat` (
+  `messageId` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `tableId` bigint unsigned NOT NULL,
+  `userId` int(10) unsigned NOT NULL,
+  `requestKey` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `body` varchar(500) NOT NULL,
+  `createdAt` bigint unsigned NOT NULL,
+  PRIMARY KEY (`messageId`),
+  UNIQUE KEY `user_request` (`userId`, `requestKey`),
+  KEY `table_message` (`tableId`, `messageId`),
+  CONSTRAINT `fk_pokerchat_table` FOREIGN KEY (`tableId`) REFERENCES `PokerTables` (`tableId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pokerchat_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Posts` (
   `postId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,

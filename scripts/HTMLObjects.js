@@ -43,6 +43,7 @@ function copyDefault(value) {
 export class HTMLObject {
     static tagName = null;
     static className = null;
+    static hydrationExclusions = [];
     static properties = {
         id: null,
     };
@@ -59,11 +60,24 @@ export class HTMLObject {
             this[name] = copyDefault(value);
         }
 
-        if (properties !== null) {
-            for (const [name, value] of Object.entries(properties)) {
-                if (Object.hasOwn(defaults, name)) {
-                    this[name] = value;
-                }
+        this.glom(properties);
+    }
+
+    glom(properties = null) {
+        if (properties === null) return;
+
+        const defaults = this.constructor.propertyDefaults();
+        const exclusions = new Set(STRUCTURAL_PROPERTIES);
+
+        for (let type = this.constructor; type && type !== Function.prototype; type = Object.getPrototypeOf(type)) {
+            if (Object.hasOwn(type, 'hydrationExclusions')) {
+                type.hydrationExclusions.forEach(name => exclusions.add(name));
+            }
+        }
+
+        for (const [name, value] of Object.entries(properties)) {
+            if (Object.hasOwn(defaults, name) && !exclusions.has(name)) {
+                this[name] = value;
             }
         }
     }
@@ -563,6 +577,47 @@ export class Image extends HTMLObject {
         if (this.alt !== null) {
             this.attributes.alt = this.alt;
         }
+
+        return super.toDOM();
+    }
+}
+
+export class FeedImage extends Image {
+    static hydrationExclusions = ['id'];
+    static properties = {
+        image: null,
+        altText: null,
+        imageAltText: null,
+        deferred: false,
+    };
+
+    toDOM() {
+        const full_url = this.src;
+        const thumbnail = this.image ?? full_url;
+        this.alt = this.altText ?? this.imageAltText ?? Strings.for('ImageItem').alt ?? '';
+        this.attributes.loading = 'lazy';
+        this.attributes.decoding = 'async';
+        this.attributes['data-full-src'] = full_url;
+
+        if (this.deferred) {
+            this.src = null;
+            this.attributes['data-src'] = thumbnail;
+        } else {
+            this.src = thumbnail;
+        }
+
+        return super.toDOM();
+    }
+}
+
+export class LinkItemImage extends Image {
+    static className = 'LinkItemImage';
+    static hydrationExclusions = ['id'];
+    static properties = { image: null };
+
+    toDOM() {
+        this.src = this.image;
+        this.alt = Strings.for('LinkItem', { alt: 'Link preview image' }).alt;
 
         return super.toDOM();
     }
@@ -3568,11 +3623,7 @@ class Post {
         const link_image = this.items.find((item) => item.itemType === 'ImageItem');
 
         if (link_image) {
-            const image = document.createElement('img');
-            image.className = 'LinkItemImage';
-            image.src = link_image.image;
-            image.alt = Strings.for('LinkItem', { alt: 'Link preview image' }).alt;
-            link.appendWithSpace(image);
+            link.appendWithSpace(new LinkItemImage(link_image).toDOM());
         }
 
         const text = document.createElement('div');
@@ -3657,27 +3708,10 @@ class Post {
 
             wrapper.appendWithSpace(audio);
         } else {
-            const img = document.createElement('img');
-            img.loading = 'lazy';
-            img.decoding = 'async';
-
-            // A remote attachment describes itself; ours is described by the
-            // post it belongs to. Same order of preference as FeedItem's.
-            img.alt = item.altText || this.imageAltText || Strings.for('PostClient').image || '';
-
-            // The feed shows the thumbnail and carries the display-size URL for
-            // fullscreen to swap in, exactly as ImageItem.php renders it.
-            const thumbnail = item.image || item.src;
-
-            if (deferred) {
-                img.dataset.src = thumbnail;
-            } else {
-                img.src = thumbnail;
-            }
-
-            img.dataset.fullSrc = item.src;
-
-            wrapper.appendWithSpace(img);
+            const image = new FeedImage(this);
+            image.glom(item);
+            image.deferred = deferred;
+            wrapper.appendWithSpace(image.toDOM());
         }
 
         return wrapper;

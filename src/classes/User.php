@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 class User extends Div implements \JsonSerializable
 {
+    private static string $avatarDirectory = __DIR__ . '/../../uploads/avatars';
+
+    public static function avatarDirectory(int $user_id): string
+    {
+        return self::$avatarDirectory . '/' . UploadProcessor::shard($user_id);
+    }
+
     /** Most friends we ever load/show for one person (the friends-list cap). */
     public const MAX_FRIENDS = 5000;
 
@@ -334,7 +341,7 @@ UPDATE `Users` SET `email` = ?, `verified` = 0
     public static function avatarPath(int $user_id): string
     {
         $path = '/uploads/avatars/' . UploadProcessor::shard($user_id) . '/' . $user_id . '-thumb.jpg';
-        $mtime = @filemtime(__DIR__ . '/../..' . $path);
+        $mtime = @filemtime(self::avatarDirectory($user_id) . '/' . $user_id . '-thumb.jpg');
 
         return $mtime !== false ? $path . '?v=' . $mtime : $path;
     }
@@ -673,7 +680,7 @@ UPDATE `Users`
             UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
         }
 
-        $avatar_dir = __DIR__ . '/../../uploads/avatars/' . UploadProcessor::shard($user_id);
+        $avatar_dir = self::avatarDirectory($user_id);
 
         foreach ([$user_id . '.jpg', $user_id . '-thumb.jpg'] as $filename) {
             $path = $avatar_dir . '/' . $filename;

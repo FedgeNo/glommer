@@ -29,6 +29,11 @@ abstract class DOMObject
     public array $attributes = [];
     public array $contents = [];
 
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> glom($properties);
+    }
+
     /**
      * Seeds declared data properties from an array or object: a key naming a
      * property this class declares is copied on, any other key ignored, and
@@ -37,11 +42,11 @@ abstract class DOMObject
      * content type.
      * Handing it a wider source (a whole User, a page) therefore only ever
      * transfers data properties, never changes what the object is or how it
-     * renders. mysqli_fetch_object sets the columns before calling this with no
-     * argument, so a DB-hydrated object ($properties null) keeps the values it
+     * renders. mysqli_fetch_object sets the columns before calling the constructor
+     * with no argument, so a DB-hydrated object ($properties null) keeps the values it
      * loaded with.
      */
-    public function __construct(array|object|null $properties = null)
+    public function glom(array|object|null $properties = null): void
     {
         if ($properties !== null) {
             foreach (is_array($properties) ? $properties : get_object_vars($properties) as $name => $value) {

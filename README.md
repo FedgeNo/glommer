@@ -189,6 +189,162 @@ band).
 
 ## 3. Architecture
 
+### Games
+
+`/games/` is the games room; `/games/roulette` is playable European single-zero
+roulette. Each game has its own PHP entry point, browser module, and stylesheet
+under `games/`. `casino.js` and `casino.css` provide the shared wallet and room.
+The roulette scene uses pinned Three.js 0.180.0 from jsDelivr, with modeled wood,
+brass, pockets, ball, procedural wood texture, and shadows over the shared green
+table finish. WebGL failure leaves betting and
+text results usable; reduced-motion preferences skip the spin animation.
+
+Guests receive 1,000 play-only chips on their first visit. An eligible visible
+visit grants another 1,000 after 3,600 seconds from the previous actual grant.
+Returning after several hours still grants only 1,000 and starts the next hour;
+unclaimed grants never accumulate. Existing chips and winnings carry forward.
+Signing up or signing in transfers the guest wallet into the account once,
+including pending spin receipts and the latest grant time. Guest wallets use an
+HTTP-only cookie: losing that cookie loses access to an unclaimed guest balance.
+Chips cannot be purchased, cashed out, transferred, or exchanged for prizes.
+
+`GameWallet` owns server-side balances, locked grants, account claims, and atomic
+play receipts. A retried play ID returns the original outcome without another
+charge or draw. The browser retains an unconfirmed spin in session storage and
+offers **Recover spin** after a network interruption. `Roulette` owns the bet
+catalogue and payouts; each result uses `random_int(0, 36)`, independently of
+stakes, player history, or animation. Standard European payouts return the
+winning stake as well as profit; zero loses all outside bets. The table accepts
+whole-chip bets with a total limit of 10,000 per spin. There is no la partage or
+en prison. Fixed-cost arcade games can use `GameWallet::spend()` with a price
+chosen by the server.
+
+`/games/vlt` is **Nova Vault**, a five-reel, three-row video lottery terminal
+with ten fixed paylines. Total stakes are 10, 20, 50, 100, 250, or 500 chips,
+divided evenly across the lines. Three or more matching symbols from the left
+pay the longest match on each line. `VLT` owns the six-symbol paytable and five
+32-stop strips; each reel stop is drawn independently with `random_int`.
+An independent Supernova multiplier is 1× on 90% of spins, 2× on 8%, and 5× on
+2%. The exact theoretical return is approximately 95.7022%, including those
+multipliers. The game exposes symbol frequencies, payouts, and all payline paths
+in its rules. There are no wild symbols, scatter awards, or progressive pools.
+
+VLT spins settle through the shared wallet receipt transaction. Recovery reuses
+the pending request key and stake; animations cannot change the result. The
+browser uses procedural Three.js rings, gems, stars and coin bursts, SVG reel
+symbols, and optional synthesized audio. Reduced motion reveals the reels
+immediately, and failed WebGL leaves the cabinet and game usable. A payout below
+the stake is shown as a net loss, without a win celebration.
+
+`/games/singularity` is a 5 × 5 cluster-and-cascade game. Groups of at least five
+identical symbols connected horizontally or vertically pay anywhere on the board.
+All winning groups are removed together; survivors fall and new symbols fill the
+gaps. Every draw independently selects one of six equally likely symbols. Each
+successive winning cascade increases Overdrive from 1× through 12×; the cycle
+ends on a nonwinning board or after paying cascade 12 without another refill.
+The page discloses the size-tier paytable. A million-cycle simulation estimates
+95.6% return (approximate 95% sampling interval 95.1–96.2%); this is not an exact
+theoretical return. Reproduce with PHP's `mt_srand(20260917)` and one million
+`Singularity::round(10, static fn(): int => mt_rand(0, 5))` calls, summing payouts
+and dividing by total stake. Live settlement uses `random_int`, not this seeded
+simulation generator. Singularity owns its settlement and
+board animation, sharing wallet/recovery controls with VLT, with its own receipt
+identity and pending-spin storage key. Nova Vault recovery cannot be consumed
+by Singularity or vice versa. Its visual layer adds a procedural shader vortex,
+counter-rotating reactor machinery, plasma tendrils, expanding shockwaves, and
+screen-wide shards on profitable results. Effects are bounded, pause with hidden
+pages, and respect reduced motion; the ordinary board works without WebGL.
+
+`/games/pachinko` is Neon Pachinko: one chrome ball, twelve independent fair
+left/right bounces, and thirteen pockets. Returns range from 0.2× to 50× the
+total stake; the two edge jackpots together occur on 1 in 2,048 balls. Exact
+theoretical return is 96.8457%. The page lists every pocket's payout and its
+probability among the 4,096 equally likely paths. Payouts include returned stake.
+`Pachinko` draws and settles the complete path on the server using the atomic
+wallet receipt. The browser only animates that path; timing does not affect it.
+Pending plays use their own recovery key and cannot be charged again on retry.
+The Three.js board uses chrome, reflective glass, neon peg collars, additive
+impact rings and trails, and a jackpot particle burst. Reduced motion lands the
+ball immediately; a simple SVG board appears only if 3D rendering fails.
+
+`/games/poker` is nine-seat no-limit Texas Hold’em for signed-in members, with
+200–1,000-chip human stacks, 1,000-chip bot stacks, 10/20 blinds, and no rake.
+Seats use up to 1,000 available wallet chips, with a minimum of 200; the stack
+is money in play, not an entry fee. Humans use their @slugs and avatars;
+suit-marked bot identities cannot be mistaken for Glommer usernames. A 20-second
+queue packs available humans into tables before filling remaining seats with
+bots. Hands finish before anyone moves; the result stays visible for at least
+10 seconds before the next matching window. Staying seated authorizes another
+buy-in of up to 1,000 chips, subject to the available balance. Leaving cancels that next
+seat, while the current hand settles normally.
+
+`PokerRound` owns dealing, legal actions, minimum raises, all-ins, side pots,
+and showdown. Its viewer projection excludes the deck and other players’ hidden
+cards. `PokerHand` compares the best five of seven cards, including kickers,
+ace-low straights, split pots, and clockwise odd-chip distribution. `PokerBot`
+receives only its own cards, the public board, legal moves, and public betting
+context. Named bots have different calling, raising, and bluffing tendencies.
+They sample unseen cards and future streets to estimate their share of the pot,
+then consider the call price, position, and previous raises. They cannot inspect
+the actual deck or opponents’ cards. `Poker` locks
+the lobby while assigning seats and persisting transitions; `GameWallet`
+records buy-ins and returns in the same transaction. Versioned actions reject
+stale tabs and retries rather than betting twice.
+
+The browser polls every 1.5 seconds after completion of the previous request;
+there is no extra daemon. Requests also advance overdue tables, including
+hands abandoned by every browser. A player has 25 seconds to act, then checks
+if possible and otherwise folds. Reservations expire after 45 seconds without
+presence. No further hands start for an absent player. An abandoned unfinished
+hand returns its chips when a subsequent poker request advances it to completion.
+Table chat is plain text, participant-scoped, rate-limited, and filtered for
+blocks; avatars appear in chat and at seats. Finished tables and their chat
+expire after 24 hours, cleaned up by poker requests. Wallet receipts remain.
+
+The table shows street bets, animated chip collection and payouts, staged card
+reveals, and selectable best-five highlights at showdown. Results separate main
+and side pots, split awards, uncalled refunds, and the viewer’s net chip change.
+Minimum, half-pot, and pot raise presets show both the total bet and additional
+chips required. Seat timers count down locally between server updates. Sound is
+optional, synthesized locally, and its mute preference is saved in the browser;
+reduced-motion preferences suppress dealing and travel effects.
+
+`/games/derby` hosts Bent Metal Derby. Its independently maintained single HTML
+file is checked out as the `games/bent-metal-derby` Git submodule; initialize it
+with `git submodule update --init games/bent-metal-derby` after cloning Glommer.
+`DerbyPage` adds a CSP nonce and the separate `derby.js`/`derby.css` adapter to
+that HTML. The source game retains standalone cash, free entry, and local saves.
+Its `Economy.transact(action, done)` callback seam covers admission, upgrades,
+and rewards; the adapter resumes gameplay only after the server accepts the
+transaction. Keep generic game changes in that repository and host-specific
+behavior in Glommer. Commit and publish source changes before updating the
+submodule reference; update deliberately and rerun both projects' tests.
+
+In Glommer, one game dollar is one chip and one life is 500 chips. Each new
+race, retry, or time trial costs 500; winning a life credits 500. Life counts
+come directly from the shared balance, so starting a new career cannot mint
+lives. Upgrades are derived from paid receipts and follow guests into accounts.
+Reward contributions are deliberately small, with diminishing drift returns
+and no total winnings ceiling. A first-place finish pays 750 including its life,
+before combat and drift rewards. Time trials have no reward. The guest wallet
+continues receiving its ordinary hourly grant during visible play.
+
+`Derby` owns admission prices, upgrade validation, and server reward accounting;
+`GameWallet::finish()` locks and settles each admission at most once. Pending
+transactions are retained in session storage for recovery. Race statistics are
+client-reported: the server recalculates contributions and checks ownership,
+elapsed time, plausible counts, and repeat submissions, but does not simulate
+the race. This is not cheat-proof verification of finish position or driving.
+
+The room loads one ExoClick iframe over HTTPS: 300 × 250 below 768px, 728 × 90
+from 768px through 939px, and 900 × 250 from 940px. The iframe policy permits
+`a.magsrv.com` only on game pages. The zone URLs live in `GameRoom` and the Derby
+adapter, which displays its advertisement in the start menu. Derby uses the
+shorter 728 × 90 slot at every width from 768px upward, and the 300 × 250 slot
+below that. Its start menu scrolls on short screens.
+
+### Application services
+
 - **Web tier** - procedural PHP page scripts at the project root (`index.php`,
   `login.php`, ...) and JSON endpoints under `api/`, routed by `.htaccess`.
   Every "thing" on the site (a post, a report, a banned device) is an

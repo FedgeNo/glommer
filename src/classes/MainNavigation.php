@@ -97,6 +97,7 @@ class MainNavigation extends Nav
                 new Anchor(ServerURL::absolute('/tags/'), (string) ($words['tags'] ?? '')),
                 new Anchor(ServerURL::absolute('/topics/'), (string) ($words['topics'] ?? '')),
                 new Anchor(ServerURL::absolute('/map'), (string) ($words['map'] ?? '')),
+                new Anchor(ServerURL::absolute('/games/'), 'Games'),
                 new Anchor(ServerURL::absolute('/help/'), (string) ($words['help'] ?? '')),
                 new Anchor(ServerURL::absolute('/about'), (string) ($words['about'] ?? '')),
             ];
@@ -112,6 +113,7 @@ class MainNavigation extends Nav
             new Anchor(ServerURL::absolute('/search'), (string) ($words['search'] ?? '')),
             $this -> messagesLink(),
             new Anchor(ServerURL::absolute('/bookmarks'), (string) ($words['bookmarks'] ?? '')),
+            new Anchor(ServerURL::absolute('/games/'), 'Games'),
             new Anchor(ServerURL::absolute('/help/'), (string) ($words['help'] ?? '')),
             new Anchor(ServerURL::absolute('/about'), (string) ($words['about'] ?? '')),
         ];

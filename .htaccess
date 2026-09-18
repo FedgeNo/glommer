@@ -85,6 +85,15 @@
 
     RewriteRule ^api/([a-zA-Z0-9-]+)$ api/$1.php [L,QSA]
 
+    RewriteRule ^games$ /games/ [R=301,L]
+    RewriteRule ^games/$ games/index.php [L,QSA]
+    RewriteRule ^games/roulette$ games/roulette.php [L,QSA]
+    RewriteRule ^games/poker$ games/poker.php [L,QSA]
+    RewriteRule ^games/vlt$ games/vlt.php [L,QSA]
+    RewriteRule ^games/singularity$ games/singularity.php [L,QSA]
+    RewriteRule ^games/pachinko$ games/pachinko.php [L,QSA]
+    RewriteRule ^games/derby$ games/derby.php [L,QSA]
+
     RewriteRule ^(messages|users|help|tags|locations|topics)$ /$1/ [R=301,L]
     RewriteRule ^users/([^/]+)$ /users/$1/ [R=301,L]
     RewriteRule ^topics/([a-z_]+)$ /topics/$1/ [R=301,L]
@@ -175,6 +184,8 @@
     # is looking at login.php while REQUEST_URI still reads /login.
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteCond %{REQUEST_URI} !^/(scripts|styles|locales|fonts)/[A-Za-z0-9._-]+$
+    RewriteCond %{REQUEST_URI} !^/games/(index|roulette|casino|derby|poker|vlt|singularity|pachinko)\.(js|css)$
+    RewriteCond %{REQUEST_URI} !^/games/cards/(roulette|poker|vlt|singularity|pachinko|derby)\.svg$
     RewriteCond %{REQUEST_URI} !^/uploads/
     RewriteCond %{REQUEST_URI} !^/dc0aa6275753f00581a77e4b5bd5810a\.html$
     RewriteCond %{REQUEST_URI} !^/(favicon\.ico|robots\.txt|llms\.txt|sw\.js|emoji-shortcodes\.js)$

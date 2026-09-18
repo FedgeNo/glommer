@@ -1,0 +1,3 @@
+[submodule "bent-metal-derby"]
+	path = games/bent-metal-derby
+	url = https://github.com/Bent-Metal-Derby/bent-metal-derby.github.io.git

@@ -54,9 +54,7 @@ SELECT `o`.*,
     protected function arrange(array $items): array
     {
         foreach ($items as $option) {
-            $option -> showResults = $this -> showResults;
-            $option -> multiple = $this -> multiple;
-            $option -> totalVotes = $this -> totalVotes;
+            $option -> glom($this);
         }
 
         return $items;

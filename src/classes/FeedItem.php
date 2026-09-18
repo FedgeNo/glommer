@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 class FeedItem extends Figure
 {
+    use FeedMedia;
+
     public ?string $class = 'FeedItem';
 
     public ?int $itemId = null;
@@ -44,38 +46,6 @@ class FeedItem extends Figure
         return parent::toDOM();
     }
 
-    /**
-     * Remote media is addressed by this item's own id, never by the remote
-     * URL: the URL is looked up here, on the server, exactly the way rendering
-     * the post looks it up. Nothing a visitor sends chooses what gets fetched,
-     * which is the difference between a media proxy and an open one.
-     */
-    public function srcURL(): string
-    {
-        if ($this -> remoteURL !== null) {
-            return RemoteMedia::proxyURL((int) $this -> itemId);
-        }
-
-        return ServerURL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> type));
-    }
-
-    /**
-     * Nothing generates a thumbnail for remote media - it isn't ours to
-     * transcode, and one would mean storing a copy. Callers already treat a
-     * missing thumbnail as "use the full file" (an image) or "no poster" (a
-     * video).
-     */
-    public function imageURL(): ?string
-    {
-        if ($this -> remoteURL !== null) {
-            return null;
-        }
-
-        $path = UploadProcessor::thumbnailPath((int) $this -> itemId, (string) $this -> type);
-
-        return $path !== null ? ServerURL::absolute($path) : null;
-    }
-
     public static function fromRow(FeedItemData $row): self
     {
         $class = $row -> type ?? static::class;
@@ -84,19 +54,7 @@ class FeedItem extends Figure
             throw new Exception('Unknown feed item type: ' . var_export($row -> type, true));
         }
 
-        // Set explicitly, one field at a time - a blind property-copy loop
-        // here would risk one day clobbering $item's own constructor-computed
-        // $class/$tagName (derived from the real subclass) if FeedItemData
-        // ever grew fields with the same names.
-        $item = new $class();
-        $item -> itemId = $row -> itemId;
-        $item -> postId = $row -> postId;
-        $item -> type = $row -> type;
-        $item -> createdAt = $row -> createdAt;
-        $item -> remoteURL = $row -> remoteURL;
-        $item -> altText = $row -> altText;
-
-        return $item;
+        return new $class($row);
     }
 
     /** What the remoteURL and altText columns hold, so callers can refuse what won't fit. */

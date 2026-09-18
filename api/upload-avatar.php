@@ -43,7 +43,7 @@ if (!UploadProcessor::hasFreeDiskSpace((int) $uploaded_file['size'])) {
 // every other upload path, so avatars/ never accumulates one entry per user
 // in a single directory. The web and upload worker share one account, so the
 // shard needs no group- or world-write permission.
-$avatar_dir = dirname(__DIR__) . '/uploads/avatars/' . UploadProcessor::shard((int) $current_user -> userId);
+$avatar_dir = User::avatarDirectory((int) $current_user -> userId);
 
 if (!is_dir($avatar_dir)) {
     mkdir($avatar_dir, 0755, true);

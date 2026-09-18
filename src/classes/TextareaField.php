@@ -27,29 +27,10 @@ class TextareaField extends Div
 
     public function toDOM(): \DOMElement
     {
-        $label = new Label();
-        $label -> for = $this -> name;
-        $label -> contents[] = $this -> label;
-        $label -> class = $this -> labelVisible ? null : 'visually-hidden';
-        $this -> contents[] = $label;
+        $this -> contents[] = new FieldLabel($this);
 
-        $textarea = new Textarea();
-        $textarea -> name = $this -> name;
+        $textarea = new Textarea($this);
         $textarea -> id = $this -> name;
-        $textarea -> attributes['placeholder'] = $this -> placeholder;
-
-        if ($this -> maxLength !== null) {
-            $textarea -> attributes['maxlength'] = (string) $this -> maxLength;
-        }
-
-        if ($this -> value !== '') {
-            $textarea -> contents[] = $this -> value;
-        }
-
-        if ($this -> error !== null) {
-            $textarea -> attributes['aria-invalid'] = 'true';
-            $textarea -> attributes['aria-describedby'] = $this -> name . 'Error';
-        }
 
         $this -> contents[] = $textarea;
 

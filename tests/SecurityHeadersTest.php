@@ -43,4 +43,13 @@ class SecurityHeadersTest extends TestCase
 
         $this -> assertTrue(str_contains($policy, 'img-src \'self\' data: blob: https:'));
     }
+
+    public function testAdvertisingFramesAreOnlyAllowedOnGamePages(): void
+    {
+        $this -> assertFalse(str_contains(SecurityHeaders::contentSecurityPolicy(), 'a.magsrv.com'));
+        $this -> assertFalse(str_contains(SecurityHeaders::contentSecurityPolicy(true), 'a.magsrv.com'));
+        $policy = SecurityHeaders::contentSecurityPolicy(allows_game_ads: true);
+        $this -> assertTrue(str_contains($policy, 'frame-src https://challenges.cloudflare.com https://www.google.com https://a.magsrv.com;'));
+        $this -> assertSame(1, substr_count($policy, 'a.magsrv.com'));
+    }
 }

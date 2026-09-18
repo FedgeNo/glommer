@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 class CheckboxInput extends ValueInput
 {
-    public function __construct()
+    protected const INPUT_TYPE = 'checkbox';
+
+    public bool $checked = false;
+
+    public function toDOM(): \DOMElement
     {
-        parent::__construct();
-        $this -> attributes['type'] = 'checkbox';
+        if ($this -> checked) {
+            $this -> attributes['checked'] = 'checked';
+        }
+
+        return parent::toDOM();
     }
 }

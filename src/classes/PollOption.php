@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 class PollOption extends Div
 {
+    protected const HYDRATION_EXCLUSIONS = ['id'];
+
     public ?string $class = 'PollOption';
 
     // Declared so a row fetched via DB::rows() doesn't set them as deprecated

@@ -185,19 +185,7 @@ class Post extends Article
         // A report snapshot embeds the content alone; every feed/permalink post
         // carries its action bar (like/reply/bookmark/edit/delete/report).
         if ($this -> showActions) {
-            $action_bar = new PostActionBar();
-            $action_bar -> postId = (int) $this -> postId;
-            $action_bar -> postUserId = (int) $this -> userId;
-            $action_bar -> postUsername = $this -> author ?-> slug;
-            $action_bar -> replyCount = $this -> replyCount;
-            $action_bar -> likeCount = $this -> likeCount;
-            $action_bar -> liked = $this -> liked;
-            $action_bar -> bookmarked = $this -> bookmarked;
-            $action_bar -> reposted = $this -> reposted;
-            $action_bar -> repostCount = $this -> repostCount;
-            $action_bar -> pinned = $this -> pinned;
-            $action_bar -> remote = $this -> remoteObjectURI !== null;
-            $action_bar -> standalone = $this -> standalone;
+            $action_bar = new PostActionBar($this);
             $action_bar -> translatable = $this -> translatable();
 
             $this -> contents[] = $action_bar;
@@ -242,16 +230,7 @@ class Post extends Article
         $body = $warning === '' ? $content : new ContentWarning($warning);
 
         if ($this -> linkURL !== null) {
-            $link_image = null;
-
-            foreach ($this -> items as $item) {
-                if ($item instanceof ImageItem) {
-                    $link_image = $item;
-                    break;
-                }
-            }
-
-            $body -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description, $link_image);
+            $body -> contents[] = new LinkItem($this);
         } else {
             if ($this -> title !== null) {
                 $heading = new Heading3();
@@ -276,9 +255,7 @@ class Post extends Article
             $media = null;
 
             if (count($this -> items) > 1) {
-                $carousel = new Carousel();
-                $carousel -> items = $this -> items;
-                $media = $carousel;
+                $media = new Carousel($this);
             } elseif (count($this -> items) === 1) {
                 $this -> items[0] -> showFullscreenButton = true;
                 $media = $this -> items[0];

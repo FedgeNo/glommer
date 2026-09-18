@@ -147,6 +147,7 @@ SELECT `userId`
         // Keep the friend-cap cache honest on every sign-in, in case a
         // friendship changed through a path that didn't adjust it.
         User::recomputeFriendCount((int) $user -> userId);
+        GameWallet::claimGuest((int) $user -> userId);
     }
 
     public static function logout(): void

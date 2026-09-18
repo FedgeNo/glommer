@@ -604,6 +604,26 @@ foreach ([
     ];
 }
 
+foreach ([
+    'FeedImageLocal' => [FeedImage::class, ['itemId' => 42, 'altText' => 'A cat']],
+    'FeedImageDeferred' => [FeedImage::class, ['itemId' => 42, 'altText' => '', 'deferred' => true]],
+    'FeedImageRemote' => [FeedImage::class, ['itemId' => 43, 'remoteURL' => 'https://remote.example/cat.jpg']],
+    'FeedImageRemoteDeferred' => [FeedImage::class, ['itemId' => 43, 'remoteURL' => 'https://remote.example/cat.jpg', 'deferred' => true]],
+    'LinkItemImageLocal' => [LinkItemImage::class, ['itemId' => 42]],
+    'LinkItemImageRemote' => [LinkItemImage::class, ['itemId' => 43, 'remoteURL' => 'https://remote.example/cat.jpg']],
+] as $name => [$class, $properties]) {
+    $definitions[$name] = [
+        'class' => $class,
+        'build' => static fn (): HTMLObject => new $class($properties),
+        'payload' => static fn (HTMLObject $image): array => [
+            'src' => $image -> srcURL(),
+            'image' => $image -> imageURL(),
+            'altText' => $properties['altText'] ?? null,
+            'deferred' => $properties['deferred'] ?? false,
+        ],
+    ];
+}
+
 $cases = [];
 
 foreach ($definitions as $name => $definition) {

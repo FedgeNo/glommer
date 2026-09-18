@@ -11,13 +11,15 @@ declare(strict_types=1);
  */
 class PostActionBar extends Footer
 {
+    protected const HYDRATION_EXCLUSIONS = ['id'];
+
     public ?string $class = 'PostActionBar';
 
     public const REPLY_GLYPH = '💬';
 
     public ?int $postId = null;
-    public ?int $postUserId = null;
-    public ?string $postUsername = null;
+    public ?int $userId = null;
+    public ?User $author = null;
     public bool $standalone = false;
     public ?int $replyCount = null;
     public ?int $likeCount = null;
@@ -26,7 +28,7 @@ class PostActionBar extends Footer
     public ?bool $reposted = null;
     // A post that came from another server. Its permalink here is a copy, not
     // the address of the thing itself.
-    public bool $remote = false;
+    public ?string $remoteObjectURI = null;
     public ?int $repostCount = null;
     public ?bool $pinned = null;
     // Whether there is body text a translation could work on, and whether
@@ -47,10 +49,8 @@ class PostActionBar extends Footer
         // another server: sharing is handing someone the permalink, and for
         // one of those the address worth passing on is the original, not this
         // server's copy of it.
-        if (!$this -> remote) {
-            $actions -> addContent(new PostShareButton(ServerURL::absolute(
-                '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
-            )));
+        if ($this -> remoteObjectURI === null) {
+            $actions -> addContent(new PostShareButton($this -> postURL()));
         }
 
         if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0)) {
@@ -66,7 +66,7 @@ class PostActionBar extends Footer
 
             // Not on your own post - passing on your own writing is what your
             // profile is for.
-            if ($this -> postUserId !== Auth::id()) {
+            if ((int) $this -> userId !== Auth::id()) {
                 $actions -> addContent($this -> repostButton());
             }
 
@@ -76,11 +76,11 @@ class PostActionBar extends Footer
 
             $actions -> addContent($this -> bookmarkButton());
 
-            if ($this -> postUserId === Auth::id()) {
+            if ((int) $this -> userId === Auth::id()) {
                 $actions -> addContent($this -> pinButton());
                 $actions -> addContent(new PostEditButton());
                 $actions -> addContent($this -> deleteButton());
-            } elseif ($this -> postUserId !== 1) {
+            } elseif ((int) $this -> userId !== 1) {
                 // The admin's posts can't be reported (api/report.php rejects
                 // it - nobody could act on the report anyway).
                 $actions -> addContent($this -> reportButton());
@@ -104,7 +104,7 @@ class PostActionBar extends Footer
 
     protected function replyButton(): HTMLObject
     {
-        $link = new Anchor(ServerURL::absolute('/users/' . $this -> postUsername . '/' . $this -> postId), self::replyLabel($this -> replyCount));
+        $link = new Anchor($this -> postURL(), self::replyLabel($this -> replyCount));
         $link -> class = 'Button';
 
         $words = Strings::for(self::class);
@@ -115,6 +115,11 @@ class PostActionBar extends Footer
         $link -> attributes['title'] = $name;
 
         return $link;
+    }
+
+    private function postURL(): string
+    {
+        return ServerURL::absolute('/users/' . ($this -> author ?-> slug ?? '') . '/' . (int) $this -> postId);
     }
 
     /** The glyph, with the count beside it once there is one. */

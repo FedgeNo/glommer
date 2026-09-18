@@ -1,0 +1,92 @@
+.VLTGame { --vlt-cyan: #77f7ff; --vlt-pink: #fc63ff; --vlt-gold: #ffe7a1; --vlt-cell: clamp(52px, 11vh, 88px); color: #f1eaff; }
+.VLTGame .casino-header { padding-block: .5rem; }
+.VLTGame .casino-status { min-height: 0; margin-block: .35rem; }
+.VLTCabinet { position: relative; isolation: isolate; overflow: hidden; max-width: 1040px; margin: .5rem auto 1rem; padding: 1rem clamp(.6rem, 3vw, 2rem); border-radius: 2rem; border: 1px solid #b5a0ff88; background: radial-gradient(ellipse at 50% 25%, #36155488, #0b071e 75%), linear-gradient(130deg, #160e33, #070714); box-shadow: 0 20px 70px #0009, inset 0 0 0 5px #a980ff15, inset 0 0 50px #9e32fa25; }
+.VLTCabinet::before { content: ''; position: absolute; inset: 8px; z-index: -1; border: 1px solid #9b7ee944; border-radius: 1.6rem; background: radial-gradient(ellipse at 5% 50%, #1fe7fd20, transparent 45%), radial-gradient(ellipse at 95% 50%, #ef46ff20, transparent 45%); pointer-events: none; }
+.VLTScene { position: absolute; inset: 0; z-index: -1; pointer-events: none; mix-blend-mode: plus-lighter; }
+.VLTScene canvas { width: 100%; height: 100%; display: block; }
+.VLTMarquee { text-align: center; position: relative; }
+.VLTEyebrow { font: 700 .6rem/1.5 system-ui; letter-spacing: .4em; color: #bd9eea; margin: .1rem; }
+.VLTMarquee h1 { margin: 0; font: 950 clamp(2rem, 6vw, 4.6rem)/1.05 system-ui; letter-spacing: -.06em; color: #fff0cb; text-shadow: 0 2px #a9619f, 0 4px #472c67, 0 0 28px #fd77ff77; }
+.VLTTagline { margin: .4rem 0 .7rem; color: #c5b7dc; font: .8rem/1.3 system-ui; }
+.VLTMeters { display: flex; justify-content: space-between; align-items: center; gap: .5rem; max-width: 750px; margin: auto; padding: .5rem .8rem; border-radius: .8rem .8rem 0 0; background: linear-gradient(90deg, #1e1633ed, #371c48ed); font: 700 .65rem/1.4 system-ui; letter-spacing: .09em; }
+.VLTPower { color: var(--vlt-cyan); }
+.VLTPower.Charged { color: var(--vlt-gold); text-shadow: 0 0 12px #ffbb41; }
+.VLTWindow { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; max-width: 750px; margin: auto; padding: 8px; border: 3px solid #b293c5; border-radius: .6rem; background: #09071bef; box-shadow: 0 0 0 2px #54316e, 0 0 0 5px #d89ef224, 0 0 30px #b74cf54d, inset 0 0 25px #000; }
+.VLTReel { position: relative; overflow: hidden; height: calc(var(--vlt-cell) * 3); background: linear-gradient(#141332, #211639 50%, #111028); border-radius: .3rem; box-shadow: inset 2px 0 8px #0008; }
+.VLTReel::after { content: ''; pointer-events: none; position: absolute; inset: 0; z-index: 2; background: repeating-linear-gradient(to bottom, #c9adf099 0 2px, transparent 2px var(--vlt-cell)), linear-gradient(#05051780, transparent 18%, transparent 82%, #05051780); border-inline: 1px solid #d8c2ff55; border-bottom: 2px solid #c9adf099; box-sizing: border-box; border-radius: inherit; }
+.VLTStrip { will-change: transform; }
+.VLTSymbol { position: relative; display: grid; place-items: center; height: var(--vlt-cell); color: var(--symbol-color, #eee3ff); font: 900 calc(var(--vlt-cell) * .55)/1 system-ui; box-sizing: border-box; }
+.VLTSymbol svg { position: absolute; inset: 0; margin: auto; display: block; width: calc(var(--vlt-cell) * .76); height: calc(var(--vlt-cell) * .76); max-width: 80%; overflow: visible; filter: drop-shadow(0 3px 1px #000a) drop-shadow(0 0 5px var(--symbol-color)); }
+.VLTSymbol.Symbol0 { --symbol-color: #76f9ff; }
+.VLTSymbol.Symbol1 { --symbol-color: #b895ff; }
+.VLTSymbol.Symbol2 { --symbol-color: #66ffb9; }
+.VLTSymbol.Symbol3 { --symbol-color: #ffca73; }
+.VLTSymbol.Symbol4 { --symbol-color: #ff82dc; }
+.VLTSymbol.Symbol5 { --symbol-color: #fff0a0; }
+.VLTSymbol.Winning { background: radial-gradient(ellipse, #ffe29540, #fff0); box-shadow: inset 0 0 0 2px #ffde8599; border-radius: .3rem; }
+.VLTReadout { text-align: center; min-height: 92px; padding: .6rem 0 .4rem; }
+.VLTWinTitle { display: block; color: #cab8e6; letter-spacing: .2em; font: 800 .7rem/1.5 system-ui; }
+.VLTWinAmount { display: block; color: #f5e9ce; font: 900 clamp(1.8rem, 4vw, 3rem)/1.05 system-ui; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+.VLTResult { margin: .3rem 0 0; color: #d0c5e1; font-size: .8rem; }
+.VLTCabinet.Celebrating .VLTWinTitle { color: var(--vlt-gold); text-shadow: 0 0 15px #ffb52a; }
+.VLTCabinet.Celebrating .VLTWinAmount { color: #fff4c9; text-shadow: 0 0 20px #ffb52a99, 0 3px #7e4289; }
+.VLTCabinet.SuperWin .VLTWinTitle { font-size: clamp(1rem, 3vw, 1.7rem); letter-spacing: .12em; }
+.VLTCabinet.SuperWin { box-shadow: 0 20px 70px #0009, 0 0 35px #ecb45655, inset 0 0 80px #b73cec33; }
+.VLTForm { display: flex; align-items: end; justify-content: center; gap: .65rem; flex-wrap: wrap; margin: .2rem auto; max-width: 750px; }
+.VLTForm label { font: .65rem/1.6 system-ui; color: #cdbade; }
+.VLTForm select { display: block; min-height: 48px; border: 1px solid #9e85bb; border-radius: .6rem; background: #1c1530; color: #fff0d8; padding: .5rem; font: 700 .85rem system-ui; }
+.VLTForm button { cursor: pointer; min-height: 48px; border: 1px solid #a382bd; border-radius: .6rem; font: 800 .7rem system-ui; padding: .65rem 1rem; }
+.VLTForm .VLTSpin { flex: 1; max-width: 360px; min-width: 150px; color: #21102d; font-size: clamp(.8rem, 2vw, 1.05rem); letter-spacing: .07em; border: 1px solid #fff0b5; background: linear-gradient(165deg, #fff3b0 5%, #ffc565 48%, #f69663 50%, #ffc267); box-shadow: 0 4px #9f5164, 0 0 24px #f9b74344, inset 0 1px 2px #fff; }
+.VLTSpin:active { transform: translateY(2px); box-shadow: 0 2px #9f5164; }
+.VLTForm .VLTSound { color: #d0c3e6; background: #211734; font-weight: normal; }
+.VLTForm button:disabled, .VLTForm select:disabled { cursor: default; opacity: .55; }
+.VLTWins { display: flex; flex-wrap: wrap; gap: .35rem; justify-content: center; margin-top: .65rem; }
+.VLTWins button { cursor: pointer; padding: .4rem .7rem; min-height: 44px; color: #f7e1ae; background: #211232; border: 1px solid #765885; border-radius: 1rem; font-size: .7rem; }
+.VLTWins button[aria-pressed="true"] { border-color: #ffe09a; background: #61407b; }
+.VLTPaths, .VLTPaylines { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); pointer-events: none; z-index: 3; }
+.VLTPaths { filter: drop-shadow(0 0 5px #ffcb4d); opacity: 0; }
+.VLTPaylines polyline { fill: none; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0; vector-effect: non-scaling-stroke; }
+.VLTPaylines polyline.Matching { stroke-width: 2.5; }
+.VLTPaths polyline { fill: none; stroke: #fff2b9; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.VLTRules { max-width: 850px; margin: 1rem auto; font-size: .85rem; color: #c6b8d8; }
+.VLTRules summary { cursor: pointer; color: #ead4ae; padding: .5rem 0; }
+.VLTRules table { width: 100%; border-collapse: collapse; font-size: .8rem; text-align: left; }
+.VLTRules th, .VLTRules td { padding: .5rem .25rem; border-bottom: 1px solid #9076a633; }
+.VLTRules caption { padding: .6rem 0; text-align: left; }
+.VLTLineGuide { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; }
+.VLTLineGuide figure { margin: 0; padding: .3rem; background: #211631; border-radius: .4rem; text-align: center; }
+.VLTLineGuide svg { width: 100%; height: auto; }
+.VLTLineGuide polyline { fill: none; stroke: #e9c488; stroke-width: 5; }
+.VLTLineGuide circle { fill: #9b77b5; }
+@media (max-width: 600px) {
+    .VLTGame { --vlt-cell: clamp(50px, 14vw, 76px); }
+    .VLTCabinet { padding: .75rem .5rem; border-radius: 1.2rem; }
+    .VLTWindow { gap: 2px; padding: 4px; border-width: 2px; }
+    .VLTPaths, .VLTPaylines { inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
+    .VLTEyebrow { letter-spacing: .15em; }
+    .VLTMeters { font-size: .55rem; padding-inline: .3rem; }
+    .VLTForm { gap: .5rem; }
+    .VLTForm .VLTSound { min-height: 44px; padding: .4rem; flex-basis: 100%; max-width: 130px; }
+    .VLTLineGuide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .VLTPaylines polyline.Matching, .VLTPaths { animation: VLTLineFlash 1s ease-in-out 4 forwards; }
+    .VLTCabinet.Celebrating .VLTMarquee { animation: VLTGlow 2s ease-in-out 2; }
+    .VLTSymbol.Winning svg { animation: VLTLift 1.4s ease-in-out 2; }
+    @keyframes VLTGlow { 50% { filter: drop-shadow(0 0 18px #fd73dd); } }
+    @keyframes VLTLift { 50% { transform: scale(1.08) translateY(-2px); } }
+    @keyframes VLTLineFlash { 0%, 100% { opacity: 0; } 30%, 65% { opacity: 1; } }
+}
+@media (prefers-reduced-motion: reduce) {
+    .VLTPaylines polyline.Matching, .VLTPaths { animation: VLTLineHold 4s step-end forwards; }
+    @keyframes VLTLineHold { from { opacity: 1; } to { opacity: 0; } }
+}
+@media (min-width: 601px) and (max-height: 760px) {
+    .VLTGame { --vlt-cell: clamp(48px, 9vh, 65px); }
+    .VLTCabinet { padding-block: .7rem; }
+    .VLTMarquee h1 { font-size: 2.7rem; }
+    .VLTTagline { margin-block: .25rem .4rem; }
+    .VLTReadout { min-height: 76px; padding-block: .4rem; }
+    .VLTWinAmount { font-size: 2rem; }
+}

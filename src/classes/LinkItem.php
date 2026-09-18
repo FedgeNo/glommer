@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 class LinkItem extends FeedItem
 {
+    protected const HYDRATION_EXCLUSIONS = ['id'];
+
     public ?string $linkURL = null;
     public ?string $title = null;
     public ?string $description = null;
-    public ?ImageItem $image = null;
-
-    public function __construct(string $link_url, ?string $title = null, ?string $description = null, ?ImageItem $image = null)
-    {
-        parent::__construct();
-
-        $this -> linkURL = $link_url;
-        $this -> title = $title;
-        $this -> description = $description;
-        $this -> image = $image;
-    }
+    /** @var FeedItem[] */
+    public array $items = [];
 
     public function toDOM(): \DOMElement
     {
@@ -30,11 +23,11 @@ class LinkItem extends FeedItem
         $link -> attributes['target'] = '_blank';
         $link -> attributes['rel'] = 'noopener';
 
-        if ($this -> image !== null) {
-            $image = new LinkItemImage();
-            $image -> src = $this -> image -> imageURL();
-            $image -> alt = (string) (Strings::for(self::class)['alt'] ?? '');
-            $link -> addContent($image);
+        foreach ($this -> items as $item) {
+            if ($item instanceof ImageItem) {
+                $link -> addContent(new LinkItemImage($item));
+                break;
+            }
         }
 
         $text = new LinkItemText();

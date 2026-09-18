@@ -38,30 +38,10 @@ class InputField extends Div
 
     public function toDOM(): \DOMElement
     {
-        $label = new Label();
-        $label -> for = $this -> name;
-        $label -> class = $this -> labelVisible ? null : 'visually-hidden';
-        $label -> contents[] = $this -> label;
-        $this -> contents[] = $label;
+        $this -> contents[] = new FieldLabel($this);
 
-        $input = self::inputForType($this -> type);
-        $input -> name = $this -> name;
+        $input = self::inputForType($this -> type, $this);
         $input -> id = $this -> name;
-        $input -> value = $this -> value;
-        $input -> attributes['placeholder'] = $this -> placeholder;
-
-        if ($this -> maxLength !== null) {
-            $input -> attributes['maxlength'] = (string) $this -> maxLength;
-        }
-
-        if ($this -> autocomplete !== null) {
-            $input -> attributes['autocomplete'] = $this -> autocomplete;
-        }
-
-        if ($this -> error !== null) {
-            $input -> attributes['aria-invalid'] = 'true';
-            $input -> attributes['aria-describedby'] = $this -> name . 'Error';
-        }
 
         $this -> contents[] = $input;
 
@@ -86,12 +66,12 @@ class InputField extends Div
         return $error;
     }
 
-    protected static function inputForType(string $type): Input
+    protected static function inputForType(string $type, array|object|null $properties = null): Input
     {
         return match ($type) {
-            'email' => new EmailInput(),
-            'password' => new PasswordInput(),
-            default => new TextInput(),
+            'email' => new EmailInput($properties),
+            'password' => new PasswordInput($properties),
+            default => new TextInput($properties),
         };
     }
 }

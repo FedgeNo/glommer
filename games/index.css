@@ -1,0 +1,23 @@
+.casino-game-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin: 35px 0; }
+.casino-game-grid > .casino-ad { grid-column: 1 / -1; margin-block: 8px; min-width: 0; }
+.casino-game-card { display: block; position: relative; min-width: 0; padding: 32px; overflow: hidden; border: 1px solid #aa8a4b77; border-radius: 12px; background-color: #091b24; background-image: linear-gradient(90deg, #041017ed, #041017aa 48%, #04101730), var(--card-art); background-size: cover; background-position: center, 68% center; text-decoration: none; color: #f3e6c8; box-shadow: 0 20px 50px #0005, inset 0 0 0 7px #0002; }
+.casino-game-card > small, .casino-game-card h2, .casino-game-card p, .casino-enter { position: relative; }
+.casino-game-card small { color: #ccbd8e; letter-spacing: .15em; font-size: 11px; }
+.casino-game-card h2 { font: 36px Georgia, serif; margin: 18px 0; }
+.casino-game-card p { color: #d1dcdb; max-width: 280px; }
+.casino-game-card h2, .casino-game-card p, .casino-game-card small { text-shadow: 0 2px 5px #000b; }
+.casino-enter { display: inline-block; padding: 12px 20px; border: 1px solid #b8a061; border-radius: 4px; margin-top: 25px; color: #f3dfb1; background: #07151dcc; }
+.RouletteLobbyCard { --card-art: url('/games/cards/roulette.svg'); }
+.PokerLobbyCard { --card-art: url('/games/cards/poker.svg'); }
+.VLTLobbyCard { --card-art: url('/games/cards/vlt.svg'); border-color: #c79ae1; }
+.SingularityLobbyCard { --card-art: url('/games/cards/singularity.svg'); border-color: #d49e58; }
+.PachinkoLobbyCard { --card-art: url('/games/cards/pachinko.svg'); border-color: #79d6ee; }
+.DerbyLobbyCard { --card-art: url('/games/cards/derby.svg'); border-color: #bd845c; }
+@media (max-width: 600px) {
+    .casino-game-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 24px 0; }
+    .casino-game-card { padding: 18px 12px; }
+    .casino-game-card h2 { font-size: clamp(20px, 5vw, 28px); }
+    .casino-game-card small { font-size: 9px; letter-spacing: .06em; }
+    .casino-game-card p { font-size: 13px; }
+    .casino-enter { padding: 10px 8px; font-size: 12px; }
+}

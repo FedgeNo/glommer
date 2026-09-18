@@ -204,19 +204,11 @@ INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `link
         $mentions = Mention::indexPost($post_id, $description_ops, false);
         Timeline::fanOutPost((int) $this -> userId, $post_id);
 
-        $post = new Post();
+        $post = new Post($this);
         $post -> postId = $post_id;
         $post -> userId = (int) $this -> userId;
-        $post -> title = $this -> title;
-        $post -> description = $this -> description;
-        $post -> descriptionDelta = $this -> descriptionDelta;
-        $post -> linkURL = $this -> linkURL;
         $post -> createdAt = date('Y-m-d H:i:s');
-        $post -> latitude = $this -> latitude;
-        $post -> longitude = $this -> longitude;
         $post -> placeLabel = $this -> latitude === null ? null : (PostLocation::forPosts([$post_id])[$post_id]['placeLabel'] ?? null);
-        $post -> sensitive = $this -> sensitive;
-        $post -> contentWarning = $this -> contentWarning;
         $post -> remoteObjectURI = null;
         $post -> author = $author;
 

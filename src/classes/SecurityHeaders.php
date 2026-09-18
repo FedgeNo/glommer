@@ -16,11 +16,10 @@ class SecurityHeaders
     }
 
     /**
-     * The policy used for ordinary pages, with one deliberate relaxation for
-     * map pages. Maps necessarily fetch images from the administrator's tile
-     * provider, and Leaflet's own marker images come from its pinned CDN.
+     * Ordinary pages use the restrictive defaults. Maps permit external tile
+     * images; game pages permit the configured advertising iframe origin.
      */
-    public static function contentSecurityPolicy(bool $allows_map_images = false): string
+    public static function contentSecurityPolicy(bool $allows_map_images = false, bool $allows_game_ads = false): string
     {
         $nonce = self::nonce();
         $image_sources = '\'self\' data: blob:';
@@ -60,7 +59,7 @@ class SecurityHeaders
             'img-src ' . $image_sources,
             'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
-            'frame-src https://challenges.cloudflare.com https://www.google.com',
+            'frame-src https://challenges.cloudflare.com https://www.google.com' . ($allows_game_ads ? ' https://a.magsrv.com' : ''),
             // The socket is this host's own, on its own port - the client builds
             // that address from window.location.hostname and can reach nowhere
             // else. Naming the host rather than wildcarding it keeps connect-src
@@ -77,11 +76,11 @@ class SecurityHeaders
         ]);
     }
 
-    public static function send(bool $allows_map_images = false): void
+    public static function send(bool $allows_map_images = false, bool $allows_game_ads = false): void
     {
         $is_https = ServerURL::isHTTPS();
 
-        header('Content-Security-Policy: ' . self::contentSecurityPolicy($allows_map_images));
+        header('Content-Security-Policy: ' . self::contentSecurityPolicy($allows_map_images, $allows_game_ads));
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: DENY');
         header('Referrer-Policy: strict-origin-when-cross-origin');

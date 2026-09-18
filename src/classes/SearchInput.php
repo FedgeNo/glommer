@@ -10,7 +10,7 @@ class SearchInput extends TextInput
 {
     public ?string $class = 'SearchInput';
 
-    public string $placeholder = '';
+    public ?string $placeholder = '';
 
     public function toDOM(): \DOMElement
     {

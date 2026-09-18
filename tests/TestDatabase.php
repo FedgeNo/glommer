@@ -23,6 +23,8 @@ declare(strict_types=1);
 final class TestDatabase
 {
     private static ?string $name = null;
+    private static ?string $mediaDirectory = null;
+    private static array $mediaPaths = [];
 
     public static function setUp(): bool
     {
@@ -76,6 +78,19 @@ final class TestDatabase
 
         self::$name = $test_db;
 
+        // Fixture IDs overlap real accounts and posts. Isolate files as well
+        // as rows before any model can delete media belonging to those IDs.
+        self::$mediaDirectory = sys_get_temp_dir() . '/glommer-test-media-' . bin2hex(random_bytes(8));
+        foreach ([[User::class, 'avatarDirectory', 'avatars'],
+            [UploadProcessor::class, 'uploadDirectory', 'media'],
+            [UploadProcessor::class, 'originalsDirectory', 'originals']] as [$class, $name, $subdirectory]) {
+            $property = new \ReflectionProperty($class, $name);
+            self::$mediaPaths[] = [$property, $property -> getValue()];
+            $directory = self::$mediaDirectory . '/' . $subdirectory;
+            if (!mkdir($directory, 0700, true)) throw new \RuntimeException('Cannot isolate test media.');
+            $property -> setValue(null, $directory);
+        }
+
         // Points DB::connection() - the app's own singleton, used by every
         // model class exactly as in production - at the throwaway database
         // via the same root/socket path, rather than teaching it a second
@@ -112,6 +127,18 @@ final class TestDatabase
         } catch (\Throwable $exception) {
             fwrite(STDERR, 'Could not drop the test database `' . $name . '`: ' . $exception -> getMessage() . "\n");
         }
+
+        foreach (self::$mediaPaths as [$property, $value]) $property -> setValue(null, $value);
+        self::$mediaPaths = [];
+        if (self::$mediaDirectory !== null && is_dir(self::$mediaDirectory)) {
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(self::$mediaDirectory, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+            foreach ($files as $file) {
+                if ($file -> isDir() && !$file -> isLink()) rmdir($file -> getPathname());
+                else unlink($file -> getPathname());
+            }
+            rmdir(self::$mediaDirectory);
+        }
+        self::$mediaDirectory = null;
     }
 
     private static function isSafeIdentifier(string $name): bool

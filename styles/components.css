@@ -574,7 +574,7 @@ emoji-picker.Active {
    still (the buttons wrap), and take the smaller reservation rather than
    leaving a gap on every desktop to suit a phone. */
 .Composer {
-    min-height: 21rem;
+    min-height: calc(21rem + 7px);
     position: relative;
 }
 

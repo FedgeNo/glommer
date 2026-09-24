@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Api } from '../../scripts/Runtime.js';
+import { Api, Strings } from '../../scripts/Runtime.js';
 import { Dialog, FormForm, MessageCrypto, Post } from '../../scripts/HTMLObjects.js';
 import { MessageUnlockForm, PostEditor } from '../../scripts/Controllers.js';
 
@@ -9,6 +9,7 @@ import { MessageUnlockForm, PostEditor } from '../../scripts/Controllers.js';
 const cases = [
     ['AccountDeleteForm', 'delete-account', 'currentPassword'],
     ['AccountMigrationForm', 'account-migration', 'movedTo alsoKnownAs'],
+    ['APITokenRotateForm', 'rotate-api-token', ''],
     ['AvatarUploadForm', 'upload-avatar', 'avatar'],
     ['ServerBlockForm', 'block-server', 'domain reason'],
     ['BotProtectionSettingsForm', 'turnstile-settings', 'turnstileSiteKey turnstileSecretKey recaptchaSiteKey recaptchaSecretKey'],
@@ -38,6 +39,44 @@ const cases = [
 
 const tick = () => new Promise(resolve => setTimeout(resolve, 0));
 const tests = {};
+
+tests['API token form submits without navigation and replaces the visible token'] = async () => {
+    const setting = document.createElement('div');
+    setting.setAttribute('class', 'APITokenSetting');
+    const form = new FormForm().toDOM();
+    form.classList.add('APITokenRotateForm');
+    form.setAttribute('action', '/rotate-api-token');
+    const button = document.createElement('button');
+    button.setAttribute('type', 'submit');
+    form.append(button);
+    setting.append(form);
+    document.body.append(setting);
+
+    const original = Api.post;
+    let calls = 0;
+    Api.post = async path => {
+        TestCase.assertEquals('/api/rotate-api-token', path);
+        calls++;
+        return { token: 'glom_test_' + calls };
+    };
+
+    try {
+        for (let attempt = 1; attempt <= 2; attempt++) {
+            const event = new window.Event('submit', { bubbles: true, cancelable: true });
+            form.dispatchEvent(event);
+            TestCase.assertTrue(event.defaultPrevented, 'the browser must not submit the form as a page');
+            await tick();
+            TestCase.assertTrue(form.isConnected);
+            TestCase.assertEquals('glom_test_' + attempt, setting.querySelector('.APITokenValue')?.textContent);
+            TestCase.assertEquals(1, setting.querySelectorAll('.APITokenValue').length);
+            TestCase.assertEquals(Strings.for('APITokenSetting').rotate, button.textContent);
+        }
+        TestCase.assertEquals(2, calls);
+    } finally {
+        Api.post = original;
+        setting.remove();
+    }
+};
 
 for (const encrypted of [false, true]) {
     tests[(encrypted ? 'encrypted' : 'plaintext') + ' message completion preserves the next message'] = async () => {

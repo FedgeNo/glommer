@@ -2188,6 +2188,35 @@ ReadyHandler.add(AccountMigrationForm.init);
 })();
 export const AccountMigrationForm = AccountMigrationFormModule.AccountMigrationForm;
 
+// APITokenRotateForm.js
+const APITokenRotateFormModule = (() => {
+class APITokenRotateForm {
+    static init() {
+        FormForm.attach('APITokenRotateForm', async (form, { signal }) => {
+            const data = await Api.post('/api/rotate-api-token', undefined, { form, signal });
+            if (!data) return;
+
+            const setting = form.closest('.APITokenSetting');
+            let value = setting.querySelector('.APITokenValue');
+
+            if (!value) {
+                value = document.createElement('code');
+                value.setAttribute('class', 'APITokenValue');
+                form.before(value);
+            }
+
+            value.textContent = data.token;
+            form.querySelector('button[type="submit"]').textContent = Strings.for('APITokenSetting').rotate || '';
+        });
+    }
+}
+
+ReadyHandler.add(APITokenRotateForm.init);
+
+    return { APITokenRotateForm };
+})();
+export const APITokenRotateForm = APITokenRotateFormModule.APITokenRotateForm;
+
 // AvatarUploadForm.js
 const AvatarUploadFormModule = (() => {
 class AvatarUploadForm {

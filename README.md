@@ -6,6 +6,8 @@ built as a plain PHP 8 + MySQL application with **no frontend framework and no
 Composer dependencies**. Everything, down to the SMTP client, the WebSocket
 daemon, and the HTML renderer, is hand-rolled.
 
+See [glommer.org](https://glommer.org/) for an example of a running instance.
+
 This README is organized into numbered sections. Several messages in the
 installer (`bin/install.php`) point here by section number when a step needs
 manual follow-up - §6 for TLS, §7 for the background services, §8 for the

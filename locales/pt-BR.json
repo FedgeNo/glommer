@@ -249,7 +249,8 @@
         "deleteAccount": "Excluir conta",
         "theme": "Tema",
         "sessions": "Sessões",
-        "fediverse": "Fediverso"
+        "fediverse": "Fediverso",
+        "apiToken": "Token de API"
     },
     "AdminModSettings": {
         "queues": "Filas",
@@ -1825,5 +1826,9 @@
             "other": "Este link expira em {count} horas."
         },
         "ignoreNotice": "Se você não fez esta solicitação, pode ignorar este e-mail."
+    },
+    "APITokenSetting": {
+        "issue": "Criar token de API",
+        "rotate": "Substituir token de API"
     }
 }

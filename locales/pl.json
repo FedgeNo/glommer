@@ -1229,7 +1229,8 @@
         "deleteAccount": "Usuwanie konta",
         "theme": "Motyw",
         "sessions": "Sesje",
-        "fediverse": "Fediwersum"
+        "fediverse": "Fediwersum",
+        "apiToken": "Token API"
     },
     "AdminModSettings": {
         "queues": "Kolejki",
@@ -1843,5 +1844,9 @@
         "uploadTooLarge": "Przesyłane dane są zbyt duże. Maksymalny łączny rozmiar to {size} B.",
         "fileTooLarge": "Jeden z Twoich plików przekracza limit przesyłania wynoszący {size} B.",
         "pollNeedsOptions": "Ankieta wymaga co najmniej {count} różnych odpowiedzi."
+    },
+    "APITokenSetting": {
+        "issue": "Utwórz token API",
+        "rotate": "Zastąp token API"
     }
 }

@@ -249,7 +249,8 @@
         "deleteAccount": "Ištrinti paskyrą",
         "theme": "Tema",
         "sessions": "Seansai",
-        "fediverse": "Fedivisata"
+        "fediverse": "Fedivisata",
+        "apiToken": "API prieigos raktas"
     },
     "AdminModSettings": {
         "queues": "Eilės",
@@ -1843,5 +1844,9 @@
             "other": "Ši nuoroda nustos galioti po {count} valandų."
         },
         "ignoreNotice": "Jei to neprašėte, šio laiško galite nepaisyti."
+    },
+    "APITokenSetting": {
+        "issue": "Sukurti API prieigos raktą",
+        "rotate": "Pakeisti API prieigos raktą"
     }
 }

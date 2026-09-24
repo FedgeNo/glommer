@@ -1538,7 +1538,8 @@
         "sessions": "Сессиялар",
         "theme": "Тема",
         "twoFactorAuthentication": "Эки факторлуу аныктыгын текшерүү",
-        "videoCalling": "Видео чалуу"
+        "videoCalling": "Видео чалуу",
+        "apiToken": "API токени"
     },
     "UsersPage": {
         "fediverseBefore": "Федиверс колдонуучуларынын тизмесин ",
@@ -1807,5 +1808,9 @@
         "youVeAlreadyReportedThis": "Муну мурунтан эле даттангансыз.",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Жооп албаган көп билдирүү жөнөттүңүз - дагы жөнөтүүдөн мурун алардын жооп берүүсүн күтүңүз.",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Редакторуңуз эскирген. Баракты жаңыртып, кайра аракет кылыңыз."
+    },
+    "APITokenSetting": {
+        "issue": "API токенин түзүү",
+        "rotate": "API токенин алмаштыруу"
     }
 }

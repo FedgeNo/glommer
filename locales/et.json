@@ -1408,7 +1408,8 @@
         "deleteAccount": "Konto kustutamine",
         "theme": "Kujundus",
         "sessions": "Seansid",
-        "fediverse": "Födiversum"
+        "fediverse": "Födiversum",
+        "apiToken": "API token"
     },
     "AdminModSettings": {
         "queues": "Järjekorrad",
@@ -1807,5 +1808,9 @@
             "other": "Link aegub {count} tunni pärast."
         },
         "ignoreNotice": "Kui sa seda ei taotlenud, võid kirja eirata."
+    },
+    "APITokenSetting": {
+        "issue": "Loo API token",
+        "rotate": "Asenda API token"
     }
 }

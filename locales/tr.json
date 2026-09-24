@@ -1420,7 +1420,8 @@
         "deleteAccount": "Hesabı Sil",
         "theme": "Tema",
         "sessions": "Oturumlar",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API belirteci"
     },
     "AdminModSettings": {
         "queues": "Kuyruklar",
@@ -1807,5 +1808,9 @@
     },
     "UserRSSFeed": {
         "title": "{site} sitesinde {name} gönderileri"
+    },
+    "APITokenSetting": {
+        "issue": "API belirteci oluştur",
+        "rotate": "API belirtecini değiştir"
     }
 }

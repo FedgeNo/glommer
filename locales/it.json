@@ -1515,7 +1515,8 @@
         "deleteAccount": "Elimina account",
         "theme": "Tema",
         "sessions": "Sessioni",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "Token API"
     },
     "AdminModSettings": {
         "queues": "Code",
@@ -1825,5 +1826,9 @@
         "uploadTooLarge": "Il caricamento è troppo grande. La dimensione totale massima è {size}B.",
         "fileTooLarge": "Uno dei file supera il limite di caricamento di {size}B.",
         "pollNeedsOptions": "Un sondaggio richiede almeno {count} opzioni diverse."
+    },
+    "APITokenSetting": {
+        "issue": "Crea token API",
+        "rotate": "Sostituisci token API"
     }
 }

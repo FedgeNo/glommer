@@ -1246,7 +1246,8 @@
         "deleteAccount": "Suprimeix el compte",
         "theme": "Tema",
         "sessions": "Sessions",
-        "fediverse": "Fedivers"
+        "fediverse": "Fedivers",
+        "apiToken": "Token d’API"
     },
     "AdminModSettings": {
         "queues": "Cues",
@@ -1825,5 +1826,9 @@
         "uploadTooLarge": "La pujada és massa gran. La mida total màxima és de {size} B.",
         "fileTooLarge": "Un dels fitxers supera el límit de pujada de {size} B.",
         "pollNeedsOptions": "Una enquesta necessita almenys {count} opcions diferents."
+    },
+    "APITokenSetting": {
+        "issue": "Crea un token d’API",
+        "rotate": "Substitueix el token d’API"
     }
 }

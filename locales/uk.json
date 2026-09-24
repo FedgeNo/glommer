@@ -58,7 +58,8 @@
         "deleteAccount": "Видалити обліковий запис",
         "theme": "Тема",
         "sessions": "Сеанси",
-        "fediverse": "Федіверс"
+        "fediverse": "Федіверс",
+        "apiToken": "Токен API"
     },
     "AdminModSettings": {
         "queues": "Черги",
@@ -1843,5 +1844,9 @@
             "many": "Це посилання дійсне ще {count} годин."
         },
         "ignoreNotice": "Якщо ви не робили цього запиту, можете просто ігнорувати цей лист."
+    },
+    "APITokenSetting": {
+        "issue": "Створити токен API",
+        "rotate": "Замінити токен API"
     }
 }

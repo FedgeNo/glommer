@@ -1420,7 +1420,8 @@
         "deleteAccount": "Konto löschen",
         "theme": "Design",
         "sessions": "Sitzungen",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API-Token"
     },
     "AdminModSettings": {
         "queues": "Warteschlangen",
@@ -1807,5 +1808,9 @@
     },
     "UserRSSFeed": {
         "title": "Beiträge von {name} auf {site}"
+    },
+    "APITokenSetting": {
+        "issue": "API-Token erstellen",
+        "rotate": "API-Token ersetzen"
     }
 }

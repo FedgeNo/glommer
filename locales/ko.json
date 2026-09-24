@@ -1167,7 +1167,8 @@
         "deleteAccount": "계정 삭제",
         "theme": "테마",
         "sessions": "세션",
-        "fediverse": "페디버스"
+        "fediverse": "페디버스",
+        "apiToken": "API 토큰"
     },
     "AdminModSettings": {
         "queues": "대기열",
@@ -1789,5 +1790,9 @@
             "other": "이 링크는 {count}시간 후에 만료됩니다."
         },
         "ignoreNotice": "요청하지 않으셨다면 이 이메일은 무시하셔도 됩니다."
+    },
+    "APITokenSetting": {
+        "issue": "API 토큰 만들기",
+        "rotate": "API 토큰 교체"
     }
 }

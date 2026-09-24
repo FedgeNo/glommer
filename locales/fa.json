@@ -1538,7 +1538,8 @@
         "sessions": "نشست‌ها",
         "theme": "پوسته",
         "twoFactorAuthentication": "احراز هویت دوعاملی",
-        "videoCalling": "تماس تصویری"
+        "videoCalling": "تماس تصویری",
+        "apiToken": "توکن API"
     },
     "UsersPage": {
         "fediverseBefore": "می‌توانید فهرستی از کاربران فدیورس را در ",
@@ -1807,5 +1808,9 @@
         "youVeAlreadyReportedThis": "این را از پیش گزارش داده‌اید.",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "پیام‌های زیادی بدون پاسخ فرستاده‌اید - پیش از ارسال بیشتر منتظر پاسخ آن‌ها بمانید.",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "ویرایشگر شما قدیمی است. صفحه را تازه‌سازی کنید و دوباره تلاش کنید."
+    },
+    "APITokenSetting": {
+        "issue": "ایجاد توکن API",
+        "rotate": "جایگزینی توکن API"
     }
 }

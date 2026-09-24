@@ -1413,5 +1413,8 @@
     "WelcomeBanner.paragraphs.2": "bbdcd4493339860e64cda8501e5bace6a41fa9f6",
     "WelcomeBanner.paragraphs.3": "2decf457d03ffd8b44cdcf1b3d63e09ef3f407b4",
     "WelcomeBanner.paragraphs.4": "c7381e5fdc7519b5e622a6fa9e94ae00ebf7abb8",
-    "WelcomeBanner.paragraphs.5": "2a5ad715637bb6366fb5c83782710e002ba1d8ff"
+    "WelcomeBanner.paragraphs.5": "2a5ad715637bb6366fb5c83782710e002ba1d8ff",
+    "UserSettings.apiToken": "731c458c5b55d44c8bdeeca8cb70b998bf0f8bfe",
+    "APITokenSetting.issue": "60ca201e2d9948632d3a49e522fd37424d07f43f",
+    "APITokenSetting.rotate": "e8d4264c7cc02465caad1731f7bfe11d8f6cd3b3"
 }

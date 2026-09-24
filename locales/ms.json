@@ -1520,7 +1520,8 @@
         "sessions": "Sesi",
         "theme": "Tema",
         "twoFactorAuthentication": "Pengesahan Dua Faktor",
-        "videoCalling": "Panggilan Video"
+        "videoCalling": "Panggilan Video",
+        "apiToken": "Token API"
     },
     "UsersPage": {
         "fediverseBefore": "Anda boleh mengikuti senarai pengguna Fediverse di ",
@@ -1789,5 +1790,9 @@
         "youVeAlreadyReportedThis": "Anda sudah melaporkan ini.",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Anda telah menghantar banyak mesej tanpa balasan - tunggu mereka membalas sebelum menghantar lagi.",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Penyunting anda sudah lapuk. Sila muat semula halaman dan cuba lagi."
+    },
+    "APITokenSetting": {
+        "issue": "Cipta token API",
+        "rotate": "Gantikan token API"
     }
 }

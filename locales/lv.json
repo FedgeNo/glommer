@@ -1800,7 +1800,8 @@
         "deleteAccount": "Dzēst kontu",
         "theme": "Motīvs",
         "sessions": "Sesijas",
-        "fediverse": "Fediverss"
+        "fediverse": "Fediverss",
+        "apiToken": "API pilnvara"
     },
     "UsersPage": {
         "fediverseBefore": "Fediversa lietotāju sarakstam varat sekot sadaļā ",
@@ -1825,5 +1826,9 @@
         "incoming": "Ienākošs video zvans",
         "accept": "Pieņemt",
         "decline": "Noraidīt"
+    },
+    "APITokenSetting": {
+        "issue": "Izveidot API pilnvaru",
+        "rotate": "Aizstāt API pilnvaru"
     }
 }

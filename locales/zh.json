@@ -1764,7 +1764,8 @@
         "sessions": "登录会话",
         "theme": "主题",
         "twoFactorAuthentication": "双重验证",
-        "videoCalling": "视频通话"
+        "videoCalling": "视频通话",
+        "apiToken": "API 令牌"
     },
     "UsersPage": {
         "fediverseAfter": "。",
@@ -1789,5 +1790,9 @@
         "end": "结束通话",
         "incoming": "视频通话来电",
         "permissionError": "无法使用您的摄像头或麦克风，请检查浏览器对本站的权限设置。"
+    },
+    "APITokenSetting": {
+        "issue": "创建 API 令牌",
+        "rotate": "替换 API 令牌"
     }
 }

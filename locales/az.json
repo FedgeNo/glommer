@@ -1183,7 +1183,8 @@
         "deleteAccount": "Hesabı sil",
         "theme": "Mövzu",
         "sessions": "Sessiyalar",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API tokeni"
     },
     "AdminModSettings": {
         "queues": "Növbələr",
@@ -1807,5 +1808,9 @@
             "other": "Bu linkin müddəti {count} saat ərzində bitir."
         },
         "ignoreNotice": "Bunu siz istəməmisinizsə, bu e-poçtu nəzərə almaya bilərsiniz."
+    },
+    "APITokenSetting": {
+        "issue": "API tokeni yarat",
+        "rotate": "API tokenini dəyişdir"
     }
 }

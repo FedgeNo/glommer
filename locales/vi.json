@@ -1764,7 +1764,8 @@
         "sessions": "Phiên Đăng Nhập",
         "theme": "Giao Diện",
         "twoFactorAuthentication": "Xác Thực Hai Yếu Tố",
-        "videoCalling": "Gọi Video"
+        "videoCalling": "Gọi Video",
+        "apiToken": "Mã thông báo API"
     },
     "UsersPage": {
         "fediverseAfter": ".",
@@ -1789,5 +1790,9 @@
         "end": "Kết Thúc Gọi",
         "incoming": "Cuộc Gọi Video Đến",
         "permissionError": "Không thể dùng máy ảnh hoặc micrô của bạn. Hãy kiểm tra quyền của trình duyệt đối với trang này."
+    },
+    "APITokenSetting": {
+        "issue": "Tạo mã thông báo API",
+        "rotate": "Thay thế mã thông báo API"
     }
 }

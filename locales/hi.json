@@ -1454,7 +1454,8 @@
         "deleteAccount": "खाता हटाएं",
         "theme": "थीम",
         "sessions": "सेशन",
-        "fediverse": "फ़ेडिवर्स"
+        "fediverse": "फ़ेडिवर्स",
+        "apiToken": "API टोकन"
     },
     "UsersPage": {
         "fediverseBefore": "आप फ़ेडिवर्स उपयोगकर्ताओं की एक सूची ",
@@ -1807,5 +1808,9 @@
         "uploadTooLarge": "आपका अपलोड बहुत बड़ा है। कुल अपलोड का ज़्यादा से ज़्यादा साइज़ {size}B है।",
         "fileTooLarge": "आपकी एक फ़ाइल {size}B अपलोड सीमा से बड़ी है।",
         "pollNeedsOptions": "पोल के लिए कम से कम {count} अलग-अलग विकल्प ज़रूरी हैं।"
+    },
+    "APITokenSetting": {
+        "issue": "API टोकन बनाएँ",
+        "rotate": "API टोकन बदलें"
     }
 }

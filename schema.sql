@@ -1132,6 +1132,16 @@ CREATE TABLE `Settings` (
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `APITokens` (
+  `userId` int(10) unsigned NOT NULL,
+  `tokenHash` char(64) NOT NULL,
+  `tokenCiphertext` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `tokenHash` (`tokenHash`),
+  CONSTRAINT `APITokens_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `RememberTokens` (
   `tokenId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,

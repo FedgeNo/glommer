@@ -1164,7 +1164,8 @@
         "deleteAccount": "Hapus Akun",
         "theme": "Tema",
         "sessions": "Sesi",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "Token API"
     },
     "AdminModSettings": {
         "queues": "Antrean",
@@ -1789,5 +1790,9 @@
         "signallingPass": "Titik akhir dapat dijangkau dan menerima permintaan sebagai terautentikasi sebelum menolak isinya, yaitu semua yang dibutuhkan sinyal nyata.",
         "signallingAuthFail": "Titik akhir menolak permintaan sebagai tidak terautentikasi ({status}). Sinyal antara dua orang nyata juga akan ditolak sehingga panggilan tidak dapat disiapkan.",
         "signallingUnexpected": "Titik akhir menjawab {status}, yang bukan jawaban semestinya untuk permintaan ini—sesuatu di depannya mengganggu."
+    },
+    "APITokenSetting": {
+        "issue": "Buat token API",
+        "rotate": "Ganti token API"
     }
 }

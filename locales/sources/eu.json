@@ -1395,5 +1395,8 @@
     "VideoCall.declined": "3aba150cca5e396ebb026cff84486285325b86a1",
     "VideoCall.end": "a973eb0ffd8950e0ffe425ac5da1f0bf2bbc55af",
     "VideoCall.incoming": "d8164ce5943f99202c739e1db61425b792b5841e",
-    "VideoCall.permissionError": "86df925bbebd7d6677a22a4749f673131e1e6ffb"
+    "VideoCall.permissionError": "86df925bbebd7d6677a22a4749f673131e1e6ffb",
+    "UserSettings.apiToken": "731c458c5b55d44c8bdeeca8cb70b998bf0f8bfe",
+    "APITokenSetting.issue": "60ca201e2d9948632d3a49e522fd37424d07f43f",
+    "APITokenSetting.rotate": "e8d4264c7cc02465caad1731f7bfe11d8f6cd3b3"
 }

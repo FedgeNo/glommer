@@ -249,7 +249,8 @@
         "deleteAccount": "Ezabatu kontua",
         "theme": "Gaia",
         "sessions": "Saioak",
-        "fediverse": "Fedibertsoa"
+        "fediverse": "Fedibertsoa",
+        "apiToken": "API tokena"
     },
     "AdminModSettings": {
         "queues": "Ilarak",
@@ -1807,5 +1808,9 @@
         "invalid": "Egiaztapen-esteka hori baliogabea da edo iraungi da.",
         "confirm": "Berretsi helbide elektroniko hau egiaztatu nahi duzula.",
         "continue": "Jarraitu"
+    },
+    "APITokenSetting": {
+        "issue": "Sortu API tokena",
+        "rotate": "Ordeztu API tokena"
     }
 }

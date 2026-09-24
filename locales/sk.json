@@ -249,7 +249,8 @@
         "deleteAccount": "Odstránenie účtu",
         "theme": "Motív",
         "sessions": "Relácie",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "Token API"
     },
     "AdminModSettings": {
         "queues": "Fronty",
@@ -1843,5 +1844,9 @@
             "other": "Platnosť tohto odkazu vyprší o {count} hodín."
         },
         "ignoreNotice": "Ak ste o to nepožiadali, tento e-mail môžete ignorovať."
+    },
+    "APITokenSetting": {
+        "issue": "Vytvoriť token API",
+        "rotate": "Nahradiť token API"
     }
 }

@@ -395,7 +395,8 @@
         "deleteAccount": "Account verwijderen",
         "theme": "Thema",
         "sessions": "Sessies",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API-token"
     },
     "AdminModSettings": {
         "queues": "Wachtrijen",
@@ -1807,5 +1808,9 @@
             "other": "Deze link verloopt over {count} uur."
         },
         "ignoreNotice": "Als jij dit niet hebt aangevraagd, kun je deze e-mail negeren."
+    },
+    "APITokenSetting": {
+        "issue": "API-token aanmaken",
+        "rotate": "API-token vervangen"
     }
 }

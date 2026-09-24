@@ -83,6 +83,7 @@
     RewriteCond %{THE_REQUEST} \s/+[^?\s]*\.php[\s?] [NC]
     RewriteRule ^ 404.php [L]
 
+    RewriteRule ^api/v1/statuses$ api/mastodon-statuses.php [L,QSA]
     RewriteRule ^api/([a-zA-Z0-9-]+)$ api/$1.php [L,QSA]
 
     RewriteRule ^games$ /games/ [R=301,L]
@@ -125,6 +126,7 @@
     RewriteRule ^reset-password$ reset-password.php [L,QSA]
     RewriteRule ^settings$ /user-settings [R=301,L,QSA]
     RewriteRule ^user-settings$ user-settings.php [L,QSA]
+    RewriteRule ^rotate-api-token$ rotate-api-token.php [L,QSA]
     RewriteRule ^drafts$ drafts.php [L,QSA]
     RewriteRule ^drafts/([0-9]+)$ drafts.php?draft=$1 [L,QSA]
     RewriteRule ^locations/([0-9]+)$ locations.php?place=$1 [L,QSA]

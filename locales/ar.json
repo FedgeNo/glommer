@@ -249,7 +249,8 @@
         "deleteAccount": "حذف الحساب",
         "theme": "السمة",
         "sessions": "الجلسات",
-        "fediverse": "الفيديفرس"
+        "fediverse": "الفيديفرس",
+        "apiToken": "رمز API"
     },
     "AdminModSettings": {
         "queues": "قوائم الانتظار",
@@ -1879,5 +1880,9 @@
             "many": "تنتهي صلاحية هذا الرابط خلال {count} ساعةً."
         },
         "ignoreNotice": "إذا لم تطلب هذا، يمكنك تجاهل هذه الرسالة."
+    },
+    "APITokenSetting": {
+        "issue": "إنشاء رمز API",
+        "rotate": "استبدال رمز API"
     }
 }

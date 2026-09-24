@@ -1229,7 +1229,8 @@
         "deleteAccount": "Slet konto",
         "theme": "Tema",
         "sessions": "Sessioner",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API-token"
     },
     "AdminModSettings": {
         "queues": "Køer",
@@ -1807,5 +1808,9 @@
         "uploadTooLarge": "Din upload er for stor. Den samlede grænse er {size} B.",
         "fileTooLarge": "En af dine filer overskrider uploadgrænsen på {size} B.",
         "pollNeedsOptions": "En afstemning kræver mindst {count} forskellige valgmuligheder."
+    },
+    "APITokenSetting": {
+        "issue": "Opret API-token",
+        "rotate": "Udskift API-token"
     }
 }

@@ -235,7 +235,8 @@
         "deleteAccount": "Supprimer le compte",
         "theme": "Thème",
         "sessions": "Sessions",
-        "fediverse": "Fédiverse"
+        "fediverse": "Fédiverse",
+        "apiToken": "Jeton API"
     },
     "AdminModSettings": {
         "queues": "Files d’attente",
@@ -1825,5 +1826,9 @@
         "numberedList": "Liste numérotée",
         "bulletList": "Liste à puces",
         "list": "Liste"
+    },
+    "APITokenSetting": {
+        "issue": "Créer un jeton API",
+        "rotate": "Remplacer le jeton API"
     }
 }

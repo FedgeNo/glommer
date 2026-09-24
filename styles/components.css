@@ -2265,6 +2265,12 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 
 /* ---------- Settings sections (fold‑outs) ---------- */
 
+.APITokenValue {
+    display: block;
+    overflow-wrap: anywhere;
+    user-select: all;
+}
+
 .SettingsSection {
     border-top: 1px solid var(--hairline);
 }

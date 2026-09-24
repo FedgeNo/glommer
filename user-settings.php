@@ -6,6 +6,8 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
+header('Cache-Control: private, no-store');
+
 $page = new Page(['title' => (string) (Strings::for('PageTitle')['userSettings'] ?? '')]);
 
 $words = Strings::for('UserSettings');
@@ -37,6 +39,8 @@ $page -> addContent(new SettingsSection((string) ($words['sessions'] ?? ''), new
 $page -> addContent(new SettingsSection((string) ($words['videoCalling'] ?? ''), new VideoCallTestPanel()));
 
 $page -> addContent(new SettingsSection((string) ($words['fediverse'] ?? ''), new RemoteFollowsForm(RemoteFollow::listForUser((int) Auth::user() -> userId))));
+
+$page -> addContent(new SettingsSection((string) ($words['apiToken'] ?? ''), new APITokenSetting()));
 
 $page -> addContent(new SettingsSection((string) ($words['movingServers'] ?? ''), new AccountMigrationForm()));
 

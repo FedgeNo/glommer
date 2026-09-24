@@ -1217,7 +1217,8 @@
         "deleteAccount": "Fiók törlése",
         "theme": "Téma",
         "sessions": "Munkamenetek",
-        "fediverse": "Födiverzum"
+        "fediverse": "Födiverzum",
+        "apiToken": "API-token"
     },
     "AdminModSettings": {
         "queues": "Várólisták",
@@ -1807,5 +1808,9 @@
             "other": "Ez a hivatkozás {count} óra múlva lejár."
         },
         "ignoreNotice": "Ha nem te kérted ezt, figyelmen kívül hagyhatod ezt az e-mailt."
+    },
+    "APITokenSetting": {
+        "issue": "API-token létrehozása",
+        "rotate": "API-token cseréje"
     }
 }

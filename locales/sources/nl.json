@@ -1395,5 +1395,8 @@
     "VideoCallTestPanel.webrtcFail": "4f7ff53b62a3834c9808b4d0558d0f9e3de15f0e",
     "VideoCallTestPanel.webrtcName": "9c9adcb6b363dc59a13f3f9607299a2291d0e0b6",
     "VideoCallTestPanel.webrtcPass": "d93eb9289bda6db52ee9ff2693dd663890327127",
-    "VideoCallTestPanel.webrtcVerdict": "babb4dc605dbb3a03d39e39b2e250d58695c235c"
+    "VideoCallTestPanel.webrtcVerdict": "babb4dc605dbb3a03d39e39b2e250d58695c235c",
+    "UserSettings.apiToken": "731c458c5b55d44c8bdeeca8cb70b998bf0f8bfe",
+    "APITokenSetting.issue": "60ca201e2d9948632d3a49e522fd37424d07f43f",
+    "APITokenSetting.rotate": "e8d4264c7cc02465caad1731f7bfe11d8f6cd3b3"
 }

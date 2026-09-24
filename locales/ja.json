@@ -249,7 +249,8 @@
         "deleteAccount": "アカウントを削除",
         "theme": "テーマ",
         "sessions": "セッション",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "APIトークン"
     },
     "AdminModSettings": {
         "queues": "キュー",
@@ -1789,5 +1790,9 @@
             "other": "このリンクの有効期限は{count}時間です。"
         },
         "ignoreNotice": "心当たりがない場合は、このメールを無視していただいて構いません。"
+    },
+    "APITokenSetting": {
+        "issue": "APIトークンを作成",
+        "rotate": "APIトークンを再発行"
     }
 }

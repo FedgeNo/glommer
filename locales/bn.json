@@ -1183,7 +1183,8 @@
         "deleteAccount": "অ্যাকাউন্ট মুছুন",
         "theme": "থিম",
         "sessions": "সেশন",
-        "fediverse": "ফেডিভার্স"
+        "fediverse": "ফেডিভার্স",
+        "apiToken": "API টোকেন"
     },
     "AdminModSettings": {
         "queues": "সারি",
@@ -1807,5 +1808,9 @@
             "other": "এই লিংকের মেয়াদ {count} ঘণ্টায় শেষ হবে।"
         },
         "ignoreNotice": "যদি আপনি এটি অনুরোধ না করে থাকেন, তাহলে আপনি এই ইমেইলটি উপেক্ষা করতে পারেন।"
+    },
+    "APITokenSetting": {
+        "issue": "API টোকেন তৈরি করুন",
+        "rotate": "API টোকেন প্রতিস্থাপন করুন"
     }
 }

@@ -1217,7 +1217,8 @@
         "deleteAccount": "Fshi llogarinë",
         "theme": "Tema",
         "sessions": "Seancat",
-        "fediverse": "Fediversi"
+        "fediverse": "Fediversi",
+        "apiToken": "Token API"
     },
     "AdminModSettings": {
         "queues": "Radhët",
@@ -1807,5 +1808,9 @@
             "other": "Kjo lidhje skadon pas {count} orësh."
         },
         "ignoreNotice": "Nëse nuk e kërkuat këtë, mund ta shpërfillni email-in."
+    },
+    "APITokenSetting": {
+        "issue": "Krijo token API",
+        "rotate": "Zëvendëso tokenin API"
     }
 }

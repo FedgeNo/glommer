@@ -1782,7 +1782,8 @@
         "sessions": "Seancoj",
         "theme": "Etoso",
         "twoFactorAuthentication": "Dufaktora aŭtentigo",
-        "videoCalling": "Videovokado"
+        "videoCalling": "Videovokado",
+        "apiToken": "API-ĵetono"
     },
     "UsersPage": {
         "fediverseAfter": ".",
@@ -1807,5 +1808,9 @@
         "end": "Fini la vokon",
         "incoming": "Alvenanta videovoko",
         "permissionError": "Ne eblis uzi vian kameraon aŭ mikrofonon. Kontrolu la permeson por ĉi tiu retejo en la retumilo."
+    },
+    "APITokenSetting": {
+        "issue": "Krei API-ĵetonon",
+        "rotate": "Anstataŭigi API-ĵetonon"
     }
 }

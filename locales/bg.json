@@ -249,7 +249,8 @@
         "deleteAccount": "Изтриване на акаунта",
         "theme": "Тема",
         "sessions": "Сесии",
-        "fediverse": "Федивселена"
+        "fediverse": "Федивселена",
+        "apiToken": "API токен"
     },
     "AdminModSettings": {
         "queues": "Опашки",
@@ -1807,5 +1808,9 @@
             "other": "Връзката изтича след {count} часа."
         },
         "ignoreNotice": "Ако не сте поискали това, можете да пренебрегнете имейла."
+    },
+    "APITokenSetting": {
+        "issue": "Създаване на API токен",
+        "rotate": "Замяна на API токена"
     }
 }

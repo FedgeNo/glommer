@@ -1658,7 +1658,8 @@
         "deleteAccount": "Scrios cuntas",
         "theme": "Téama",
         "sessions": "Seisiúin",
-        "fediverse": "An Chruinne Chónasctha"
+        "fediverse": "An Chruinne Chónasctha",
+        "apiToken": "Comhartha API"
     },
     "JSONResponse": {
         "giveUsernameOrEmail": "Tabhair d'ainm úsáideora nó do sheoladh ríomhphoist, le do thoil.",
@@ -1861,5 +1862,9 @@
         "machineTranslation": "Meaisínaistriúchán",
         "deleteConfirm": "Scrios an phostáil seo?",
         "image": "Íomhá"
+    },
+    "APITokenSetting": {
+        "issue": "Cruthaigh comhartha API",
+        "rotate": "Cuir comhartha API nua ina áit"
     }
 }

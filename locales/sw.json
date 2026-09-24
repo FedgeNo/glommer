@@ -1538,7 +1538,8 @@
         "sessions": "Vipindi",
         "theme": "Mandhari",
         "twoFactorAuthentication": "Uthibitishaji wa Hatua Mbili",
-        "videoCalling": "Kupiga Simu ya Video"
+        "videoCalling": "Kupiga Simu ya Video",
+        "apiToken": "Tokeni ya API"
     },
     "UsersPage": {
         "fediverseAfter": ".",
@@ -1807,5 +1808,9 @@
         "youVeAlreadyReportedThis": "Tayari umeripoti hili.",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Umetuma ujumbe mwingi bila jibu - subiri wajibu kabla ya kutuma zaidi.",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Kihariri chako kimepitwa na wakati. Tafadhali pakia upya ukurasa na ujaribu tena."
+    },
+    "APITokenSetting": {
+        "issue": "Unda tokeni ya API",
+        "rotate": "Badilisha tokeni ya API"
     }
 }

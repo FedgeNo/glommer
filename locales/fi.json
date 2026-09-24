@@ -1461,7 +1461,8 @@
         "deleteAccount": "Poista tili",
         "theme": "Teema",
         "sessions": "Istunnot",
-        "fediverse": "Fediversumi"
+        "fediverse": "Fediversumi",
+        "apiToken": "API-tunnus"
     },
     "AdminModSettings": {
         "queues": "Jonot",
@@ -1807,5 +1808,9 @@
             "other": "Tämä linkki vanhenee {count} tunnin kuluttua."
         },
         "ignoreNotice": "Jos et pyytänyt tätä, voit jättää tämän sähköpostin huomiotta."
+    },
+    "APITokenSetting": {
+        "issue": "Luo API-tunnus",
+        "rotate": "Vaihda API-tunnus"
     }
 }

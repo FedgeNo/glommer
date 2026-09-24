@@ -1183,7 +1183,8 @@
         "deleteAccount": "I-delete ang Account",
         "theme": "Tema",
         "sessions": "Mga Session",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API Token"
     },
     "AdminModSettings": {
         "queues": "Mga Queue",
@@ -1807,5 +1808,9 @@
             "other": "Mag-e-expire ang link na ito pagkalipas ng {count} oras."
         },
         "ignoreNotice": "Kung hindi mo ito hiniling, maaari mong balewalain ang email na ito."
+    },
+    "APITokenSetting": {
+        "issue": "Gumawa ng API Token",
+        "rotate": "Palitan ang API Token"
     }
 }

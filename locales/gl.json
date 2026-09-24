@@ -1454,7 +1454,8 @@
         "deleteAccount": "Eliminar a conta",
         "theme": "Tema",
         "sessions": "Sesións",
-        "fediverse": "Fediverso"
+        "fediverse": "Fediverso",
+        "apiToken": "Token da API"
     },
     "UsersPage": {
         "fediverseBefore": "Podes seguir unha lista de persoas usuarias do Fediverso na ",
@@ -1807,5 +1808,9 @@
         "uploadTooLarge": "A túa carga é demasiado grande. O tamaño total máximo de carga é {size}B.",
         "fileTooLarge": "Un dos teus ficheiros supera o límite de carga de {size}B.",
         "pollNeedsOptions": "Unha enquisa precisa polo menos {count} opcións distintas."
+    },
+    "APITokenSetting": {
+        "issue": "Crear token da API",
+        "rotate": "Substituír o token da API"
     }
 }

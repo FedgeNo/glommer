@@ -1764,7 +1764,8 @@
         "sessions": "登入工作階段",
         "theme": "主題",
         "twoFactorAuthentication": "雙重驗證",
-        "videoCalling": "視訊通話"
+        "videoCalling": "視訊通話",
+        "apiToken": "API 權杖"
     },
     "UsersPage": {
         "fediverseAfter": "。",
@@ -1789,5 +1790,9 @@
         "end": "結束通話",
         "incoming": "視訊來電",
         "permissionError": "無法使用您的相機或麥克風，請檢查瀏覽器對本站的權限設定。"
+    },
+    "APITokenSetting": {
+        "issue": "建立 API 權杖",
+        "rotate": "更換 API 權杖"
     }
 }

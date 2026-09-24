@@ -1221,7 +1221,8 @@
         "deleteAccount": "Odstranit účet",
         "theme": "Motiv",
         "sessions": "Relace",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "Token API"
     },
     "AdminModSettings": {
         "queues": "Fronty",
@@ -1843,5 +1844,9 @@
         "uploadTooLarge": "Nahrávaná data jsou příliš velká. Maximální celková velikost je {size} B.",
         "fileTooLarge": "Jeden z vašich souborů překračuje limit {size} B.",
         "pollNeedsOptions": "Anketa potřebuje alespoň {count} různé možnosti."
+    },
+    "APITokenSetting": {
+        "issue": "Vytvořit token API",
+        "rotate": "Nahradit token API"
     }
 }

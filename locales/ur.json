@@ -1538,7 +1538,8 @@
         "sessions": "سیشنز",
         "theme": "تھیم",
         "twoFactorAuthentication": "دو مرحلہ تصدیق",
-        "videoCalling": "ویڈیو کالنگ"
+        "videoCalling": "ویڈیو کالنگ",
+        "apiToken": "API ٹوکن"
     },
     "UsersPage": {
         "fediverseAfter": "",
@@ -1807,5 +1808,9 @@
         "youVeAlreadyReportedThis": "آپ نے پہلے ہی اس کی رپورٹ کر دی ہے۔",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "آپ نے بغیر جواب کے بہت سارے پیغامات بھیجے ہیں - مزید بھیجنے سے پہلے ان کے جواب کا انتظار کریں۔",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "آپ کا ایڈیٹر پرانا ہے۔ براہ کرم صفحہ ریفریش کریں اور دوبارہ کوشش کریں۔"
+    },
+    "APITokenSetting": {
+        "issue": "API ٹوکن بنائیں",
+        "rotate": "API ٹوکن تبدیل کریں"
     }
 }

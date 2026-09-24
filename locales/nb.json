@@ -255,7 +255,8 @@
         "deleteAccount": "Slett konto",
         "theme": "Tema",
         "sessions": "Økter",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API-token"
     },
     "AdminModSettings": {
         "queues": "Køer",
@@ -1807,5 +1808,9 @@
         "maximumScheduledDays": "Innlegg kan planlegges høyst {count} dager fram i tid.",
         "uploadTooLarge": "Opplastingen din er for stor. Maksimal total opplastingsstørrelse er {size}B.",
         "fileTooLarge": "En av filene dine er større enn opplastingsgrensen på {size}B."
+    },
+    "APITokenSetting": {
+        "issue": "Opprett API-token",
+        "rotate": "Bytt ut API-token"
     }
 }

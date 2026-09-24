@@ -1420,7 +1420,8 @@
         "deleteAccount": "Ta bort konto",
         "theme": "Tema",
         "sessions": "Sessioner",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "API-token"
     },
     "AdminModSettings": {
         "queues": "Köer",
@@ -1807,5 +1808,9 @@
     },
     "UserRSSFeed": {
         "title": "Inlägg av {name} på {site}"
+    },
+    "APITokenSetting": {
+        "issue": "Skapa API-token",
+        "rotate": "Ersätt API-token"
     }
 }

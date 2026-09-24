@@ -361,7 +361,8 @@
         "deleteAccount": "Izbris računa",
         "theme": "Tema",
         "sessions": "Seje",
-        "fediverse": "Fediverse"
+        "fediverse": "Fediverse",
+        "apiToken": "Žeton API"
     },
     "AdminModSettings": {
         "queues": "Čakalne vrste",
@@ -1843,5 +1844,9 @@
             "other": "Ta povezava poteče čez {count} ur."
         },
         "ignoreNotice": "Če tega niste zahtevali, lahko to e-pošto prezrete."
+    },
+    "APITokenSetting": {
+        "issue": "Ustvari žeton API",
+        "rotate": "Zamenjaj žeton API"
     }
 }

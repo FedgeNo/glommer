@@ -1538,7 +1538,8 @@
         "sessions": "Συνεδρίες",
         "theme": "Θέμα",
         "twoFactorAuthentication": "Έλεγχος ταυτότητας δύο παραγόντων",
-        "videoCalling": "Βιντεοκλήσεις"
+        "videoCalling": "Βιντεοκλήσεις",
+        "apiToken": "Διακριτικό API"
     },
     "UsersPage": {
         "fediverseBefore": "Μπορείτε να ακολουθήσετε μια λίστα χρηστών του Fediverse στις ",
@@ -1807,5 +1808,9 @@
         "youVeAlreadyReportedThis": "Το έχετε ήδη αναφέρει αυτό.",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Έχετε στείλει πολλά μηνύματα χωρίς απάντηση — περιμένετε να απαντήσουν πριν στείλετε άλλα.",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Ο επεξεργαστής σας είναι απαρχαιωμένος. Ανανεώστε τη σελίδα και δοκιμάστε ξανά."
+    },
+    "APITokenSetting": {
+        "issue": "Δημιουργία διακριτικού API",
+        "rotate": "Αντικατάσταση διακριτικού API"
     }
 }

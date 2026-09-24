@@ -1520,7 +1520,8 @@
         "sessions": "เซสชัน",
         "theme": "ธีม",
         "twoFactorAuthentication": "การยืนยันตัวตนสองขั้นตอน",
-        "videoCalling": "การโทรวิดีโอ"
+        "videoCalling": "การโทรวิดีโอ",
+        "apiToken": "โทเค็น API"
     },
     "UsersPage": {
         "fediverseAfter": "",
@@ -1789,5 +1790,9 @@
         "youVeAlreadyReportedThis": "คุณได้รายงานสิ่งนี้แล้ว",
         "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "คุณส่งข้อความไปมากแล้วโดยไม่มีการตอบกลับ - รอให้พวกเขาตอบก่อนที่จะส่งเพิ่มเติม",
         "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "ตัวแก้ไขของคุณล้าสมัยแล้ว กรุณารีเฟรชหน้านี้แล้วลองใหม่"
+    },
+    "APITokenSetting": {
+        "issue": "สร้างโทเค็น API",
+        "rotate": "แทนที่โทเค็น API"
     }
 }

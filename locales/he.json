@@ -249,7 +249,8 @@
         "deleteAccount": "מחיקת חשבון",
         "theme": "ערכת נושא",
         "sessions": "הפעלות",
-        "fediverse": "פדיברס"
+        "fediverse": "פדיברס",
+        "apiToken": "אסימון API"
     },
     "AdminModSettings": {
         "queues": "תורים",
@@ -1825,5 +1826,9 @@
             "other": "תוקף הקישור יפוג בעוד {count} שעות."
         },
         "ignoreNotice": "אם לא ביקשת זאת, אפשר להתעלם מהודעת הדוא״ל."
+    },
+    "APITokenSetting": {
+        "issue": "יצירת אסימון API",
+        "rotate": "החלפת אסימון API"
     }
 }

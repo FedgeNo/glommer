@@ -26,6 +26,7 @@ trending NER environment, §9 for backups.
 11. [Administration](#11-administration)
 12. [Upgrading](#12-upgrading)
 13. [Monitoring](#13-monitoring)
+14. [Bot posting API](#14-bot-posting-api)
 
 ---
 
@@ -1042,3 +1043,31 @@ client address and target account), posting,
 messaging, reporting, translating and federated delivery. Login is limited by
 IP and by account at once, so neither a spread-out attempt nor a targeted one
 gets a free run.
+
+---
+
+## 14. Bot posting API
+
+Each local account can create one posting token in User Settings. The token is
+shown there, encrypted in the database, and replaced immediately when its owner
+presses **Replace API Token**. A replacement makes the old token unusable.
+Store it like a password. A banned or unverified account cannot use it.
+
+Glommer accepts the text-post subset of Mastodon's `POST /api/v1/statuses` API.
+Pass `Authorization: Bearer TOKEN` and a form field named `status` containing
+plain text. JSON bodies with a `status` string also work. Optional fields are
+`sensitive`, `spoiler_text`, and `in_reply_to_id`. Only public posts are
+supported; media, polls, scheduling, and other visibility values return 422.
+The response carries a Mastodon-style status ID, permalink, content, and
+author. This is a posting endpoint, not a complete Mastodon API or OAuth
+server, so clients must allow entering a token directly.
+
+```sh
+curl -X POST 'https://example.org/api/v1/statuses' \
+    -H 'Authorization: Bearer YOUR_TOKEN' \
+    --data-urlencode 'status=Hello from a bot https://example.org/page' \
+    --data-urlencode 'sensitive=true'
+```
+
+Posts use the same per-account rate limit, hashtag and mention indexing,
+timeline delivery, and ActivityPub publishing as posts made in the browser.

@@ -117,7 +117,7 @@ DELETE FROM `CSPReports`
 
         try {
             return mysqli_connect(
-                $values['DB_HOST'] ?? '127.0.0.1',
+                DB::validatedHost($values['DB_HOST'] ?? '127.0.0.1'),
                 $values['DB_USERNAME'] ?? 'glommer',
                 $values['DB_PASSWORD'] ?? '',
                 $values['DB_DATABASE'] ?? 'glommer',

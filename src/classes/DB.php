@@ -9,6 +9,15 @@ class DB
     private static bool $adminConnectionAttempted = false;
     private static ?array $afterCommit = null;
 
+    public static function validatedHost(string $host): string
+    {
+        if (strncasecmp($host, 'p:', 2) === 0) {
+            throw new \InvalidArgumentException('Persistent database connections are not supported. Remove the p: or P: prefix from DB_HOST.');
+        }
+
+        return $host;
+    }
+
     public static function connection(): \mysqli
     {
         if (self::$connection === null) {

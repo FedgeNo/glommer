@@ -483,6 +483,53 @@ tests['login stays guarded until its CAPTCHA is rendered and can then be resubmi
     } finally { Api.post = originals.post; window.grecaptcha = originals.recaptcha; }
 };
 
+tests['disabling two-factor authentication intercepts native submission and updates the form in place'] = async () => {
+    const form = new FormForm().toDOM();
+    form.classList.add('TwoFactorSettingsForm');
+    const fieldset = document.createElement('fieldset');
+    const legend = document.createElement('legend');
+    const explanation = document.createElement('p');
+    const password = document.createElement('input');
+    password.name = 'currentPassword';
+    password.type = 'password';
+    password.value = 'fixture-password';
+    fieldset.append(legend, explanation, password);
+    const toggle = document.createElement('button');
+    toggle.type = 'submit';
+    toggle.dataset.action = 'disable';
+    const regenerate = document.createElement('button');
+    regenerate.type = 'submit';
+    regenerate.dataset.action = 'regenerate-recovery';
+    const codes = document.createElement('div');
+    codes.className = 'RecoveryCodes';
+    form.append(fieldset, toggle, regenerate, codes);
+    document.body.append(form);
+    const original = Api.post;
+    let calls = 0;
+    Api.post = async (path, payload) => {
+        calls++;
+        TestCase.assertEquals('/api/two-factor', path);
+        TestCase.assertEquals('disable', payload.action);
+        TestCase.assertEquals('fixture-password', payload.currentPassword);
+        return { enabled: false };
+    };
+    try {
+        const event = new window.SubmitEvent('submit', { bubbles: true, cancelable: true, submitter: toggle });
+        form.dispatchEvent(event);
+        TestCase.assertTrue(event.defaultPrevented);
+        await tick();
+        TestCase.assertEquals(1, calls);
+        TestCase.assertEquals('enable', toggle.dataset.action);
+        TestCase.assertEquals('', password.value);
+        TestCase.assertEquals('Turn On Two-Factor Authentication', toggle.textContent);
+        TestCase.assertEquals(0, form.querySelectorAll('[data-action="regenerate-recovery"], .RecoveryCodes').length);
+        TestCase.assertFalse(FormForm.isPending(form));
+    } finally {
+        Api.post = original;
+        form.remove();
+    }
+};
+
 tests['recovery-code regeneration submits the clicked action while both buttons are guarded'] = async () => {
     const form = new FormForm().toDOM();
     form.classList.add('TwoFactorSettingsForm');

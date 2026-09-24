@@ -163,12 +163,29 @@ SELECT COALESCE(MAX(`messageId`), 0) AS `newestId`
         return (int) mysqli_fetch_assoc($result)['newestId'];
     }
 
+    /** Number of conversation partners with messages beyond the read cursor. */
+    public static function unreadConversationCount(int $user_id): int
+    {
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT COUNT(DISTINCT `senderId`) AS `count`
+    FROM `Messages`
+    WHERE `recipientId` = ?
+        AND `messageId` > (
+            SELECT `lastMessageId`
+                FROM `Users`
+                WHERE `userId` = ?
+        )
+', 'ii', $user_id, $user_id));
+
+        return (int) mysqli_fetch_assoc($result)['count'];
+    }
+
     /**
-     * Marks everything received so far as seen. Opening the conversations list
-     * is enough - seeing that a thread has something new in it is the whole
-     * job of the dot, and having to open every thread to clear it would make
-     * it nag about messages already known about. Message-only notifications
-     * are acknowledged at the same time.
+     * Marks everything received so far as seen. Opening the conversations list,
+     * or the only unread thread, is enough - seeing that a thread has
+     * something new in it is the whole job of the dot, and having to open every
+     * thread to clear it would make it nag about messages already known about.
+     * Message-only notifications are acknowledged at the same time.
      */
     public static function markSeen(int $user_id): void
     {

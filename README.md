@@ -542,6 +542,19 @@ code needed at `/signup`. Ordinary upgrades preserve the existing administrator.
    services (§7). Schema changes and backfills always go through this installer.
 5. Enter its setup code at `/signup` and create the administrator.
 
+### Database connection persistence
+
+Glommer rejects database hosts prefixed with `p:` or `P:`. Use an ordinary
+hostname or IP address for `DB_HOST`. The same validation applies when loading
+configuration and when entering a host in either setup flow; editing `.env`
+after installation does not bypass it.
+
+As additional protection, set `mysqli.allow_persistent = Off` in the PHP
+configuration used by the site and CLI workers. For PHP-FPM, the site's pool
+can use `php_admin_flag[mysqli.allow_persistent] = Off`; this does not configure
+CLI PHP. Restart affected processes after changing their PHP configuration.
+This setting is recommended, not an installation requirement.
+
 ### Choose `SITE_URL` once and keep it
 
 Decide before you install whether the site lives at `example.org` or

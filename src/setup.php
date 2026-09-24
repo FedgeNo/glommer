@@ -142,6 +142,12 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST' && isset
                     $errors[] = 'Database host contains invalid characters.';
                 }
 
+                try {
+                    DB::validatedHost($db_host);
+                } catch (\InvalidArgumentException $exception) {
+                    $errors[] = $exception -> getMessage();
+                }
+
                 if (!preg_match('/^[0-9]{1,5}$/', $db_port) || (int) $db_port < 1 || (int) $db_port > 65535) {
                     $errors[] = 'Database port must be a number between 1 and 65535.';
                 }

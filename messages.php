@@ -42,6 +42,13 @@ if (Block::exists($current_user -> userId, $other_user -> userId)) {
     exit;
 }
 
+// A thread opened directly from a notification should clear the message mark
+// when it is the only unread conversation. Keep the global cursor unchanged
+// while another conversation still has unread messages.
+if (Message::unreadConversationCount((int) $current_user -> userId) <= 1) {
+    Message::markSeen((int) $current_user -> userId);
+}
+
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,
     'otherUserId' => $other_user -> userId,

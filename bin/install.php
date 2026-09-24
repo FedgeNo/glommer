@@ -4606,6 +4606,11 @@ if ($env_just_created) {
         return filter_var($value, FILTER_VALIDATE_EMAIL) === false ? 'That is not a valid email address.' : null;
     });
     $db_host = prompt('Database host', '127.0.0.1', function (string $value): ?string {
+        try {
+            DB::validatedHost($value);
+        } catch (\InvalidArgumentException $exception) {
+            return $exception -> getMessage();
+        }
         return preg_match('/^[A-Za-z0-9_.:-]+$/', $value) !== 1 ? 'The host contains invalid characters.' : null;
     });
     $db_port = prompt('Database port', '3306', function (string $value): ?string {

@@ -37,7 +37,7 @@ UPDATE `Users`
         $this -> assertTrue(MessageDot::unreadFor(User::load($recipient)));
     }
 
-    /** Opening the conversations list is what clears it. */
+    /** Opening the conversations list is one way to clear it. */
     public function testSeeingTheConversationsClearsTheMark(): void
     {
         $recipient = $this -> userWith(0);
@@ -57,6 +57,27 @@ UPDATE `Users`
         Message::markSeen($recipient);
         self::createMessage($sender, $recipient);
 
+        $this -> assertTrue(MessageDot::unreadFor(User::load($recipient)));
+    }
+
+    public function testOneUnreadConversationCanBeClearedWhenItsThreadOpens(): void
+    {
+        $recipient = $this -> userWith(0);
+        $sender = self::createUser();
+        self::createMessage($sender, $recipient);
+
+        $this -> assertSame(1, Message::unreadConversationCount($recipient));
+        Message::markSeen($recipient);
+        $this -> assertFalse(MessageDot::unreadFor(User::load($recipient)));
+    }
+
+    public function testSeveralUnreadConversationsRemainUnreadUntilTheInboxOpens(): void
+    {
+        $recipient = $this -> userWith(0);
+        self::createMessage(self::createUser(), $recipient);
+        self::createMessage(self::createUser(), $recipient);
+
+        $this -> assertSame(2, Message::unreadConversationCount($recipient));
         $this -> assertTrue(MessageDot::unreadFor(User::load($recipient)));
     }
 

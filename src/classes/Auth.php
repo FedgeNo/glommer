@@ -34,7 +34,16 @@ SELECT *
     WHERE `slug` = ? OR `email` = ?
 ', 'User', 'ss', $identifier, $identifier);
 
-        if ($user === null || !$user -> verifyPassword($password)) {
+        if ($user === null) {
+            // Match the current password work factor without generating a hash
+            // per miss. The dummy result must never authenticate an account.
+            $dummy_hash = '$2y$' . sprintf('%02d', PASSWORD_BCRYPT_DEFAULT_COST)
+                . '$INoQIP/k7/jNI.P2W08ZneDw6qyAddzwjfIssrLSbVaQBwmKfyryW';
+            password_verify($password, $dummy_hash);
+            return null;
+        }
+
+        if (!$user -> verifyPassword($password)) {
             return null;
         }
 

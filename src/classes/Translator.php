@@ -65,7 +65,7 @@ class Translator
      * mid-sentence, and Python reserves far more address space than it uses.
      */
     private const WALL_TIMEOUT = 60;
-    private const CPU_TIMELIMIT = 45;
+    private const CPU_TIMELIMIT = 180;
 
     /**
      * Deliberately far above what a translation uses, unlike the transcoder's,
@@ -120,9 +120,8 @@ class Translator
      * Same translation, measured - and 7.3 seconds against 4.8, because Stanza
      * loads a second neural model just to find where the sentences end.
      *
-     * One thread, so a translation can never take more than one of the four
-     * cores, and niced so it yields to anything serving a page. It is CPU-bound
-     * for its whole run and most of that is loading the model, not translating.
+     * Four threads can use all four cores, while nice 10 lets page serving
+     * take priority. The CPU-time limit covers all four threads together.
      *
      * @return array<string, string>
      */
@@ -131,7 +130,7 @@ class Translator
         return [
             'ARGOS_PACKAGES_DIR' => self::PACKAGES_DIR,
             'ARGOS_CHUNK_TYPE' => 'MINISBD',
-            'OMP_NUM_THREADS' => '1',
+            'OMP_NUM_THREADS' => '4',
             // The web server's own home need not exist or be writable, and a
             // Python that cannot resolve one fails before it starts - so it is
             // given one that is its own. See STATE_DIR.
@@ -469,18 +468,15 @@ SELECT RELEASE_LOCK(?)
     }
 
     /**
-     * The environment bin/small100-translate.py runs under: one thread for
-     * the same reason Argos gets one, a home of its own for the same reason
-     * (transformers resolves a cache directory even reading a local model),
-     * and offline because the model is already on disk - nothing here should
-     * ever reach out to Hugging Face's hub mid-request.
+     * SMaLL-100 uses four threads. Transformers needs a writable home even
+     * when reading a local model; offline mode prevents network fetches.
      *
      * @return array<string, string>
      */
     private static function small100Environment(): array
     {
         return [
-            'OMP_NUM_THREADS' => '1',
+            'OMP_NUM_THREADS' => '4',
             'HOME' => self::STATE_DIR,
             'HF_HUB_OFFLINE' => '1',
             'TRANSFORMERS_OFFLINE' => '1',

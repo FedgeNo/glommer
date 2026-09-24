@@ -66,7 +66,7 @@ def main() -> None:
         return
 
     try:
-        translator = ctranslate2.Translator(args.model_dir, device='cpu', compute_type='int8')
+        translator = ctranslate2.Translator(args.model_dir, device='cpu', compute_type='int8', intra_threads=4)
         tokenizer = SMALL100Tokenizer.from_pretrained(args.model_dir)
     except Exception as error:
         fail('small100-translate: could not load the model at ' + args.model_dir + ': ' + str(error))

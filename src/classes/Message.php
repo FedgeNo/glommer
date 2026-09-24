@@ -262,9 +262,8 @@ DELETE
     WHERE `messageId` = ?
 ', 'i', $message_id);
 
-        // Deleting a last message cascades its two summary rows. Use current
-        // locking reads: the caller may have established a repeatable-read
-        // snapshot before another send committed and we locked the users.
+        // Deleting a last message cascades its two summary rows. Restore
+        // pointers to the newest remaining message while participants are locked.
         $latest_id = 0;
         foreach ([[$sender_id, $recipient_id], [$recipient_id, $sender_id]] as [$from, $to]) {
             $latest = DB::row('

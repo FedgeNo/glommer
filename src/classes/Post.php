@@ -652,9 +652,7 @@ SELECT `postId`
             }
         }
 
-        // The owner's transaction may already have an older read snapshot.
-        // These current reads must include attachments/replies committed before
-        // we acquired the subtree locks, even if that snapshot cannot see them.
+        // Lock attachments before deleting the posts that own their files.
         $post_id_placeholders = implode(', ', array_fill(0, count($all_post_ids), '?'));
         $doomed_items = DB::rows('
 SELECT `itemId`, `type` FROM `FeedItems`

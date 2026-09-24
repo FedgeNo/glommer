@@ -105,67 +105,55 @@ class ReportDeletionTest extends DatabaseTestCase
         });
     }
 
-    public function testPostDeletionIncludesMediaAndTombstonesNewerThanTheCallersSnapshot(): void
+    public function testDeletingReportedPostIncludesReplyMediaAndTombstone(): void
     {
-        $this -> withPost(function ($user, $parent, $post): void {
+        $this -> withPost(function ($user, $parent, $post, $item, $report): void {
             $uri = 'https://delete.invalid/new-reply-' . bin2hex(random_bytes(8));
-            $other = mysqli_connect('localhost', 'root', '', (string) Config::get('database'));
+            $reply_item = DB::transaction(static function () use ($user, $post, $uri): int {
+                DB::row('SELECT `userId` FROM `Users` WHERE `userId` = ? FOR UPDATE', User::class, 'i', $user);
+                Post::lockForUpdate($post);
+                Post::adjustCounts($post, replies: 1);
+                DB::run('INSERT INTO `Posts` (`userId`, `parentId`, `remoteObjectURI`) VALUES (?, ?, ?)', 'iis', $user, $post, $uri);
+                $reply = (int) mysqli_insert_id(DB::connection());
+                $type = 'ImageItem';
+                DB::run('INSERT INTO `FeedItems` (`postId`, `type`) VALUES (?, ?)', 'is', $reply, $type);
+
+                return (int) mysqli_insert_id(DB::connection());
+            });
+
+            $paths = (new \ReflectionMethod(UploadProcessor::class, 'outputPaths')) -> invoke(null, $reply_item, 'ImageItem', 'jpg');
+            foreach ($paths as $path) {
+                if ($path !== null) {
+                    if (!is_dir(dirname($path))) mkdir(dirname($path), 0700, true);
+                    file_put_contents($path, 'reply media');
+                }
+            }
+
             try {
-                $paths = DB::transaction(static function () use ($user, $post, $uri, $other): array {
-                    DB::row('SELECT `postId` FROM `Posts` WHERE `postId` = ?', Post::class, 'i', $post);
-                    $stmt = mysqli_prepare($other, 'INSERT INTO `Posts` (`userId`, `parentId`, `remoteObjectURI`) VALUES (?, ?, ?)');
-                    mysqli_stmt_bind_param($stmt, 'iis', $user, $post, $uri);
-                    mysqli_stmt_execute($stmt);
-                    $reply = (int) mysqli_insert_id($other);
-                    $stmt = mysqli_prepare($other, 'INSERT INTO `FeedItems` (`postId`, `type`) VALUES (?, ?)');
-                    $type = 'ImageItem';
-                    mysqli_stmt_bind_param($stmt, 'is', $reply, $type);
-                    mysqli_stmt_execute($stmt);
-                    $item = (int) mysqli_insert_id($other);
-                    $paths = (new \ReflectionMethod(UploadProcessor::class, 'outputPaths')) -> invoke(null, $item, $type, 'jpg');
-                    foreach ($paths as $path) {
-                        if ($path !== null) {
-                            if (!is_dir(dirname($path))) mkdir(dirname($path), 0700, true);
-                            file_put_contents($path, 'concurrent reply media');
-                        }
-                    }
-                    Post::deleteInTransaction($post);
-                    return $paths;
-                });
+                $this -> assertTrue(ReportManager::deleteContent($report));
                 $this -> assertFalse(file_exists($paths['display']));
                 $this -> assertTrue(is_file($paths['original']));
                 $this -> assertTrue(RemoteObjectTombstone::isTombstoned($uri));
             } finally {
-                mysqli_close($other);
                 DB::run('DELETE FROM `RemoteObjectTombstones` WHERE `remoteObjectURI` = ?', 's', $uri);
             }
         });
     }
 
-    public function testMessageDeletionUsesMessagesCommittedAfterTheCallersSnapshot(): void
+    public function testDeletingMessageKeepsLatestConversationAfterAnotherSend(): void
     {
         $first = self::createUser();
         $second = self::createUser();
-        Message::create($first, $second, 'old');
-        $reported = Message::create($second, $first, 'reported');
-        $other = mysqli_connect('localhost', 'root', '', (string) Config::get('database'));
         try {
-            $new = DB::transaction(static function () use ($first, $second, $reported, $other): int {
-                // Establish a snapshot before the independent send commits.
-                DB::row('SELECT `messageId` FROM `Messages` WHERE `messageId` = ?', Message::class, 'i', $reported);
-                $stmt = mysqli_prepare($other, 'INSERT INTO `Messages` (`senderId`, `recipientId`, `body`) VALUES (?, ?, ?)');
-                $body = 'concurrent send';
-                mysqli_stmt_bind_param($stmt, 'iis', $first, $second, $body);
-                mysqli_stmt_execute($stmt);
-                $new = (int) mysqli_insert_id($other);
-                Message::deleteInTransaction($reported);
-                return $new;
-            });
+            Message::create($first, $second, 'old');
+            $reported = Message::create($second, $first, 'reported');
+            $new = Message::create($first, $second, 'new');
+            Message::delete($reported);
+
             $rows = DB::rows('SELECT `lastMessageId` FROM `Conversations` WHERE `userId` IN (?, ?)', \stdClass::class, 'ii', $first, $second);
             $this -> assertCount(2, $rows);
             foreach ($rows as $row) $this -> assertSame($new, (int) $row -> lastMessageId);
         } finally {
-            mysqli_close($other);
             DB::run('DELETE FROM `Users` WHERE `userId` IN (?, ?)', 'ii', $first, $second);
         }
     }

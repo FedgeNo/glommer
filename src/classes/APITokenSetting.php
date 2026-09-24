@@ -16,8 +16,8 @@ class APITokenSetting extends Div
             $this -> addContent($value);
         }
 
-        $form = new APITokenRotateForm($token !== null);
-        $this -> addContent($form);
+        $this -> addContent(new APITokenRotateForm($token !== null));
+        $this -> addContent(new APITokenRevokeForm($token !== null));
 
         return parent::toDOM();
     }

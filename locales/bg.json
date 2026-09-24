@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Създаване на API токен",
-        "rotate": "Замяна на API токена"
+        "rotate": "Замяна на API токена",
+        "revoke": "Отмяна"
     }
 }

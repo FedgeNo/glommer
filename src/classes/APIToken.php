@@ -38,13 +38,47 @@ SELECT `tokenCiphertext`
             (string) Env::get('ACTIVITYPUB_ENCRYPTION_KEY', '')
         );
 
-        DB::run('
+        $changed = DB::transaction(static function () use ($user_id, $hash, $ciphertext): bool {
+            $account = DB::row('SELECT `isBot` FROM `Users` WHERE `userId` = ? FOR UPDATE', \stdClass::class, 'i', $user_id);
+            DB::run('
 INSERT INTO `APITokens` (`userId`, `tokenHash`, `tokenCiphertext`)
     VALUES (?, ?, ?)
     ON DUPLICATE KEY UPDATE `tokenHash` = VALUES(`tokenHash`), `tokenCiphertext` = VALUES(`tokenCiphertext`)
 ', 'iss', $user_id, $hash, $ciphertext);
+            DB::run('UPDATE `Users` SET `isBot` = 1 WHERE `userId` = ?', 'i', $user_id);
+
+            return $account !== null && (int) $account -> isBot !== 1;
+        });
+
+        if ($changed) {
+            self::announceActorChange($user_id);
+        }
 
         return $token;
+    }
+
+    public static function revoke(int $user_id): void
+    {
+        $changed = DB::transaction(static function () use ($user_id): bool {
+            $account = DB::row('SELECT `isBot` FROM `Users` WHERE `userId` = ? FOR UPDATE', \stdClass::class, 'i', $user_id);
+            DB::run('DELETE FROM `APITokens` WHERE `userId` = ?', 'i', $user_id);
+            DB::run('UPDATE `Users` SET `isBot` = 0 WHERE `userId` = ?', 'i', $user_id);
+
+            return $account !== null && (int) $account -> isBot === 1;
+        });
+
+        if ($changed) {
+            self::announceActorChange($user_id);
+        }
+    }
+
+    private static function announceActorChange(int $user_id): void
+    {
+        $user = User::load($user_id);
+
+        if ($user !== null) {
+            FediversePublisher::profileUpdated($user);
+        }
     }
 
     public static function userForBearer(string $header): ?User

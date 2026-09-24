@@ -1829,6 +1829,7 @@
     },
     "APITokenSetting": {
         "issue": "Creează un token API",
-        "rotate": "Înlocuiește tokenul API"
+        "rotate": "Înlocuiește tokenul API",
+        "revoke": "Revocă"
     }
 }

@@ -56,6 +56,7 @@ class User extends Div implements \JsonSerializable
     public ?string $banReason = null;
     public int $isMod = 0;
     public int $verified = 0;
+    public int $isBot = 0;
     public int $twoFactorEnabled = 0;
     public string $theme = 'system';
     public ?string $locale = null;

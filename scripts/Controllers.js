@@ -2207,6 +2207,7 @@ class APITokenRotateForm {
 
             value.textContent = data.token;
             form.querySelector('button[type="submit"]').textContent = Strings.for('APITokenSetting').rotate || '';
+            setting.querySelector('.APITokenRevokeForm')?.removeAttribute('hidden');
         });
     }
 }
@@ -2216,6 +2217,29 @@ ReadyHandler.add(APITokenRotateForm.init);
     return { APITokenRotateForm };
 })();
 export const APITokenRotateForm = APITokenRotateFormModule.APITokenRotateForm;
+
+// APITokenRevokeForm.js
+const APITokenRevokeFormModule = (() => {
+class APITokenRevokeForm {
+    static init() {
+        FormForm.attach('APITokenRevokeForm', async (form, { signal }) => {
+            const data = await Api.post('/api/revoke-api-token', undefined, { form, signal });
+            if (!data) return;
+
+            const setting = form.closest('.APITokenSetting');
+            setting.querySelector('.APITokenValue')?.remove();
+            setting.querySelector('.APITokenRotateForm button[type="submit"]').textContent =
+                Strings.for('APITokenSetting').issue || '';
+            form.setAttribute('hidden', '');
+        });
+    }
+}
+
+ReadyHandler.add(APITokenRevokeForm.init);
+
+    return { APITokenRevokeForm };
+})();
+export const APITokenRevokeForm = APITokenRevokeFormModule.APITokenRevokeForm;
 
 // AvatarUploadForm.js
 const AvatarUploadFormModule = (() => {

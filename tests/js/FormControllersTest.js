@@ -10,6 +10,7 @@ const cases = [
     ['AccountDeleteForm', 'delete-account', 'currentPassword'],
     ['AccountMigrationForm', 'account-migration', 'movedTo alsoKnownAs'],
     ['APITokenRotateForm', 'rotate-api-token', ''],
+    ['APITokenRevokeForm', 'revoke-api-token', ''],
     ['AvatarUploadForm', 'upload-avatar', 'avatar'],
     ['ServerBlockForm', 'block-server', 'domain reason'],
     ['BotProtectionSettingsForm', 'turnstile-settings', 'turnstileSiteKey turnstileSecretKey recaptchaSiteKey recaptchaSecretKey'],
@@ -49,14 +50,21 @@ tests['API token form submits without navigation and replaces the visible token'
     const button = document.createElement('button');
     button.setAttribute('type', 'submit');
     form.append(button);
-    setting.append(form);
+    const revoke_form = new FormForm().toDOM();
+    revoke_form.classList.add('APITokenRevokeForm');
+    revoke_form.setAttribute('hidden', '');
+    const revoke_button = document.createElement('button');
+    revoke_button.setAttribute('type', 'submit');
+    revoke_form.append(revoke_button);
+    setting.append(form, revoke_form);
     document.body.append(setting);
 
     const original = Api.post;
     let calls = 0;
     Api.post = async path => {
-        TestCase.assertEquals('/api/rotate-api-token', path);
         calls++;
+        if (path === '/api/revoke-api-token') return { revoked: true };
+        TestCase.assertEquals('/api/rotate-api-token', path);
         return { token: 'glom_test_' + calls };
     };
 
@@ -70,8 +78,17 @@ tests['API token form submits without navigation and replaces the visible token'
             TestCase.assertEquals('glom_test_' + attempt, setting.querySelector('.APITokenValue')?.textContent);
             TestCase.assertEquals(1, setting.querySelectorAll('.APITokenValue').length);
             TestCase.assertEquals(Strings.for('APITokenSetting').rotate, button.textContent);
+            TestCase.assertFalse(revoke_form.hasAttribute('hidden'));
         }
-        TestCase.assertEquals(2, calls);
+
+        const revoke_event = new window.Event('submit', { bubbles: true, cancelable: true });
+        revoke_form.dispatchEvent(revoke_event);
+        TestCase.assertTrue(revoke_event.defaultPrevented);
+        await tick();
+        TestCase.assertNull(setting.querySelector('.APITokenValue'));
+        TestCase.assertTrue(revoke_form.hasAttribute('hidden'));
+        TestCase.assertEquals(Strings.for('APITokenSetting').issue, button.textContent);
+        TestCase.assertEquals(3, calls);
     } finally {
         Api.post = original;
         setting.remove();

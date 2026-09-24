@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "创建 API 令牌",
-        "rotate": "替换 API 令牌"
+        "rotate": "替换 API 令牌",
+        "revoke": "撤销"
     }
 }

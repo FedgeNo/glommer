@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Gumawa ng API Token",
-        "rotate": "Palitan ang API Token"
+        "rotate": "Palitan ang API Token",
+        "revoke": "Bawiin"
     }
 }

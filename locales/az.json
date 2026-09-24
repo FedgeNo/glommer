@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "API tokeni yarat",
-        "rotate": "API tokenini dəyişdir"
+        "rotate": "API tokenini dəyişdir",
+        "revoke": "Ləğv et"
     }
 }

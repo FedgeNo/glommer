@@ -1847,6 +1847,7 @@
     },
     "APITokenSetting": {
         "issue": "Sukurti API prieigos raktą",
-        "rotate": "Pakeisti API prieigos raktą"
+        "rotate": "Pakeisti API prieigos raktą",
+        "revoke": "Atšaukti"
     }
 }

@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Luo API-tunnus",
-        "rotate": "Vaihda API-tunnus"
+        "rotate": "Vaihda API-tunnus",
+        "revoke": "Kumoa"
     }
 }

@@ -1380,5 +1380,6 @@
     "WelcomeBannerDismissButton.name": "c8a487428d655b8f4d84feb9acdac446bb649d66",
     "UserSettings.apiToken": "731c458c5b55d44c8bdeeca8cb70b998bf0f8bfe",
     "APITokenSetting.issue": "60ca201e2d9948632d3a49e522fd37424d07f43f",
-    "APITokenSetting.rotate": "e8d4264c7cc02465caad1731f7bfe11d8f6cd3b3"
+    "APITokenSetting.rotate": "e8d4264c7cc02465caad1731f7bfe11d8f6cd3b3",
+    "APITokenSetting.revoke": "0be720759ff04d13c5706881d5d227a2621f91a6"
 }

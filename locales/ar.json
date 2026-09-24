@@ -1883,6 +1883,7 @@
     },
     "APITokenSetting": {
         "issue": "إنشاء رمز API",
-        "rotate": "استبدال رمز API"
+        "rotate": "استبدال رمز API",
+        "revoke": "إبطال"
     }
 }

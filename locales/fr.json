@@ -1829,6 +1829,7 @@
     },
     "APITokenSetting": {
         "issue": "Créer un jeton API",
-        "rotate": "Remplacer le jeton API"
+        "rotate": "Remplacer le jeton API",
+        "revoke": "Révoquer"
     }
 }

@@ -1847,6 +1847,7 @@
     },
     "APITokenSetting": {
         "issue": "Utwórz token API",
-        "rotate": "Zastąp token API"
+        "rotate": "Zastąp token API",
+        "revoke": "Odwołaj"
     }
 }

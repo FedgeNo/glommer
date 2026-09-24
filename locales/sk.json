@@ -1847,6 +1847,7 @@
     },
     "APITokenSetting": {
         "issue": "Vytvoriť token API",
-        "rotate": "Nahradiť token API"
+        "rotate": "Nahradiť token API",
+        "revoke": "Odvolať"
     }
 }

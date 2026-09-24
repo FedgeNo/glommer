@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Unda tokeni ya API",
-        "rotate": "Badilisha tokeni ya API"
+        "rotate": "Badilisha tokeni ya API",
+        "revoke": "Batilisha"
     }
 }

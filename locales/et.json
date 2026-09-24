@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Loo API token",
-        "rotate": "Asenda API token"
+        "rotate": "Asenda API token",
+        "revoke": "Tühista"
     }
 }

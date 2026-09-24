@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "Buat token API",
-        "rotate": "Ganti token API"
+        "rotate": "Ganti token API",
+        "revoke": "Cabut"
     }
 }

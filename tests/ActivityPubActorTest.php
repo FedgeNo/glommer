@@ -87,6 +87,14 @@ SELECT *
         $this -> assertSame(ActivityPubActor::uriFor($user), $document['id']);
     }
 
+    public function testABotPublishesAServiceActor(): void
+    {
+        $user = self::localUser();
+        $user -> isBot = 1;
+
+        $this -> assertSame('Service', ActivityPubActor::document($user)['type']);
+    }
+
     public function testTheActorIdIsTheProfileURL(): void
     {
         // One canonical address per person: the same URL a browser opens is

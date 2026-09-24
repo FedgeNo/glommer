@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Skapa API-token",
-        "rotate": "Ersätt API-token"
+        "rotate": "Ersätt API-token",
+        "revoke": "Återkalla"
     }
 }

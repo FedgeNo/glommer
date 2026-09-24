@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "สร้างโทเค็น API",
-        "rotate": "แทนที่โทเค็น API"
+        "rotate": "แทนที่โทเค็น API",
+        "revoke": "เพิกถอน"
     }
 }

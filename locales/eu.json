@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Sortu API tokena",
-        "rotate": "Ordeztu API tokena"
+        "rotate": "Ordeztu API tokena",
+        "revoke": "Ezeztatu"
     }
 }

@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "API belirteci oluştur",
-        "rotate": "API belirtecini değiştir"
+        "rotate": "API belirtecini değiştir",
+        "revoke": "İptal Et"
     }
 }

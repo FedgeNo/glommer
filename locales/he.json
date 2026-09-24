@@ -1829,6 +1829,7 @@
     },
     "APITokenSetting": {
         "issue": "יצירת אסימון API",
-        "rotate": "החלפת אסימון API"
+        "rotate": "החלפת אסימון API",
+        "revoke": "ביטול הרשאה"
     }
 }

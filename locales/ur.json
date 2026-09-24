@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "API ٹوکن بنائیں",
-        "rotate": "API ٹوکن تبدیل کریں"
+        "rotate": "API ٹوکن تبدیل کریں",
+        "revoke": "منسوخ کریں"
     }
 }

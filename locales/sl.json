@@ -1847,6 +1847,7 @@
     },
     "APITokenSetting": {
         "issue": "Ustvari žeton API",
-        "rotate": "Zamenjaj žeton API"
+        "rotate": "Zamenjaj žeton API",
+        "revoke": "Prekliči"
     }
 }

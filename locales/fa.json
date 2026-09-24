@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "ایجاد توکن API",
-        "rotate": "جایگزینی توکن API"
+        "rotate": "جایگزینی توکن API",
+        "revoke": "ابطال"
     }
 }

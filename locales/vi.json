@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "Tạo mã thông báo API",
-        "rotate": "Thay thế mã thông báo API"
+        "rotate": "Thay thế mã thông báo API",
+        "revoke": "Thu hồi"
     }
 }

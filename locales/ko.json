@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "API 토큰 만들기",
-        "rotate": "API 토큰 교체"
+        "rotate": "API 토큰 교체",
+        "revoke": "철회"
     }
 }

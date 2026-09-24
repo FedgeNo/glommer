@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "API टोकन बनाएँ",
-        "rotate": "API टोकन बदलें"
+        "rotate": "API टोकन बदलें",
+        "revoke": "निरस्त करें"
     }
 }

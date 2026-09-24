@@ -16,6 +16,8 @@ UPDATE `Users`
         $first = APIToken::rotate($user_id);
         $this -> assertSame($first, APIToken::current($user_id));
         $this -> assertSame($user_id, (int) APIToken::userForBearer('Bearer ' . $first) -> userId);
+        $user = DB::row('SELECT * FROM `Users` WHERE `userId` = ?', User::class, 'i', $user_id);
+        $this -> assertSame('Service', ActivityPubActor::document($user)['type']);
 
         $second = APIToken::rotate($user_id);
         $this -> assertTrue($first !== $second);
@@ -23,6 +25,19 @@ UPDATE `Users`
         $this -> assertNull(APIToken::userForBearer('Bearer ' . $first));
         $this -> assertSame($user_id, (int) APIToken::userForBearer('Bearer ' . $second) -> userId);
         $this -> assertNull(APIToken::userForBearer('Bearer ' . $second . 'x'));
+    }
+
+    public function testRevocationInvalidatesTheTokenAndRestoresThePersonActor(): void
+    {
+        $user_id = self::createUser();
+        $token = APIToken::rotate($user_id);
+
+        APIToken::revoke($user_id);
+
+        $this -> assertNull(APIToken::current($user_id));
+        $this -> assertNull(APIToken::userForBearer('Bearer ' . $token));
+        $user = DB::row('SELECT * FROM `Users` WHERE `userId` = ?', User::class, 'i', $user_id);
+        $this -> assertSame('Person', ActivityPubActor::document($user)['type']);
     }
 
     public function testUnverifiedAndBannedAccountsCannotUseTheirToken(): void

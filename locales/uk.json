@@ -1847,6 +1847,7 @@
     },
     "APITokenSetting": {
         "issue": "Створити токен API",
-        "rotate": "Замінити токен API"
+        "rotate": "Замінити токен API",
+        "revoke": "Відкликати"
     }
 }

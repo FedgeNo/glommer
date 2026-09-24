@@ -127,6 +127,7 @@
     RewriteRule ^settings$ /user-settings [R=301,L,QSA]
     RewriteRule ^user-settings$ user-settings.php [L,QSA]
     RewriteRule ^rotate-api-token$ rotate-api-token.php [L,QSA]
+    RewriteRule ^revoke-api-token$ revoke-api-token.php [L,QSA]
     RewriteRule ^drafts$ drafts.php [L,QSA]
     RewriteRule ^drafts/([0-9]+)$ drafts.php?draft=$1 [L,QSA]
     RewriteRule ^locations/([0-9]+)$ locations.php?place=$1 [L,QSA]

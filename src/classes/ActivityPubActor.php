@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * The site-wide Application actor (ActivityPubKeys) stays where it is and keeps
  * doing its one job - being the identity behind an outbound Follow. This is the
- * other thing entirely: every member is their own Person actor, addressable as
+ * other thing entirely: every member is their own actor, addressable as
  * user@host, followable from anywhere, with a keypair of their own so a remote
  * server verifies THEM rather than the instance they happen to live on.
  *
@@ -239,7 +239,7 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
                 'https://w3id.org/security/v1',
             ],
             'id' => $uri,
-            'type' => 'Person',
+            'type' => $user -> isBot === 1 ? 'Service' : 'Person',
             'preferredUsername' => $user -> slug,
             'name' => (string) ($user -> title !== null && $user -> title !== '' ? $user -> title : $user -> slug),
             'url' => $uri,

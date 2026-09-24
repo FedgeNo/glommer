@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "APIトークンを作成",
-        "rotate": "APIトークンを再発行"
+        "rotate": "APIトークンを再発行",
+        "revoke": "取り消す"
     }
 }

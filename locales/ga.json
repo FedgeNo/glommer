@@ -1865,6 +1865,7 @@
     },
     "APITokenSetting": {
         "issue": "Cruthaigh comhartha API",
-        "rotate": "Cuir comhartha API nua ina áit"
+        "rotate": "Cuir comhartha API nua ina áit",
+        "revoke": "Cúlghair"
     }
 }

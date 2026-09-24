@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "Opprett API-token",
-        "rotate": "Bytt ut API-token"
+        "rotate": "Bytt ut API-token",
+        "revoke": "Tilbakekall"
     }
 }

@@ -1811,6 +1811,7 @@
     },
     "APITokenSetting": {
         "issue": "API-token aanmaken",
-        "rotate": "API-token vervangen"
+        "rotate": "API-token vervangen",
+        "revoke": "Intrekken"
     }
 }

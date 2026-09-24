@@ -1829,6 +1829,7 @@
     },
     "APITokenSetting": {
         "issue": "Crea un token d’API",
-        "rotate": "Substitueix el token d’API"
+        "rotate": "Substitueix el token d’API",
+        "revoke": "Revoca"
     }
 }

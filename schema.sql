@@ -99,6 +99,8 @@ CREATE TABLE `Users` (
   -- loses the history; there is deliberately no server-side recovery.
   `messagePublicKey` text DEFAULT NULL,
   `messageWrappedPrivateKey` text DEFAULT NULL,
+  -- Local accounts publish Service when they identify as bots.
+  `isBot` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `email` (`email`),
@@ -1475,6 +1477,12 @@ ALTER TABLE `Messages` MODIFY COLUMN `frankingTag` varchar(128) DEFAULT NULL;
 -- Nullability is a column change rather than a missing column, so the drift
 -- check won't apply it.
 ALTER TABLE `FediverseDeliveries` MODIFY COLUMN `actorUserId` int(10) unsigned DEFAULT NULL;
+
+-- Existing token holders are service actors after this column is installed.
+UPDATE `Users`
+    JOIN `APITokens` ON `APITokens`.`userId` = `Users`.`userId`
+    SET `Users`.`isBot` = 1
+    WHERE `Users`.`isBot` = 0;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

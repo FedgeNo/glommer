@@ -1793,6 +1793,7 @@
     },
     "APITokenSetting": {
         "issue": "建立 API 權杖",
-        "rotate": "更換 API 權杖"
+        "rotate": "更換 API 權杖",
+        "revoke": "撤銷"
     }
 }

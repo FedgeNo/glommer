@@ -83,7 +83,7 @@
     RewriteCond %{THE_REQUEST} \s/+[^?\s]*\.php[\s?] [NC]
     RewriteRule ^ 404.php [L]
 
-    RewriteRule ^api/v1/statuses$ api/mastodon-statuses.php [L,QSA]
+    RewriteRule ^api/v1/statuses$ api/create-api-post.php [L,QSA]
     RewriteRule ^api/([a-zA-Z0-9-]+)$ api/$1.php [L,QSA]
 
     RewriteRule ^games$ /games/ [R=301,L]

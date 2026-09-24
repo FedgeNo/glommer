@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 const IS_API_REQUEST = true;
 const IS_STATELESS_REQUEST = true;
-const IS_MASTODON_POST_REQUEST = true;
+const IS_API_POST_REQUEST = true;
 
 require __DIR__ . '/../src/init.php';
 
@@ -46,7 +46,15 @@ foreach (['media_ids', 'poll', 'scheduled_at', 'quoted_status_id'] as $unsupport
 }
 
 if ($_FILES !== []) {
-    JSONResponse::error('Media uploads are not supported', 422) -> send();
+    $files = $_FILES['files'] ?? null;
+
+    if (count($_FILES) !== 1 || !is_array($files) || !is_array($files['name'] ?? null)
+        || count($files['name']) !== 1 || !is_array($files['tmp_name'] ?? null)
+        || !is_array($files['error'] ?? null) || !is_array($files['size'] ?? null)
+        || ($files['error'][0] ?? null) !== UPLOAD_ERR_OK
+        || UploadProcessor::classify((string) ($files['tmp_name'][0] ?? '')) !== 'image') {
+        JSONResponse::error('One image upload is required', 422) -> send();
+    }
 }
 
 $status = trim($input['status']);
@@ -82,6 +90,10 @@ $_POST = [
 
 if ($parent_id !== null) {
     $_POST['parentId'] = (string) $parent_id;
+}
+
+if (isset($input['altTexts'])) {
+    $_POST['altTexts'] = $input['altTexts'];
 }
 
 require __DIR__ . '/../src/post-create.php';

@@ -403,6 +403,11 @@ UPDATE `FeedItems`
     $items[] = FeedItem::fromRow($placeholder_row);
 }
 
+if (defined('IS_API_POST_REQUEST') && $has_files && $items === []) {
+    mysqli_rollback(DB::connection());
+    JSONResponse::error('The image could not be processed', 422) -> send();
+}
+
 if ($link_image_seed !== '') {
     $link_image_item_type = 'ImageItem';
     DB::run('
@@ -459,7 +464,7 @@ if ($parent_id !== null) {
 // that follows them.
 FediversePublisher::published($post, $current_user);
 
-if (defined('IS_MASTODON_POST_REQUEST')) {
+if (defined('IS_API_POST_REQUEST')) {
     $url = ActivityPubNote::uriFor($post, $current_user);
     $content = DeltaRenderer::toHTML($description_ops);
 

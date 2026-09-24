@@ -239,7 +239,7 @@ INSERT INTO `Conversations` (`userId`, `partnerId`, `lastMessageId`)
      */
     public static function delete(int $message_id): void
     {
-        DB::transaction(static fn () => self::deleteInTransaction($message_id));
+        DB::transaction(static fn () => self::deleteInTransaction($message_id), read_committed: true);
     }
 
     /** The caller owns the transaction, including both conversation pointers. */

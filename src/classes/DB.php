@@ -141,12 +141,16 @@ SET `time_zone` = ?
      * nest: MySQL has no nested transactions, and the inner commit would end
      * the outer one.
      */
-    public static function transaction(callable $work): mixed
+    public static function transaction(callable $work, bool $read_committed = false): mixed
     {
         $connection = self::connection();
 
         if (self::$afterCommit !== null) {
             throw new \LogicException('Database transactions cannot be nested.');
+        }
+
+        if ($read_committed) {
+            mysqli_query($connection, 'SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
         }
 
         mysqli_begin_transaction($connection);

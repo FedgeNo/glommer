@@ -276,7 +276,7 @@ DELETE
      * Resolve a report with its database-only decision and audit record.
      * The callback must not start a nested transaction or perform external I/O.
      */
-    public static function resolve(int $report_id, string $action, callable $decide): bool
+    public static function resolve(int $report_id, string $action, callable $decide, bool $read_committed = false): bool
     {
         return DB::transaction(static function () use ($report_id, $action, $decide): bool {
             $report = DB::row('SELECT `type`, `targetId` FROM `Reports` WHERE `reportId` = ? FOR UPDATE',
@@ -290,7 +290,7 @@ DELETE
             ModerationAction::log($action, null, $report -> type, (int) $report -> targetId, $report_id);
 
             return true;
-        });
+        }, read_committed: $read_committed);
     }
 
     /** Delete only the locked report's target, with its audit and outbound work. */
@@ -311,7 +311,7 @@ DELETE
             } else {
                 throw new \InvalidArgumentException('That report has no deletable content.');
             }
-        });
+        }, read_committed: true);
     }
 
     /**

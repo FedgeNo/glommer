@@ -1817,6 +1817,10 @@ class DeltaRenderer {
         });
     }
 
+    static linkifyPlainText(text) {
+        return DeltaRenderer.#inlineNodes(text, {});
+    }
+
     /** A text node wrapped in the run's inline formatting (no link). */
     static #formattedTextNode(text, attrs) {
         let node = document.createTextNode(text);
@@ -4616,7 +4620,7 @@ class Message {
             div.dataset.messageId = this.messageId;
             body.textContent = Strings.for('Message', { encrypted: 'Encrypted message' }).encrypted;
         } else {
-            body.textContent = expand(this.body);
+            Message.renderBody(body, this.body);
         }
 
         line.appendWithSpace(body);
@@ -4657,6 +4661,10 @@ class Message {
         return User.fromData({ userId: sender_id, ...sender }).header();
     }
 
+    static renderBody(body, text) {
+        body.replaceChildren(...DeltaRenderer.linkifyPlainText(expand(text)));
+    }
+
     /**
      * Opens one rendered message's envelope in place, once the thread key is
      * available (Controllers.js's MessageUnlockForm). Registering the envelope first is what
@@ -4681,7 +4689,7 @@ class Message {
             return;
         }
 
-        body.textContent = expand(text);
+        Message.renderBody(body, text);
         article.classList.remove('Locked');
 
         EmojiRenderer.render(body);

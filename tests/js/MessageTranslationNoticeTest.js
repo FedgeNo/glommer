@@ -1,6 +1,6 @@
 import { TestCase } from './TestCase.js';
 import { Api, Strings } from '../../scripts/Runtime.js';
-import { Dialog } from '../../scripts/HTMLObjects.js';
+import { Dialog, Message } from '../../scripts/HTMLObjects.js';
 import { MessageTranslateButton } from '../../scripts/Controllers.js';
 
 function receivedMessage() {
@@ -70,6 +70,30 @@ export default {
                 TestCase.assertEquals(2, requests.length);
             } finally {
                 Dialog.confirm = confirm;
+                Api.post = post;
+                localStorage.removeItem(MessageTranslateButton.NOTICE_KEY);
+                document.body.replaceChildren();
+            }
+        },
+        async 'restoring a translated message restores its links'() {
+            const post = Api.post;
+            const button = receivedMessage();
+            const body = button.parentElement.querySelector('.MessageBody');
+            Message.renderBody(body, 'Visit https://example.org and #Topic with @Alice');
+            localStorage.setItem(MessageTranslateButton.NOTICE_KEY, '1');
+            Api.post = async () => ({ body: 'Translated message' });
+
+            try {
+                button.click();
+                await settle();
+                TestCase.assertEquals('Translated message', body.textContent);
+
+                button.click();
+                await settle();
+                TestCase.assertEquals(3, body.querySelectorAll('a').length);
+                TestCase.assertTrue(body.querySelectorAll('a')[1].getAttribute('href').endsWith('/tags/topic'));
+                TestCase.assertEquals('Visit https://example.org and #Topic with @alice', body.textContent);
+            } finally {
                 Api.post = post;
                 localStorage.removeItem(MessageTranslateButton.NOTICE_KEY);
                 document.body.replaceChildren();

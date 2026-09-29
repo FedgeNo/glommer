@@ -2,7 +2,7 @@ import { TestCase, write_client_config } from './TestCase.js';
 
 write_client_config({ currentUserId: 1 });
 
-const { Message } = await import('../../scripts/HTMLObjects.js');
+const { Message, MessageCrypto } = await import('../../scripts/HTMLObjects.js');
 
 function withLoadingPage(readyState, run) {
     const realScrollTo = window.scrollTo;
@@ -65,6 +65,59 @@ export default {
             TestCase.assertEquals('hello there', element.querySelector('.MessageBody').textContent);
             TestCase.assertFalse(element.classList.contains('Locked'));
             TestCase.assertFalse('cipherEnvelope' in element.dataset);
+        },
+
+        'a plaintext message links URLs, hashtags, and mentions as text'() {
+            const written = 'See https://example.org/path, #Topic and @Alice. <b> stays text.';
+            const message = Message.fromData({
+                messageId: 12,
+                senderId: 2,
+                recipientId: 1,
+                body: written,
+                bodyCiphertext: null,
+                createdAt: '2026-08-01 12:00:00',
+            });
+
+            const body = message.toElement().querySelector('.MessageBody');
+            const links = body.querySelectorAll('a');
+
+            TestCase.assertEquals(3, links.length);
+            TestCase.assertEquals('https://example.org/path', links[0].getAttribute('href'));
+            TestCase.assertEquals('_blank', links[0].getAttribute('target'));
+            TestCase.assertEquals('noopener', links[0].getAttribute('rel'));
+            TestCase.assertTrue(links[1].getAttribute('href').endsWith('/tags/topic'));
+            TestCase.assertTrue(links[2].getAttribute('href').endsWith('/users/alice/'));
+            TestCase.assertEquals('See https://example.org/path, #Topic and @alice. <b> stays text.', body.textContent);
+            TestCase.assertEquals(null, body.querySelector('b'));
+        },
+
+        async 'decrypting a message links its revealed text'() {
+            const threadKey = MessageCrypto.threadKey;
+            const decrypt = MessageCrypto.decrypt;
+            const rememberEnvelope = MessageCrypto.rememberEnvelope;
+            MessageCrypto.threadKey = () => ({});
+            MessageCrypto.decrypt = async () => 'See https://example.org #Topic @Alice';
+            MessageCrypto.rememberEnvelope = () => {};
+
+            try {
+                const article = document.createElement('article');
+                article.className = 'Message Locked';
+                article.dataset.cipherEnvelope = '{"v":1}';
+                article.dataset.messageId = '13';
+                const body = document.createElement('pre');
+                body.className = 'MessageBody';
+                article.appendChild(body);
+
+                await Message.decryptInto(article);
+
+                TestCase.assertFalse(article.classList.contains('Locked'));
+                TestCase.assertEquals(3, body.querySelectorAll('a').length);
+                TestCase.assertEquals('See https://example.org #Topic @alice', body.textContent);
+            } finally {
+                MessageCrypto.threadKey = threadKey;
+                MessageCrypto.decrypt = decrypt;
+                MessageCrypto.rememberEnvelope = rememberEnvelope;
+            }
         },
 
         /** The same element the server renders, so a live message keeps its shape too. */

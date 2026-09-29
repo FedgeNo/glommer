@@ -85,9 +85,7 @@ class Message extends Article implements \JsonSerializable
             $this -> attributes['data-message-id'] = (string) $this -> messageId;
             $body -> contents[] = (string) (Strings::for(self::class)['encrypted'] ?? '');
         } else {
-            // Same last-step expansion posts get, on the path messages take -
-            // a message body is plain text and never goes near DeltaRenderer.
-            $body -> contents[] = EmojiShortcode::expand((string) $this -> body);
+            $body -> text = EmojiShortcode::expand((string) $this -> body);
         }
 
         $line -> addContent($body);

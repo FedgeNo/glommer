@@ -18,11 +18,19 @@ declare(strict_types=1);
 class MessageBody extends Preformatted
 {
     public ?string $class = 'MessageBody';
+    public ?string $text = null;
 
     public function toDOM(): \DOMElement
     {
         $this -> attributes['dir'] = 'auto';
+        $element = parent::toDOM();
 
-        return parent::toDOM();
+        if ($this -> text !== null) {
+            foreach (DeltaRenderer::linkifyPlainText(self::currentDocument(), $this -> text) as $node) {
+                $element -> appendChild($node);
+            }
+        }
+
+        return $element;
     }
 }

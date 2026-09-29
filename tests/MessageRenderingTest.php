@@ -61,6 +61,25 @@ class MessageRenderingTest extends TestCase
         $this -> assertSame('hello there', $body -> textContent);
     }
 
+    public function testAPlaintextMessageLinksUrlsHashtagsAndMentions(): void
+    {
+        $message = $this -> message();
+        $message -> body = 'See https://example.org/path, #Topic and @Alice. <b> stays text.';
+
+        $element = $this -> elementFor($message);
+        $body = (new \DOMXPath(HTMLObject::currentDocument())) -> query('.//*[@class="MessageBody"]', $element) -> item(0);
+        $links = $body -> getElementsByTagName('a');
+
+        $this -> assertSame(3, $links -> length);
+        $this -> assertSame('https://example.org/path', $links -> item(0) -> getAttribute('href'));
+        $this -> assertSame('_blank', $links -> item(0) -> getAttribute('target'));
+        $this -> assertSame('noopener', $links -> item(0) -> getAttribute('rel'));
+        $this -> assertSame(ServerURL::absolute('/tags/topic'), $links -> item(1) -> getAttribute('href'));
+        $this -> assertSame(ServerURL::absolute('/users/alice/'), $links -> item(2) -> getAttribute('href'));
+        $this -> assertSame('See https://example.org/path, #Topic and @alice. <b> stays text.', $body -> textContent);
+        $this -> assertSame(0, $body -> getElementsByTagName('b') -> length);
+    }
+
     /**
      * The line breaks and the indentation somebody typed are part of what they
      * said. Asserted on the serialized markup as well as the DOM, because a

@@ -5103,7 +5103,7 @@ class MessageTranslateButton {
     }
 
     static #restore(button, body) {
-        body.textContent = MessageTranslateButton.#originals.get(body);
+        Message.renderBody(body, MessageTranslateButton.#originals.get(body));
         MessageTranslateButton.#originals.delete(body);
         body.classList.remove('MachineTranslation');
         ToggleButton.select(button, MessageTranslateButton.TRANSLATE);

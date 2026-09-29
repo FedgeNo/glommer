@@ -12,34 +12,11 @@ declare(strict_types=1);
  * broken machine and was an address-space cap set near what a translation
  * appears to use rather than what it reserves.
  *
- * The ones that need the environment stand down where it is not installed, so
- * this is honest on a machine that has never run bin/install.php. What can be
- * checked without it - the language rules, the sanitising - always runs.
+ * Language rules and input checks run without the installed translator or a
+ * database. Translation integration cases live in TranslatorIntegrationTest.
  */
 class TranslatorTest extends TestCase
 {
-    private function requireTranslator(): void
-    {
-        if (!Translator::isAvailable()) {
-            throw new TestSkippedException('needs the translation environment - run bin/install.php');
-        }
-    }
-
-    /** German to English, since that pairing is installed wherever any is. */
-    private function intoEnglish(string $text): ?string
-    {
-        // These integration cases exercise the installed programs, even when
-        // the normal reader-facing path would succeed through Google first.
-        $translator = new class extends Translator {
-            protected static function byGoogle(string $text, string $source, string $target): ?string
-            {
-                return null;
-            }
-        };
-
-        return $translator::translate($text, 'en', 'de');
-    }
-
     // ---- What counts as a language, which needs no environment at all ----
 
     public function testATagIsReducedToTheLanguageItNames(): void
@@ -189,118 +166,5 @@ class TranslatorTest extends TestCase
         // much, thank you") without being stuck - the length guard is what
         // keeps these from false-positiving, not the phrase count alone.
         $this -> assertFalse($this -> isSmall100Repetitive('Thank you very much, thank you'));
-    }
-
-    // ---- The text itself ----
-
-    /**
-     * The case that started this: a post beginning with a dash. It goes in on
-     * stdin, so the command never sees it as an argument - but that is the
-     * kind of thing that is true until somebody changes how the text is
-     * passed, and then silently is not.
-     */
-    public function testAPostBeginningWithADashIsTextAndNotAFlag(): void
-    {
-        $this -> requireTranslator();
-
-        $translated = $this -> intoEnglish('-- Das Wetter ist heute sehr schoen in Berlin.');
-
-        $this -> assertNotNull($translated, 'a leading dash is not a reason to fail');
-        $this -> assertTrue(str_contains(strtolower($translated), 'weather'), $translated);
-    }
-
-    public function testAPostThatLooksLikeTheCommandsOwnFlagsIsStillJustText(): void
-    {
-        $this -> requireTranslator();
-
-        foreach (['--help', '--from-lang zz', '-h'] as $text) {
-            $translated = $this -> intoEnglish($text);
-
-            // Whatever it makes of these, it must not have acted on them: the
-            // command printing its usage or dying would come back as nothing.
-            $this -> assertNotNull($translated, var_export($text, true) . ' was acted on rather than translated');
-        }
-    }
-
-    /** Shell metacharacters are text. Nothing is interpolated into a shell. */
-    public function testShellMetacharactersAreJustCharacters(): void
-    {
-        $this -> requireTranslator();
-
-        $translated = $this -> intoEnglish('Das Wetter; rm -rf /tmp/x && echo $(whoami) `id` | wc -l');
-
-        $this -> assertNotNull($translated);
-        $this -> assertFalse(str_contains($translated, 'root'), 'nothing was executed');
-        $this -> assertFalse(str_contains($translated, 'uid='), 'nothing was executed');
-    }
-
-    /**
-     * Several sentences, which is what found the memory cap - each one is a
-     * batch, and the limit was reached by a post being long rather than by
-     * anything being wrong.
-     */
-    public function testALongPostOfManySentencesSurvives(): void
-    {
-        $this -> requireTranslator();
-
-        $text = trim(str_repeat('Das Wetter ist heute sehr schoen in Berlin. Die Leute sitzen draussen. ', 12));
-        $translated = $this -> intoEnglish($text);
-
-        $this -> assertNotNull($translated, 'a long post is not a reason to fail');
-        $this -> assertTrue(mb_strlen($translated) > 100, 'the whole thing came back, not the first line');
-    }
-
-    /** A post at the cap is cut rather than refused, and cut on a character. */
-    public function testAPostBeyondTheCapIsCutRatherThanRefused(): void
-    {
-        $this -> requireTranslator();
-
-        $translated = $this -> intoEnglish(str_repeat('Schöne Grüße aus Berlin. ', 2000));
-
-        $this -> assertNotNull($translated);
-        $this -> assertTrue(mb_check_encoding($translated, 'UTF-8'), 'cut between characters, not through one');
-    }
-
-    public function testTextTheFarSideCannotDecodeIsCleanedRatherThanPassedOn(): void
-    {
-        $this -> requireTranslator();
-
-        // A NUL ends a C string halfway through somebody's sentence; a stray
-        // 0x80 is not UTF-8 and raises inside the command before it starts.
-        $translated = $this -> intoEnglish("Das Wetter\0 ist heute \x80 sehr schoen in Berlin.");
-
-        $this -> assertNotNull($translated, 'one bad byte is not a reason to hand back nothing');
-        $this -> assertTrue(str_contains(strtolower($translated), 'weather'), $translated);
-    }
-
-    public function testEmojiAndAccentsComeBackIntact(): void
-    {
-        $this -> requireTranslator();
-
-        $translated = $this -> intoEnglish('Schöne Grüße aus München 🎉 und auch aus Köln.');
-
-        $this -> assertNotNull($translated);
-        $this -> assertTrue(mb_check_encoding($translated, 'UTF-8'));
-    }
-
-    public function testLineBreaksDoNotBreakIt(): void
-    {
-        $this -> requireTranslator();
-
-        $translated = $this -> intoEnglish("Das Wetter ist schoen.\n\nDie Leute sitzen draussen.\nEs ist warm.");
-
-        $this -> assertNotNull($translated);
-    }
-
-    /** A post that is only punctuation has nothing to say in any language. */
-    public function testAPostOfNothingButPunctuationDoesNotCrash(): void
-    {
-        $this -> requireTranslator();
-
-        // Whatever comes back, it must be an answer rather than an exception -
-        // null is a fine answer here.
-        $this -> intoEnglish('... --- ... !!! ???');
-
-        $this -> assertTrue(true, 'punctuation alone is handled rather than fatal');
     }
 }

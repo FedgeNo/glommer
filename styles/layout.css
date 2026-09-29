@@ -371,3 +371,76 @@ body:has(.MainNavigation) {
 .ReceivedFriendRequestSection.Searching,
 .FriendSection.Searching,
 .SentFriendRequestSection.Searching { display: none; }
+
+@media (min-width: 48.001rem) and (min-height: 32.001rem) and (hover: hover) {
+    .MainNavigation .NavDropdown.NarrowerMenu {
+        --nav-join-radius: min(0.75rem, calc(var(--nav-tab-overhang) / 2));
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu > .NavDropdownTrigger {
+        border-bottom: 1px solid transparent;
+        border-bottom-right-radius: var(--nav-join-radius);
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu:is(:hover, :focus-within) > .NavDropdownTrigger {
+        border-bottom-color: var(--hairline);
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu > .NavDropdownMenu {
+        top: calc(100% - 1px);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top-color: transparent;
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu::before,
+    .MainNavigation .NavDropdown.NarrowerMenu::after {
+        content: '';
+        position: absolute;
+        top: calc(100% - 1px);
+        z-index: 22;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+
+    /* The quarter-circle joins the exposed tab border to the menu's side. */
+    .MainNavigation .NavDropdown.NarrowerMenu::before {
+        left: calc(var(--nav-menu-width) - 1px);
+        width: calc(var(--nav-join-radius) + 1px);
+        height: var(--nav-join-radius);
+        background: radial-gradient(circle at var(--nav-join-center, 100%) 100%,
+            transparent calc(var(--nav-join-radius) - 1px),
+            var(--hairline) calc(var(--nav-join-radius) - 1px),
+            var(--hairline) var(--nav-join-radius),
+            var(--theme-stop-0) var(--nav-join-radius));
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu::after {
+        left: 1px;
+        width: calc(var(--nav-menu-width) - 2px);
+        height: 2px;
+        background: var(--theme-stop-0);
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu.RightAlignedMenu > .NavDropdownTrigger {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: var(--nav-join-radius);
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu.RightAlignedMenu::before {
+        --nav-join-center: 0;
+        left: auto;
+        right: calc(var(--nav-menu-width) - 1px);
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu.RightAlignedMenu::after {
+        left: auto;
+        right: 1px;
+    }
+
+    .MainNavigation .NavDropdown.NarrowerMenu:is(:hover, :focus-within)::before,
+    .MainNavigation .NavDropdown.NarrowerMenu:is(:hover, :focus-within)::after {
+        opacity: 1;
+    }
+}

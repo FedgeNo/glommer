@@ -34,3 +34,5 @@ carousel.init();
 if ('serviceWorker' in navigator && ClientConfig.get('currentUserId') !== null) {
     navigator.serviceWorker.register(ClientConfig.siteURL() + '/sw.js').catch(() => {});
 }
+
+if (document.querySelector('.MainNavigation .NavDropdown')) import('/scripts/NavDropdown.js');

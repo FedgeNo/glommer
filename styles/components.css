@@ -39,6 +39,12 @@
     overflow-y: auto;
 }
 
+.NavDropdownMenu,
+.NotificationDropdown {
+    background-color: var(--theme-stop-0);
+    background-image: none;
+}
+
 /* The dropdown is already a card; the list inside it doesn't get to be a
    second one nested in the first. */
 .NotificationDropdown .NotificationList {
